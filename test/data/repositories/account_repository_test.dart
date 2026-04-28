@@ -40,7 +40,8 @@ void main() {
     test('groups are ordered by sortOrder', () async {
       final groups = await repository.watchGroups().first;
       for (var i = 1; i < groups.length; i++) {
-        expect(groups[i].sortOrder, greaterThanOrEqualTo(groups[i - 1].sortOrder));
+        expect(
+            groups[i].sortOrder, greaterThanOrEqualTo(groups[i - 1].sortOrder));
       }
     });
 
