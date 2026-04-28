@@ -64,52 +64,30 @@ jobs:
             exit 1
           fi
 
-          # Filter out generated localization files (not hand-written code)
-          python3 - <<'PYEOF'
-import re, sys
-
-with open("coverage/lcov.info") as f:
-    content = f.read()
-
-EXCLUDE = ["app_localizations", ".g.dart", ".freezed.dart"]
-blocks = content.split("end_of_record\n")
-filtered = []
-for block in blocks:
-    sf = re.search(r"SF:(.+)", block)
-    if sf and any(e in sf.group(1) for e in EXCLUDE):
-        continue
-    if block.strip():
-        filtered.append(block + "end_of_record\n")
-
-with open("coverage/lcov_filtered.info", "w") as f:
-    f.writelines(filtered)
-print(f"Kept {len(filtered)} files after filtering generated code.")
-PYEOF
+          # Strip blocks for generated files (localizations, .g.dart, .freezed.dart)
+          awk 'BEGIN{skip=0} /^SF:/{skip=($0~/app_localizations|\.g\.dart|\.freezed\.dart/)?1:0} !skip{print}' \
+            "$LCOV_FILE" > coverage/lcov_filtered.info
 
           LCOV_FILE="coverage/lcov_filtered.info"
 
-          # Sum all lines found (LF) and all lines hit (LH) across all source files
-          LINES_FOUND=$(grep -E '^LF:' "$LCOV_FILE" | awk -F: '{ sum += $2 } END { print sum+0 }')
-          LINES_HIT=$(grep -E '^LH:' "$LCOV_FILE" | awk -F: '{ sum += $2 } END { print sum+0 }')
+          LINES_FOUND=$(grep -E '^LF:' "$LCOV_FILE" | awk -F: '{sum+=$2} END{print sum+0}')
+          LINES_HIT=$(grep -E '^LH:' "$LCOV_FILE" | awk -F: '{sum+=$2} END{print sum+0}')
 
           echo "Lines found : $LINES_FOUND"
           echo "Lines hit   : $LINES_HIT"
 
           if [ "$LINES_FOUND" -eq 0 ]; then
-            echo "ERROR: No coverable lines found. Check that tests exercise source files."
+            echo "ERROR: No coverable lines found."
             exit 1
           fi
 
-          # Use awk for floating-point arithmetic (bash only does integer math)
-          COVERAGE=$(awk "BEGIN { printf \"%.2f\", ($LINES_HIT / $LINES_FOUND) * 100 }")
+          COVERAGE=$(awk "BEGIN{printf \"%.2f\",($LINES_HIT/$LINES_FOUND)*100}")
           echo "Overall coverage: ${COVERAGE}%"
 
-          THRESHOLD=75
-          PASS=$(awk "BEGIN { print ($COVERAGE >= $THRESHOLD) ? \"yes\" : \"no\" }")
-
+          PASS=$(awk "BEGIN{print($COVERAGE>=75)?\"yes\":\"no\"}")
           if [ "$PASS" = "no" ]; then
-            echo "FAIL: Coverage ${COVERAGE}% is below the required ${THRESHOLD}% threshold."
+            echo "FAIL: ${COVERAGE}% is below the 75% threshold."
             exit 1
           fi
 
-          echo "PASS: Coverage ${COVERAGE}% meets the ${THRESHOLD}% threshold."
+          echo "PASS: ${COVERAGE}% meets the 75% threshold."
