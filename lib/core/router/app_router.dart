@@ -1,0 +1,101 @@
+// go_router configuration with 4-tab StatefulShellRoute.
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../features/transactions/presentation/screens/transactions_screen.dart';
+import '../../features/stats/presentation/screens/stats_screen.dart';
+import '../../features/accounts/presentation/screens/accounts_screen.dart';
+import '../../features/more/presentation/screens/more_screen.dart';
+import '../i18n/arb/app_localizations.dart';
+import 'routes.dart';
+
+final appRouter = GoRouter(
+  initialLocation: Routes.transactions,
+  routes: [
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return ScaffoldWithBottomNav(navigationShell: navigationShell);
+      },
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.transactions,
+              builder: (context, state) => const TransactionsScreen(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.stats,
+              builder: (context, state) => const StatsScreen(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.accounts,
+              builder: (context, state) => const AccountsScreen(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.more,
+              builder: (context, state) => const MoreScreen(),
+            ),
+          ],
+        ),
+      ],
+    ),
+  ],
+);
+
+/// Bottom-navigation shell shared across all top-level tabs.
+class ScaffoldWithBottomNav extends StatelessWidget {
+  const ScaffoldWithBottomNav({super.key, required this.navigationShell});
+
+  final StatefulNavigationShell navigationShell;
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final dateLabel = '${now.day}.${now.month}';
+    final l10n = AppLocalizations.of(context)!;
+
+    return Scaffold(
+      body: navigationShell,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: navigationShell.currentIndex,
+        onTap: (index) => navigationShell.goBranch(
+          index,
+          initialLocation: index == navigationShell.currentIndex,
+        ),
+        items: [
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.book_outlined),
+            activeIcon: const Icon(Icons.book),
+            label: dateLabel,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.bar_chart_outlined),
+            activeIcon: const Icon(Icons.bar_chart),
+            label: l10n.tabStats,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.account_balance_wallet_outlined),
+            activeIcon: const Icon(Icons.account_balance_wallet),
+            label: l10n.tabAccounts,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.more_horiz),
+            activeIcon: const Icon(Icons.more_horiz),
+            label: l10n.tabMore,
+          ),
+        ],
+      ),
+    );
+  }
+}

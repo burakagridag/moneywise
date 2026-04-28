@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter create *)",
+      "Bash(flutter pub *)",
+      "Bash(sed -i '' 's/money2: \\\\^4\\\\.0\\\\.0/money2: ^6.3.0/' pubspec.yaml)",
+      "Bash(sed -i '' 's/intl: \\\\^0\\\\.20\\\\.0/intl: ^0.20.2/' pubspec.yaml)",
+      "Bash(dart run *)",
+      "Bash(dart format *)",
+      "Bash(flutter analyze *)",
+      "Bash(flutter test *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}

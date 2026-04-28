@@ -1,0 +1,22 @@
+{
+  "@@locale": "tr",
+  "appName": "MoneyWise",
+  "tabTransactions": "İşlemler",
+  "tabStats": "İstatistik",
+  "tabAccounts": "Hesaplar",
+  "tabMore": "Daha Fazla",
+  "themeDark": "Koyu Tema",
+  "themeLight": "Açık Tema",
+  "save": "Kaydet",
+  "cancel": "İptal",
+  "income": "Gelir",
+  "expense": "Gider",
+  "transfer": "Transfer",
+  "amount": "Tutar",
+  "category": "Kategori",
+  "account": "Hesap",
+  "note": "Not",
+  "description": "Açıklama",
+  "date": "Tarih",
+  "settings": "Ayarlar"
+}

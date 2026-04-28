@@ -1,0 +1,91 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+env:
+  FLUTTER_VERSION: '3.22.x'
+
+jobs:
+  pr_checks:
+    name: Lint, Format, Analyze & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            pub-${{ runner.os }}-
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Verify formatting
+        run: dart format --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage/lcov.info
+          fail_ci_if_error: false
+
+      - name: Coverage threshold check (>= 75%)
+        run: |
+          LCOV_FILE="coverage/lcov.info"
+
+          if [ ! -f "$LCOV_FILE" ]; then
+            echo "ERROR: coverage/lcov.info not found — tests may not have run."
+            exit 1
+          fi
+
+          # Sum all lines found (LF) and all lines hit (LH) across all source files
+          LINES_FOUND=$(grep -E '^LF:' "$LCOV_FILE" | awk -F: '{ sum += $2 } END { print sum+0 }')
+          LINES_HIT=$(grep -E '^LH:' "$LCOV_FILE" | awk -F: '{ sum += $2 } END { print sum+0 }')
+
+          echo "Lines found : $LINES_FOUND"
+          echo "Lines hit   : $LINES_HIT"
+
+          if [ "$LINES_FOUND" -eq 0 ]; then
+            echo "ERROR: No coverable lines found. Check that tests exercise source files."
+            exit 1
+          fi
+
+          # Use awk for floating-point arithmetic (bash only does integer math)
+          COVERAGE=$(awk "BEGIN { printf \"%.2f\", ($LINES_HIT / $LINES_FOUND) * 100 }")
+          echo "Overall coverage: ${COVERAGE}%"
+
+          THRESHOLD=75
+          PASS=$(awk "BEGIN { print ($COVERAGE >= $THRESHOLD) ? \"yes\" : \"no\" }")
+
+          if [ "$PASS" = "no" ]; then
+            echo "FAIL: Coverage ${COVERAGE}% is below the required ${THRESHOLD}% threshold."
+            exit 1
+          fi
+
+          echo "PASS: Coverage ${COVERAGE}% meets the ${THRESHOLD}% threshold."
