@@ -7,7 +7,7 @@ on:
       - main
 
 env:
-  FLUTTER_VERSION: '3.22.x'
+  FLUTTER_VERSION: '3.x'
 
 jobs:
   build_android_dev:
