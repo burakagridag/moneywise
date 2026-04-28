@@ -1,0 +1,22 @@
+{
+  "@@locale": "en",
+  "appName": "MoneyWise",
+  "tabTransactions": "Trans.",
+  "tabStats": "Stats",
+  "tabAccounts": "Accounts",
+  "tabMore": "More",
+  "themeDark": "Dark",
+  "themeLight": "Light",
+  "save": "Save",
+  "cancel": "Cancel",
+  "income": "Income",
+  "expense": "Expense",
+  "transfer": "Transfer",
+  "amount": "Amount",
+  "category": "Category",
+  "account": "Account",
+  "note": "Note",
+  "description": "Description",
+  "date": "Date",
+  "settings": "Settings"
+}
