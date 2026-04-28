@@ -54,15 +54,15 @@ void main() {
 
   group('AppColors', () {
     test('brand primary is coral', () {
-      expect(AppColors.brandPrimary.value, 0xFFFF6B5C);
+      expect(AppColors.brandPrimary, const Color(0xFFFF6B5C));
     });
 
     test('dark bg primary is darkest background', () {
-      expect(AppColors.bgPrimary.value, 0xFF1A1B1E);
+      expect(AppColors.bgPrimary, const Color(0xFF1A1B1E));
     });
 
     test('income is blue', () {
-      expect(AppColors.income.value, 0xFF4A90E2);
+      expect(AppColors.income, const Color(0xFF4A90E2));
     });
   });
 
