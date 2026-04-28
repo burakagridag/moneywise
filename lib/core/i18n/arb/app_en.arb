@@ -37,5 +37,7 @@
   "categoryIcon": "Icon (emoji)",
   "emptyCategoriesMessage": "No categories yet.",
   "defaultBadge": "Default",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "errorSavingAccount": "Failed to save account. Please try again.",
+  "errorSavingCategory": "Failed to save category. Please try again."
 }

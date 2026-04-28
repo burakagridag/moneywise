@@ -1,4 +1,4 @@
-// Riverpod providers exposing category streams to the UI — more feature.
+// Riverpod providers exposing category streams and write operations to the UI — more feature.
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../data/repositories/category_repository.dart';
@@ -15,3 +15,15 @@ Stream<List<Category>> incomeCategories(IncomeCategoriesRef ref) =>
 @riverpod
 Stream<List<Category>> expenseCategories(ExpenseCategoriesRef ref) =>
     ref.watch(categoryRepositoryProvider).watchByType('expense');
+
+/// Notifier that exposes write operations for categories.
+/// Screens must use this notifier instead of importing the repository directly.
+@riverpod
+class CategoryWriteNotifier extends _$CategoryWriteNotifier {
+  @override
+  void build() {}
+
+  /// Persists a new [category] via the repository.
+  Future<void> addCategory(Category category) =>
+      ref.read(categoryRepositoryProvider).addCategory(category);
+}

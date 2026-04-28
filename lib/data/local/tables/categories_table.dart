@@ -9,9 +9,8 @@ class Categories extends Table {
   /// Transaction direction: 'income' or 'expense'.
   TextColumn get type => text()();
 
-  /// Optional parent category id for sub-categories (self-referential).
-  /// Referential integrity is enforced in the DAO layer.
-  TextColumn get parentId => text().nullable()();
+  /// Optional parent category id for sub-categories (self-referential FK).
+  TextColumn get parentId => text().nullable().references(Categories, #id)();
   TextColumn get iconEmoji => text().nullable()();
   TextColumn get colorHex => text().nullable()();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();

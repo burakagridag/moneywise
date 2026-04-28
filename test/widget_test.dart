@@ -11,8 +11,10 @@ import 'package:moneywise/core/i18n/arb/app_localizations.dart';
 import 'package:moneywise/core/router/routes.dart';
 import 'package:moneywise/core/theme/app_theme.dart';
 import 'package:moneywise/data/local/database.dart';
+import 'package:moneywise/features/accounts/presentation/screens/account_add_edit_screen.dart';
 import 'package:moneywise/features/accounts/presentation/screens/accounts_screen.dart';
 import 'package:moneywise/features/more/presentation/providers/theme_mode_provider.dart';
+import 'package:moneywise/features/more/presentation/screens/category_management_screen.dart';
 import 'package:moneywise/features/more/presentation/screens/more_screen.dart';
 import 'package:moneywise/features/stats/presentation/screens/stats_screen.dart';
 import 'package:moneywise/features/transactions/presentation/screens/transactions_screen.dart';
@@ -132,6 +134,110 @@ void main() {
       await tester.pumpWidget(buildAccountsScreen(db));
       await tester.pump();
       expect(find.byType(FloatingActionButton), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // CategoryManagementScreen — Sprint 2 (needs DB override)
+  // ---------------------------------------------------------------------------
+
+  group('CategoryManagementScreen', () {
+    Widget buildCategoryScreen(AppDatabase db) => ProviderScope(
+          overrides: [appDatabaseProvider.overrideWith((_) => db)],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const CategoryManagementScreen(),
+          ),
+        );
+
+    testWidgets('renders CategoryManagementScreen widget', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(buildCategoryScreen(db));
+      await tester.pump();
+      expect(find.byType(CategoryManagementScreen), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    testWidgets('has a TabBar with Income and Expense tabs', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(buildCategoryScreen(db));
+      await tester.pump();
+      expect(find.byType(TabBar), findsOneWidget);
+      expect(find.text('Income'), findsOneWidget);
+      expect(find.text('Expense'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    testWidgets('shows Categories title in AppBar', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(buildCategoryScreen(db));
+      await tester.pump();
+      expect(find.text('Categories'), findsAtLeastNWidgets(1));
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // AccountAddEditScreen — Sprint 2 (needs DB override)
+  // ---------------------------------------------------------------------------
+
+  group('AccountAddEditScreen', () {
+    Widget buildAddEditScreen(AppDatabase db) => ProviderScope(
+          overrides: [appDatabaseProvider.overrideWith((_) => db)],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const AccountAddEditScreen(),
+          ),
+        );
+
+    testWidgets('renders AccountAddEditScreen widget', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(buildAddEditScreen(db));
+      await tester.pump();
+      expect(find.byType(AccountAddEditScreen), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    testWidgets('shows Add Account title in AppBar', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(buildAddEditScreen(db));
+      await tester.pump();
+      expect(find.text('Add Account'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    testWidgets('has a name field and a Save button', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(buildAddEditScreen(db));
+      await tester.pump();
+      expect(
+          find.widgetWithText(TextFormField, 'Account Name'), findsOneWidget);
+      expect(find.widgetWithText(TextButton, 'Save'), findsOneWidget);
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);
       await tester.pump(Duration.zero);

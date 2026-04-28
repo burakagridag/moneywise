@@ -7,7 +7,6 @@ import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_spacing.dart';
 import '../../../../../core/constants/app_typography.dart';
 import '../../../../../core/i18n/arb/app_localizations.dart';
-import '../../../../../data/repositories/category_repository.dart';
 import '../../../../../domain/entities/category.dart';
 import '../providers/categories_provider.dart';
 
@@ -37,7 +36,7 @@ class CategoryManagementScreen extends ConsumerWidget {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _showAddCategorySheet(context, ref),
+          onPressed: () => _showAddCategorySheet(context),
           backgroundColor: AppColors.brandPrimary,
           foregroundColor: AppColors.textOnBrand,
           child: const Icon(Icons.add),
@@ -58,13 +57,11 @@ class CategoryManagementScreen extends ConsumerWidget {
     );
   }
 
-  void _showAddCategorySheet(BuildContext context, WidgetRef ref) {
+  void _showAddCategorySheet(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      // Pass WidgetRef directly so the sheet can access the same provider
-      // container without creating a new ProviderScope.
-      builder: (_) => _AddCategorySheet(ref: ref),
+      builder: (_) => const _AddCategorySheet(),
     );
   }
 }
@@ -180,16 +177,17 @@ class _CategoryRow extends StatelessWidget {
 // Add category bottom sheet
 // ---------------------------------------------------------------------------
 
-class _AddCategorySheet extends StatefulWidget {
-  const _AddCategorySheet({required this.ref});
-
-  final WidgetRef ref;
+/// Bottom sheet for creating a new category.
+/// Declared as [ConsumerStatefulWidget] so it owns its own [WidgetRef] and
+/// never captures a ref across an async gap.
+class _AddCategorySheet extends ConsumerStatefulWidget {
+  const _AddCategorySheet();
 
   @override
-  State<_AddCategorySheet> createState() => _AddCategorySheetState();
+  ConsumerState<_AddCategorySheet> createState() => _AddCategorySheetState();
 }
 
-class _AddCategorySheetState extends State<_AddCategorySheet> {
+class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emojiController = TextEditingController();
@@ -204,6 +202,7 @@ class _AddCategorySheetState extends State<_AddCategorySheet> {
   }
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSaving = true);
@@ -223,10 +222,20 @@ class _AddCategorySheetState extends State<_AddCategorySheet> {
       isDeleted: false,
     );
 
-    await widget.ref.read(categoryRepositoryProvider).addCategory(category);
-
-    if (!mounted) return;
-    Navigator.of(context).pop();
+    try {
+      await ref
+          .read(categoryWriteNotifierProvider.notifier)
+          .addCategory(category);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.errorSavingCategory)),
+      );
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
   }
 
   @override

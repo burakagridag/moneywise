@@ -122,4 +122,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get loading => 'Yükleniyor...';
+
+  @override
+  String get errorSavingAccount =>
+      'Hesap kaydedilemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get errorSavingCategory =>
+      'Kategori kaydedilemedi. Lütfen tekrar deneyin.';
 }

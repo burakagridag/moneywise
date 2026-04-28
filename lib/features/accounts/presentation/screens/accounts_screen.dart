@@ -212,6 +212,8 @@ class _AccountRow extends StatelessWidget {
           color: colorScheme.onSurfaceVariant,
         ),
       ),
+      // TODO(sprint-3): replace initialBalance with computed currentBalance
+      // (transactions not yet implemented).
       trailing: Text(
         account.initialBalance.toStringAsFixed(2),
         style: AppTypography.moneySmall.copyWith(color: colorScheme.onSurface),

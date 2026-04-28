@@ -34,7 +34,9 @@ class AppDatabase extends _$AppDatabase {
         },
         onUpgrade: (m, from, to) async {
           if (from < 2) {
-            await m.createAll();
+            await m.createTable(accountGroups);
+            await m.createTable(accounts);
+            await m.createTable(categories);
             await _seedDefaultData();
           }
         },

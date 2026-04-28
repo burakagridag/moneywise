@@ -325,6 +325,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading...'**
   String get loading;
+
+  /// No description provided for @errorSavingAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save account. Please try again.'**
+  String get errorSavingAccount;
+
+  /// No description provided for @errorSavingCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save category. Please try again.'**
+  String get errorSavingCategory;
 }
 
 class _AppLocalizationsDelegate

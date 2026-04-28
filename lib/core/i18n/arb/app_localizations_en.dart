@@ -122,4 +122,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loading => 'Loading...';
+
+  @override
+  String get errorSavingAccount => 'Failed to save account. Please try again.';
+
+  @override
+  String get errorSavingCategory =>
+      'Failed to save category. Please try again.';
 }

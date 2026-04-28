@@ -37,5 +37,7 @@
   "categoryIcon": "İkon (emoji)",
   "emptyCategoriesMessage": "Henüz kategori yok.",
   "defaultBadge": "Varsayılan",
-  "loading": "Yükleniyor..."
+  "loading": "Yükleniyor...",
+  "errorSavingAccount": "Hesap kaydedilemedi. Lütfen tekrar deneyin.",
+  "errorSavingCategory": "Kategori kaydedilemedi. Lütfen tekrar deneyin."
 }

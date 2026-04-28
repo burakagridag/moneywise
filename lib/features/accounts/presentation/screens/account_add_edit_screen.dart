@@ -7,7 +7,6 @@ import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_spacing.dart';
 import '../../../../../core/constants/app_typography.dart';
 import '../../../../../core/i18n/arb/app_localizations.dart';
-import '../../../../../data/repositories/account_repository.dart';
 import '../../../../../domain/entities/account.dart';
 import '../providers/accounts_provider.dart';
 
@@ -84,15 +83,23 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
       isDeleted: false,
     );
 
-    final repo = ref.read(accountRepositoryProvider);
-    if (widget.account == null) {
-      await repo.addAccount(account);
-    } else {
-      await repo.updateAccount(account);
+    try {
+      final notifier = ref.read(accountWriteNotifierProvider.notifier);
+      if (widget.account == null) {
+        await notifier.addAccount(account);
+      } else {
+        await notifier.updateAccount(account);
+      }
+      if (!mounted) return;
+      Navigator.of(context).pop();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.errorSavingAccount)),
+      );
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
     }
-
-    if (!mounted) return;
-    Navigator.of(context).pop();
   }
 
   @override

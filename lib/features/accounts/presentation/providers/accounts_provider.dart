@@ -16,3 +16,19 @@ Stream<List<AccountGroup>> accountGroups(AccountGroupsRef ref) =>
 @riverpod
 Stream<List<Account>> allAccounts(AllAccountsRef ref) =>
     ref.watch(accountRepositoryProvider).watchAccounts();
+
+/// Notifier that exposes write operations for accounts.
+/// Screens must use this notifier instead of importing the repository directly.
+@riverpod
+class AccountWriteNotifier extends _$AccountWriteNotifier {
+  @override
+  void build() {}
+
+  /// Persists a new [account] via the repository.
+  Future<void> addAccount(Account account) =>
+      ref.read(accountRepositoryProvider).addAccount(account);
+
+  /// Updates an existing [account] via the repository.
+  Future<void> updateAccount(Account account) =>
+      ref.read(accountRepositoryProvider).updateAccount(account);
+}
