@@ -64,4 +64,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
+  String get accounts => 'Accounts';
+
+  @override
+  String get addAccount => 'Add Account';
+
+  @override
+  String get editAccount => 'Edit Account';
+
+  @override
+  String get accountName => 'Account Name';
+
+  @override
+  String get accountGroup => 'Account Group';
+
+  @override
+  String get currency => 'Currency';
+
+  @override
+  String get initialBalance => 'Initial Balance';
+
+  @override
+  String get includeInTotals => 'Include in Totals';
+
+  @override
+  String get accountNameRequired => 'Account name is required';
+
+  @override
+  String get invalidBalance => 'Please enter a valid number';
+
+  @override
+  String get emptyAccountsMessage =>
+      'No accounts yet.\nTap + to add your first account.';
+
+  @override
+  String get categories => 'Categories';
+
+  @override
+  String get addCategory => 'Add Category';
+
+  @override
+  String get categoryName => 'Category Name';
+
+  @override
+  String get categoryNameRequired => 'Category name is required';
+
+  @override
+  String get categoryIcon => 'Icon (emoji)';
+
+  @override
+  String get emptyCategoriesMessage => 'No categories yet.';
+
+  @override
+  String get defaultBadge => 'Default';
+
+  @override
+  String get loading => 'Loading...';
 }

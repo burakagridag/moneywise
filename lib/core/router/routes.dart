@@ -7,4 +7,8 @@ class Routes {
   static const String stats = '/stats';
   static const String accounts = '/accounts';
   static const String more = '/more';
+
+  // Sprint 2 routes
+  static const String accountAddEdit = '/accounts/add';
+  static const String categoryManagement = '/more/categories';
 }
