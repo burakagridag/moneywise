@@ -132,7 +132,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get includeInTotalDescription =>
-      "Count this account's balance in your total net worth";
+      'Count this account\'s balance in your total net worth';
 
   @override
   String get editCategory => 'Edit Category';

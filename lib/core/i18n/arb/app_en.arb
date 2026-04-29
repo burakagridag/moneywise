@@ -39,5 +39,11 @@
   "defaultBadge": "Default",
   "loading": "Loading...",
   "errorSavingAccount": "Failed to save account. Please try again.",
-  "errorSavingCategory": "Failed to save category. Please try again."
+  "errorSavingCategory": "Failed to save category. Please try again.",
+  "includeInTotalDescription": "Count this account's balance in your total net worth",
+  "editCategory": "Edit Category",
+  "deleteCategory": "Delete Category",
+  "deleteCategoryConfirm": "Are you sure you want to delete this category?",
+  "errorDeletingCategory": "Failed to delete category. Please try again.",
+  "errorUpdatingCategory": "Failed to update category. Please try again."
 }

@@ -39,5 +39,11 @@
   "defaultBadge": "Varsayılan",
   "loading": "Yükleniyor...",
   "errorSavingAccount": "Hesap kaydedilemedi. Lütfen tekrar deneyin.",
-  "errorSavingCategory": "Kategori kaydedilemedi. Lütfen tekrar deneyin."
+  "errorSavingCategory": "Kategori kaydedilemedi. Lütfen tekrar deneyin.",
+  "includeInTotalDescription": "Bu hesabın bakiyesini toplam net değerinize dahil edin",
+  "editCategory": "Kategori Düzenle",
+  "deleteCategory": "Kategori Sil",
+  "deleteCategoryConfirm": "Bu kategoriyi silmek istediğinizden emin misiniz?",
+  "errorDeletingCategory": "Kategori silinemedi. Lütfen tekrar deneyin.",
+  "errorUpdatingCategory": "Kategori güncellenemedi. Lütfen tekrar deneyin."
 }
