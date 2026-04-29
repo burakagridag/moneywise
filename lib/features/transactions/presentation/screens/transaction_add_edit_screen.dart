@@ -43,6 +43,7 @@ class _TransactionAddEditScreenState
   late DateTime _selectedDate;
   bool _isSaving = false;
   bool _isDirty = false;
+  bool _pickersInitialized = false;
 
   bool get _isEditMode => widget.transaction != null;
 
@@ -61,6 +62,36 @@ class _TransactionAddEditScreenState
     }
     _amountController.addListener(_markDirty);
     _noteController.addListener(_markDirty);
+  }
+
+  /// Pre-populates [_selectedCategory] and [_selectedAccount] from the lists
+  /// provided by the repository-backed providers. Called after the first frame
+  /// so that [ref] is available and providers have had a chance to emit.
+  void _tryInitPickers() {
+    if (_pickersInitialized || !_isEditMode) return;
+    final tx = widget.transaction!;
+
+    final accounts =
+        ref.read(transactionAccountListProvider).asData?.value ?? [];
+    final categories =
+        ref.read(transactionCategoryListProvider).asData?.value ?? [];
+
+    final account = accounts.where((a) => a.id == tx.accountId).firstOrNull;
+    final toAccount = tx.toAccountId != null
+        ? accounts.where((a) => a.id == tx.toAccountId).firstOrNull
+        : null;
+    final category = tx.categoryId != null
+        ? categories.where((c) => c.id == tx.categoryId).firstOrNull
+        : null;
+
+    // Only mark initialized once we get at least the account (it is required).
+    // If providers haven't loaded yet this will be retried next rebuild.
+    if (accounts.isNotEmpty) {
+      _pickersInitialized = true;
+      _selectedAccount = account;
+      _selectedToAccount = toAccount;
+      _selectedCategory = category;
+    }
   }
 
   @override
@@ -229,6 +260,17 @@ class _TransactionAddEditScreenState
 
   @override
   Widget build(BuildContext context) {
+    // In edit mode, watch the account/category lists so this widget rebuilds
+    // when they emit data. _tryInitPickers() then reads them synchronously to
+    // set the picker state before the rest of the widget tree is built.
+    if (_isEditMode && !_pickersInitialized) {
+      ref.watch(transactionAccountListProvider);
+      ref.watch(transactionCategoryListProvider);
+    }
+    // Attempt to pre-populate category/account pickers on each rebuild until
+    // the providers emit data (edit mode only).
+    _tryInitPickers();
+
     final l10n = AppLocalizations.of(context)!;
     final dateFmt = DateFormat('d MMM yyyy');
 

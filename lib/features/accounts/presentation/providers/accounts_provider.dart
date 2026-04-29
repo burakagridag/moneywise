@@ -2,6 +2,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../data/repositories/account_repository.dart';
+import '../../../../data/repositories/transaction_repository.dart';
 import '../../../../domain/entities/account.dart';
 import '../../../../domain/entities/account_group.dart';
 
@@ -16,6 +17,12 @@ Stream<List<AccountGroup>> accountGroups(AccountGroupsRef ref) =>
 @riverpod
 Stream<List<Account>> allAccounts(AllAccountsRef ref) =>
     ref.watch(accountRepositoryProvider).watchAccounts();
+
+/// Reactive stream of the computed balance for a single account.
+/// Balance = initialBalance + SUM(income) - SUM(expense) ± SUM(transfers).
+@riverpod
+Stream<double> accountBalance(AccountBalanceRef ref, String accountId) =>
+    ref.watch(transactionRepositoryProvider).watchAccountBalance(accountId);
 
 /// Notifier that exposes write operations for accounts.
 /// Screens must use this notifier instead of importing the repository directly.

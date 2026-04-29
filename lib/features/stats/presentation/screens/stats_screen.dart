@@ -309,7 +309,7 @@ class _StatsContent extends ConsumerWidget {
 
         return ListView(
           children: [
-            PieChartWidget(segments: segments),
+            SizedBox(height: 260, child: PieChartWidget(segments: segments)),
             const Divider(height: 1, color: AppColors.divider),
             ...enrichedSegments.map(
               (s) => Column(
