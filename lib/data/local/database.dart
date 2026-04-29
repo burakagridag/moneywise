@@ -101,6 +101,23 @@ LazyDatabase _openConnection() {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'moneywise.db'));
     final key = await DbEncryptionService.getEncryptionKey();
+
+    // Detect a pre-encryption plaintext database created by Sprint 2.
+    // SQLite plaintext files begin with the 15-byte magic header
+    // "SQLite format 3". A SQLCipher-encrypted file starts with random bytes.
+    // Opening a plaintext file with PRAGMA key set causes SqliteException(26).
+    // For this dev upgrade path we delete the stale file so SQLCipher creates
+    // a fresh encrypted database from scratch.
+    if (await file.exists()) {
+      final header = await file
+          .openRead(0, 16)
+          .first
+          .then((bytes) => String.fromCharCodes(bytes.take(15)));
+      if (header == 'SQLite format 3') {
+        await file.delete();
+      }
+    }
+
     return NativeDatabase.createInBackground(
       file,
       setup: (db) {
@@ -121,4 +138,3 @@ AppDatabase appDatabase(AppDatabaseRef ref) {
   ref.onDispose(db.close);
   return db;
 }
-
