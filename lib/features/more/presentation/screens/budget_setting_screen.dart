@@ -1,6 +1,7 @@
 // BudgetSettingScreen — per-category budget configuration — more feature (US-029).
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
@@ -32,7 +33,7 @@ class BudgetSettingScreen extends ConsumerWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.textSecondary),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
           tooltip: 'Back',
         ),
         title: Text(
@@ -180,42 +181,28 @@ class _TotalRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    // TOTAL is a derived value (sum of per-category budgets) — read-only, not stored in DB.
     return Semantics(
-      label:
-          'Total budget. ${CurrencyFormatter.format(totalBudget)}. Tap to edit.',
-      child: InkWell(
-        onTap: () => showBudgetEditModal(
-          context: context,
-          category: null,
-          selectedMonth: selectedMonth,
-          existingAmount: totalBudget > 0 ? totalBudget : null,
-        ),
-        child: SizedBox(
-          height: 56,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    l10n.budgetSettingTotal,
-                    style: AppTypography.headline
-                        .copyWith(color: AppColors.textPrimary),
-                  ),
-                ),
-                Text(
-                  CurrencyFormatter.format(totalBudget),
-                  style: AppTypography.moneySmall
+      label: 'Total budget. ${CurrencyFormatter.format(totalBudget)}.',
+      child: SizedBox(
+        height: 56,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.budgetSettingTotal,
+                  style: AppTypography.headline
                       .copyWith(color: AppColors.textPrimary),
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                const Icon(
-                  Icons.chevron_right,
-                  size: 16,
-                  color: AppColors.textTertiary,
-                ),
-              ],
-            ),
+              ),
+              Text(
+                CurrencyFormatter.format(totalBudget),
+                style: AppTypography.moneySmall
+                    .copyWith(color: AppColors.textPrimary),
+              ),
+            ],
           ),
         ),
       ),

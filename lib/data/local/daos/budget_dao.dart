@@ -88,7 +88,9 @@ class BudgetDao extends DatabaseAccessor<AppDatabase> with _$BudgetDaoMixin {
   /// Transfer and excluded transactions are excluded from the sum.
   Future<double> getSpentAmount(String categoryId, DateTime month) async {
     final from = DateTime(month.year, month.month);
-    final to = DateTime(month.year, month.month + 1);
+    final to = month.month == 12
+        ? DateTime(month.year + 1, 1)
+        : DateTime(month.year, month.month + 1);
 
     final result = await customSelect(
       '''

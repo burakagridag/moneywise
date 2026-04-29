@@ -60,8 +60,6 @@ class _BudgetContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     if (budgets.isEmpty) {
       return _EmptyState(
           onSetUpBudgets: () => context.push(Routes.budgetSetting));
@@ -122,18 +120,6 @@ class _BudgetContent extends StatelessWidget {
                 ),
               ),
             ),
-            // No budgets set label if list is populated but budgets all zero
-            if (budgets.isEmpty)
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  child: Text(
-                    l10n.budgetViewNoBudgetSet,
-                    style: AppTypography.subhead
-                        .copyWith(color: AppColors.textSecondary),
-                  ),
-                ),
-              ),
           ],
         ),
       ),

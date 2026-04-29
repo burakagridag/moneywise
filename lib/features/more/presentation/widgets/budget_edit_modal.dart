@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -87,6 +88,9 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
   }
 
   Future<void> _save() async {
+    // The total row is read-only (derived value) and must not be persisted.
+    if (widget.category == null) return;
+
     final l10n = AppLocalizations.of(context)!;
     final text = _amountController.text.trim();
     final value = double.tryParse(text);
@@ -121,7 +125,7 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
 
       await repo.upsertBudget(
         id: widget.existingBudgetId,
-        categoryId: widget.category?.id ?? '__total__',
+        categoryId: widget.category!.id,
         amount: value,
         effectiveFrom: effectiveFrom,
         effectiveTo: effectiveTo,
@@ -306,7 +310,7 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
                     child: Row(
                       children: [
                         Text(
-                          '€',
+                          AppConstants.defaultCurrencySymbol,
                           style: AppTypography.moneyMedium
                               .copyWith(color: AppColors.textSecondary),
                         ),

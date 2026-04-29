@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_spacing.dart';
 import '../constants/app_typography.dart';
+import '../i18n/arb/app_localizations.dart';
 
 /// A horizontal progress bar used in BudgetView and BudgetSettingScreen.
 ///
@@ -72,6 +73,7 @@ class BudgetProgressBar extends StatelessWidget {
           LayoutBuilder(
             builder: (context, constraints) {
               final leftOffset = constraints.maxWidth * todayRatio;
+              final l10n = AppLocalizations.of(context)!;
               return SizedBox(
                 height: AppSpacing.md,
                 child: Stack(
@@ -83,7 +85,7 @@ class BudgetProgressBar extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            'Today',
+                            l10n.today,
                             style: AppTypography.caption2.copyWith(
                               color: AppColors.textSecondary,
                             ),

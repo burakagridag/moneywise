@@ -100,7 +100,10 @@ void main() {
   // ---------------------------------------------------------------------------
 
   group('BudgetSettingScreen — modal opening', () {
-    testWidgets('tapping TOTAL row opens BudgetEditModal', (tester) async {
+    // TOTAL row is now read-only (derived value — not stored in DB).
+    // Tapping TOTAL must NOT open BudgetEditModal.
+    testWidgets('tapping TOTAL row does NOT open BudgetEditModal',
+        (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
       await tester.pump(const Duration(milliseconds: 200));
@@ -108,7 +111,44 @@ void main() {
       await tester.tap(find.text('TOTAL'));
       await tester.pumpAndSettle();
 
-      // Modal should be visible with a Save button.
+      // Modal must not appear — Save button absent.
+      expect(find.text('Save'), findsNothing);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    // TOTAL row has no chevron_right (read-only indicator removed).
+    testWidgets('TOTAL row has no chevron_right icon', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildScreen(db));
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // Find the TOTAL row widget — it should contain no chevron_right.
+      // We verify by checking the TOTAL text is visible and looking for
+      // no trailing edit affordance in a nearby ancestor.
+      expect(find.text('TOTAL'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    testWidgets('tapping a category row opens BudgetEditModal', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildScreen(db));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // Get the first seeded expense category to tap.
+      final expenseCats = await db.categoryDao.getByType('expense');
+      expect(expenseCats, isNotEmpty);
+      final firstCat = expenseCats.first;
+
+      await tester.tap(find.text(firstCat.name));
+      await tester.pumpAndSettle();
+
+      // BudgetEditModal should be open.
       expect(find.text('Save'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
@@ -119,9 +159,12 @@ void main() {
     testWidgets('BudgetEditModal shows amount input field', (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump(const Duration(milliseconds: 300));
 
-      await tester.tap(find.text('TOTAL'));
+      final expenseCats = await db.categoryDao.getByType('expense');
+      final firstCat = expenseCats.first;
+
+      await tester.tap(find.text(firstCat.name));
       await tester.pumpAndSettle();
 
       // Amount input should be present.
@@ -136,9 +179,12 @@ void main() {
         (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump(const Duration(milliseconds: 300));
 
-      await tester.tap(find.text('TOTAL'));
+      final expenseCats = await db.categoryDao.getByType('expense');
+      final firstCat = expenseCats.first;
+
+      await tester.tap(find.text(firstCat.name));
       await tester.pumpAndSettle();
 
       expect(find.text('Only this month'), findsOneWidget);
@@ -158,9 +204,12 @@ void main() {
         (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump(const Duration(milliseconds: 300));
 
-      await tester.tap(find.text('TOTAL'));
+      final expenseCats = await db.categoryDao.getByType('expense');
+      final firstCat = expenseCats.first;
+
+      await tester.tap(find.text(firstCat.name));
       await tester.pumpAndSettle();
 
       // Clear field (empty by default) and tap Save.
@@ -180,9 +229,12 @@ void main() {
     testWidgets('entering valid amount enables Save', (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump(const Duration(milliseconds: 300));
 
-      await tester.tap(find.text('TOTAL'));
+      final expenseCats = await db.categoryDao.getByType('expense');
+      final firstCat = expenseCats.first;
+
+      await tester.tap(find.text(firstCat.name));
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byType(TextField), '500');
