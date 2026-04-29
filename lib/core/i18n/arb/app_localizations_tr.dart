@@ -347,4 +347,58 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get today => 'Bugün';
+
+  @override
+  String get budgetOf => 'Bütçe';
+
+  @override
+  String get budgetSpent => 'Harcanan';
+
+  @override
+  String get budgetRemaining => 'Kalan';
+
+  @override
+  String get budgetOverBy => 'Aşım';
+
+  @override
+  String get budgetCarryOver => 'Devreden';
+
+  @override
+  String get budgetEffective => 'Efektif bütçe';
+
+  @override
+  String get budgetAddNew => 'Bütçe Ekle';
+
+  @override
+  String get budgetEditExisting => 'Bütçeyi Düzenle';
+
+  @override
+  String get budgetDeleteConfirm => 'Bu bütçe silinsin mi?';
+
+  @override
+  String get budgetDeleteAction => 'Bütçeyi Sil';
+
+  @override
+  String get budgetSavedSuccess => 'Bütçe kaydedildi';
+
+  @override
+  String get budgetDeletedSuccess => 'Bütçe silindi';
+
+  @override
+  String get budgetErrorSaving => 'Bütçe kaydedilemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get budgetErrorDeleting => 'Bütçe silinemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get budgetEffectiveFrom => 'Başlangıç ayı';
+
+  @override
+  String get budgetEffectiveTo => 'Bitiş ayı (boş bırakılırsa süresiz)';
+
+  @override
+  String get budgetAmountRequired => 'Tutar zorunludur';
+
+  @override
+  String get budgetCategoryRequired => 'Kategori zorunludur';
 }

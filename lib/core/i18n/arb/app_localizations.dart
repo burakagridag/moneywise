@@ -745,6 +745,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Today'**
   String get today;
+
+  /// No description provided for @budgetOf.
+  String get budgetOf;
+
+  /// No description provided for @budgetSpent.
+  String get budgetSpent;
+
+  /// No description provided for @budgetRemaining.
+  String get budgetRemaining;
+
+  /// No description provided for @budgetOverBy.
+  String get budgetOverBy;
+
+  /// No description provided for @budgetCarryOver.
+  String get budgetCarryOver;
+
+  /// No description provided for @budgetEffective.
+  String get budgetEffective;
+
+  /// No description provided for @budgetAddNew.
+  String get budgetAddNew;
+
+  /// No description provided for @budgetEditExisting.
+  String get budgetEditExisting;
+
+  /// No description provided for @budgetDeleteConfirm.
+  String get budgetDeleteConfirm;
+
+  /// No description provided for @budgetDeleteAction.
+  String get budgetDeleteAction;
+
+  /// No description provided for @budgetSavedSuccess.
+  String get budgetSavedSuccess;
+
+  /// No description provided for @budgetDeletedSuccess.
+  String get budgetDeletedSuccess;
+
+  /// No description provided for @budgetErrorSaving.
+  String get budgetErrorSaving;
+
+  /// No description provided for @budgetErrorDeleting.
+  String get budgetErrorDeleting;
+
+  /// No description provided for @budgetEffectiveFrom.
+  String get budgetEffectiveFrom;
+
+  /// No description provided for @budgetEffectiveTo.
+  String get budgetEffectiveTo;
+
+  /// No description provided for @budgetAmountRequired.
+  String get budgetAmountRequired;
+
+  /// No description provided for @budgetCategoryRequired.
+  String get budgetCategoryRequired;
 }
 
 class _AppLocalizationsDelegate

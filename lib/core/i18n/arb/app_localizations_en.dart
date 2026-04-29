@@ -346,4 +346,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get today => 'Today';
+
+  @override
+  String get budgetOf => 'Budget';
+
+  @override
+  String get budgetSpent => 'Spent';
+
+  @override
+  String get budgetRemaining => 'Remaining';
+
+  @override
+  String get budgetOverBy => 'Over by';
+
+  @override
+  String get budgetCarryOver => 'Carry-over';
+
+  @override
+  String get budgetEffective => 'Effective budget';
+
+  @override
+  String get budgetAddNew => 'Add Budget';
+
+  @override
+  String get budgetEditExisting => 'Edit Budget';
+
+  @override
+  String get budgetDeleteConfirm => 'Delete this budget?';
+
+  @override
+  String get budgetDeleteAction => 'Delete Budget';
+
+  @override
+  String get budgetSavedSuccess => 'Budget saved';
+
+  @override
+  String get budgetDeletedSuccess => 'Budget deleted';
+
+  @override
+  String get budgetErrorSaving => 'Failed to save budget. Please try again.';
+
+  @override
+  String get budgetErrorDeleting =>
+      'Failed to delete budget. Please try again.';
+
+  @override
+  String get budgetEffectiveFrom => 'From month';
+
+  @override
+  String get budgetEffectiveTo => 'To month (leave empty for open-ended)';
+
+  @override
+  String get budgetAmountRequired => 'Amount is required';
+
+  @override
+  String get budgetCategoryRequired => 'Category is required';
 }

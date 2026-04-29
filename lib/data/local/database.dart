@@ -9,17 +9,20 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'encryption/db_encryption_service.dart';
 
 import 'daos/account_dao.dart';
+import 'daos/budget_dao.dart';
 import 'daos/category_dao.dart';
 import 'daos/transaction_dao.dart';
 import 'seed_data.dart';
 import 'tables/account_groups_table.dart';
 import 'tables/accounts_table.dart';
+import 'tables/budgets_table.dart';
 import 'tables/categories_table.dart';
 import 'tables/transactions_table.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [AccountGroups, Accounts, Categories, Transactions])
+@DriftDatabase(
+    tables: [AccountGroups, Accounts, Categories, Transactions, Budgets])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -27,7 +30,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -61,6 +64,9 @@ class AppDatabase extends _$AppDatabase {
             await m.addColumn(transactions, transactions.isDeleted);
             await m.addColumn(transactions, transactions.updatedAt);
           }
+          if (from < 5) {
+            await m.createTable(budgets);
+          }
         },
       );
 
@@ -69,6 +75,7 @@ class AppDatabase extends _$AppDatabase {
   // ---------------------------------------------------------------------------
 
   late final accountDao = AccountDao(this);
+  late final budgetDao = BudgetDao(this);
   late final categoryDao = CategoryDao(this);
   late final transactionDao = TransactionDao(this);
 
