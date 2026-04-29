@@ -113,17 +113,22 @@ void main() {
       await tester.pumpWidget(_wrapWithDb(const AccountAddEditScreen(), db));
       await _settle(tester);
 
-      expect(find.byType(DropdownButtonFormField<String>), findsOneWidget);
+      // Two DropdownButtonFormField widgets: account group + currency.
+      expect(find.byType(DropdownButtonFormField<String>),
+          findsAtLeastNWidgets(1));
 
       await _tearDown(tester, db);
     });
 
-    testWidgets('renders currency field with EUR default', (tester) async {
+    testWidgets('renders currency dropdown with TRY default', (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_wrapWithDb(const AccountAddEditScreen(), db));
       await _settle(tester);
 
-      expect(find.widgetWithText(TextFormField, 'EUR'), findsOneWidget);
+      // Currency is now a DropdownButtonFormField defaulting to TRY.
+      expect(find.byType(DropdownButtonFormField<String>),
+          findsAtLeastNWidgets(1));
+      expect(find.text('TRY'), findsOneWidget);
 
       await _tearDown(tester, db);
     });
@@ -184,7 +189,7 @@ void main() {
           findsOneWidget);
     });
 
-    testWidgets('pre-populates currency field when editing', (tester) async {
+    testWidgets('pre-populates currency dropdown when editing', (tester) async {
       final existing = _buildAccount(
         groupId: _kFakeGroupId,
         name: 'USD Account',
@@ -196,7 +201,8 @@ void main() {
       ));
       await _settle(tester);
 
-      expect(find.widgetWithText(TextFormField, 'USD'), findsOneWidget);
+      // Currency is a DropdownButtonFormField; selected value shows as text.
+      expect(find.text('USD'), findsOneWidget);
     });
 
     testWidgets('pre-populates balance field when editing', (tester) async {

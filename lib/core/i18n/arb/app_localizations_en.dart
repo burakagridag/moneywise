@@ -129,4 +129,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorSavingCategory =>
       'Failed to save category. Please try again.';
+
+  @override
+  String get includeInTotalDescription =>
+      "Count this account's balance in your total net worth";
+
+  @override
+  String get editCategory => 'Edit Category';
+
+  @override
+  String get deleteCategory => 'Delete Category';
+
+  @override
+  String get deleteCategoryConfirm =>
+      'Are you sure you want to delete this category?';
+
+  @override
+  String get errorDeletingCategory =>
+      'Failed to delete category. Please try again.';
+
+  @override
+  String get errorUpdatingCategory =>
+      'Failed to update category. Please try again.';
 }

@@ -53,13 +53,13 @@ void main() {
       await _tearDown(tester, db);
     });
 
-    testWidgets('shows default badge on default categories', (tester) async {
+    testWidgets('does not show default badge on categories', (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_wrap(const CategoryManagementScreen(), db));
       await _settle(tester);
 
-      // Default badge appears for isDefault categories.
-      expect(find.text('Default'), findsWidgets);
+      // Fix 4: "Default" badge was removed — isDefault is data-only.
+      expect(find.text('Default'), findsNothing);
 
       await _tearDown(tester, db);
     });

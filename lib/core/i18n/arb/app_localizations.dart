@@ -337,6 +337,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to save category. Please try again.'**
   String get errorSavingCategory;
+
+  /// No description provided for @includeInTotalDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Count this account\'s balance in your total net worth'**
+  String get includeInTotalDescription;
+
+  /// No description provided for @editCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Category'**
+  String get editCategory;
+
+  /// No description provided for @deleteCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Category'**
+  String get deleteCategory;
+
+  /// No description provided for @deleteCategoryConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this category?'**
+  String get deleteCategoryConfirm;
+
+  /// No description provided for @errorDeletingCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete category. Please try again.'**
+  String get errorDeletingCategory;
+
+  /// No description provided for @errorUpdatingCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update category. Please try again.'**
+  String get errorUpdatingCategory;
 }
 
 class _AppLocalizationsDelegate

@@ -12,7 +12,8 @@ import '../providers/categories_provider.dart';
 
 const _uuid = Uuid();
 
-/// Two-tab screen showing Income and Expense categories with add support.
+/// Two-tab screen showing Income and Expense categories with add, edit,
+/// and delete support.
 class CategoryManagementScreen extends ConsumerWidget {
   const CategoryManagementScreen({super.key});
 
@@ -36,7 +37,7 @@ class CategoryManagementScreen extends ConsumerWidget {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _showAddCategorySheet(context),
+          onPressed: () => _showCategorySheet(context, null),
           backgroundColor: AppColors.brandPrimary,
           foregroundColor: AppColors.textOnBrand,
           child: const Icon(Icons.add),
@@ -57,11 +58,12 @@ class CategoryManagementScreen extends ConsumerWidget {
     );
   }
 
-  void _showAddCategorySheet(BuildContext context) {
+  /// Opens the add/edit bottom sheet. Pass [category] to enter edit mode.
+  static void _showCategorySheet(BuildContext context, Category? category) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (_) => const _AddCategorySheet(),
+      builder: (_) => _CategorySheet(existingCategory: category),
     );
   }
 }
@@ -124,16 +126,16 @@ class _CategoryList extends ConsumerWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Individual category row
+// Individual category row — tap to edit, long-press to delete
 // ---------------------------------------------------------------------------
 
-class _CategoryRow extends StatelessWidget {
+class _CategoryRow extends ConsumerWidget {
   const _CategoryRow({required this.category});
 
   final Category category;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -151,48 +153,93 @@ class _CategoryRow extends StatelessWidget {
         category.name,
         style: AppTypography.body.copyWith(color: colorScheme.onSurface),
       ),
-      trailing: category.isDefault
-          ? Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm,
-                vertical: 2,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.brandPrimaryGlow,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                l10n.defaultBadge,
-                style: AppTypography.caption2.copyWith(
-                  color: AppColors.brandPrimary,
-                ),
-              ),
-            )
-          : null,
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => CategoryManagementScreen._showCategorySheet(
+        context,
+        category,
+      ),
+      onLongPress: () => _confirmDelete(context, ref, l10n),
     );
+  }
+
+  Future<void> _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.deleteCategory, style: AppTypography.title3),
+        content: Text(
+          l10n.deleteCategoryConfirm,
+          style: AppTypography.body,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(
+              l10n.deleteCategory,
+              style: const TextStyle(color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+    // Guard: context may be gone after the await.
+    if (!context.mounted) return;
+
+    try {
+      await ref
+          .read(categoryWriteNotifierProvider.notifier)
+          .deleteCategory(category.id);
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.errorDeletingCategory)),
+      );
+    }
   }
 }
 
 // ---------------------------------------------------------------------------
-// Add category bottom sheet
+// Add / Edit category bottom sheet
 // ---------------------------------------------------------------------------
 
-/// Bottom sheet for creating a new category.
-/// Declared as [ConsumerStatefulWidget] so it owns its own [WidgetRef] and
-/// never captures a ref across an async gap.
-class _AddCategorySheet extends ConsumerStatefulWidget {
-  const _AddCategorySheet();
+/// Bottom sheet for creating or editing a category.
+/// Pass [existingCategory] to enter edit mode (pre-populates all fields).
+class _CategorySheet extends ConsumerStatefulWidget {
+  const _CategorySheet({this.existingCategory});
+
+  final Category? existingCategory;
 
   @override
-  ConsumerState<_AddCategorySheet> createState() => _AddCategorySheetState();
+  ConsumerState<_CategorySheet> createState() => _CategorySheetState();
 }
 
-class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
+class _CategorySheetState extends ConsumerState<_CategorySheet> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emojiController = TextEditingController();
-  String _selectedType = 'expense';
+  late final TextEditingController _nameController;
+  late final TextEditingController _emojiController;
+  late String _selectedType;
   bool _isSaving = false;
+
+  bool get _isEditing => widget.existingCategory != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final existing = widget.existingCategory;
+    _nameController = TextEditingController(text: existing?.name ?? '');
+    _emojiController = TextEditingController(text: existing?.iconEmoji ?? '');
+    _selectedType = existing?.type ?? 'expense';
+  }
 
   @override
   void dispose() {
@@ -208,30 +255,39 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
     setState(() => _isSaving = true);
 
     final now = DateTime.now();
+    final existing = widget.existingCategory;
+
     final category = Category(
-      id: _uuid.v4(),
+      id: existing?.id ?? _uuid.v4(),
       name: _nameController.text.trim(),
       type: _selectedType,
       iconEmoji: _emojiController.text.trim().isNotEmpty
           ? _emojiController.text.trim()
           : null,
-      sortOrder: 999,
-      isDefault: false,
-      createdAt: now,
+      sortOrder: existing?.sortOrder ?? 999,
+      isDefault: existing?.isDefault ?? false,
+      createdAt: existing?.createdAt ?? now,
       updatedAt: now,
       isDeleted: false,
     );
 
     try {
-      await ref
-          .read(categoryWriteNotifierProvider.notifier)
-          .addCategory(category);
+      final notifier = ref.read(categoryWriteNotifierProvider.notifier);
+      if (_isEditing) {
+        await notifier.updateCategory(category);
+      } else {
+        await notifier.addCategory(category);
+      }
       if (!mounted) return;
       Navigator.of(context).pop();
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.errorSavingCategory)),
+        SnackBar(
+          content: Text(
+            _isEditing ? l10n.errorUpdatingCategory : l10n.errorSavingCategory,
+          ),
+        ),
       );
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -255,18 +311,22 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.addCategory, style: AppTypography.title3),
+            Text(
+              _isEditing ? l10n.editCategory : l10n.addCategory,
+              style: AppTypography.title3,
+            ),
             const SizedBox(height: AppSpacing.md),
 
-            // Type selector
+            // Type selector — locked when editing to avoid changing category type.
             SegmentedButton<String>(
               segments: [
                 ButtonSegment(value: 'income', label: Text(l10n.income)),
                 ButtonSegment(value: 'expense', label: Text(l10n.expense)),
               ],
               selected: {_selectedType},
-              onSelectionChanged: (v) =>
-                  setState(() => _selectedType = v.first),
+              onSelectionChanged: _isEditing
+                  ? null
+                  : (v) => setState(() => _selectedType = v.first),
             ),
             const SizedBox(height: AppSpacing.md),
 

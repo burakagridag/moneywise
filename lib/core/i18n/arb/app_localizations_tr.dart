@@ -130,4 +130,26 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get errorSavingCategory =>
       'Kategori kaydedilemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get includeInTotalDescription =>
+      'Bu hesabın bakiyesini toplam net değerinize dahil edin';
+
+  @override
+  String get editCategory => 'Kategori Düzenle';
+
+  @override
+  String get deleteCategory => 'Kategori Sil';
+
+  @override
+  String get deleteCategoryConfirm =>
+      'Bu kategoriyi silmek istediğinizden emin misiniz?';
+
+  @override
+  String get errorDeletingCategory =>
+      'Kategori silinemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get errorUpdatingCategory =>
+      'Kategori güncellenemedi. Lütfen tekrar deneyin.';
 }

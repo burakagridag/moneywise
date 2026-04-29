@@ -76,10 +76,11 @@ void main() {
       expect(find.text('Stats'), findsOneWidget);
     });
 
-    testWidgets('MoreScreen renders with categories menu item', (tester) async {
+    testWidgets('MoreScreen renders with settings menu item', (tester) async {
       await tester.pumpWidget(_buildScreen(const MoreScreen()));
       expect(find.text('More'), findsOneWidget);
-      expect(find.text('Categories'), findsOneWidget);
+      // Fix 1: Categories moved under Settings sub-screen.
+      expect(find.text('Settings'), findsOneWidget);
     });
   });
 

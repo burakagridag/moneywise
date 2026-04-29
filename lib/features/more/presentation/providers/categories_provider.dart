@@ -26,4 +26,12 @@ class CategoryWriteNotifier extends _$CategoryWriteNotifier {
   /// Persists a new [category] via the repository.
   Future<void> addCategory(Category category) =>
       ref.read(categoryRepositoryProvider).addCategory(category);
+
+  /// Updates an existing [category] via the repository.
+  Future<void> updateCategory(Category category) =>
+      ref.read(categoryRepositoryProvider).updateCategory(category);
+
+  /// Soft-deletes the category with the given [id] via the repository.
+  Future<void> deleteCategory(String id) =>
+      ref.read(categoryRepositoryProvider).deleteCategory(id);
 }

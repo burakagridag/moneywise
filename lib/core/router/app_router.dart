@@ -2,10 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../domain/entities/account.dart';
 import '../../features/accounts/presentation/screens/account_add_edit_screen.dart';
 import '../../features/accounts/presentation/screens/accounts_screen.dart';
 import '../../features/more/presentation/screens/category_management_screen.dart';
 import '../../features/more/presentation/screens/more_screen.dart';
+import '../../features/more/presentation/screens/settings_screen.dart';
 import '../../features/stats/presentation/screens/stats_screen.dart';
 import '../../features/transactions/presentation/screens/transactions_screen.dart';
 import '../i18n/arb/app_localizations.dart';
@@ -43,7 +45,9 @@ final appRouter = GoRouter(
               routes: [
                 GoRoute(
                   path: 'add',
-                  builder: (context, state) => const AccountAddEditScreen(),
+                  builder: (context, state) => AccountAddEditScreen(
+                    account: state.extra as Account?,
+                  ),
                 ),
               ],
             ),
@@ -56,8 +60,15 @@ final appRouter = GoRouter(
               builder: (context, state) => const MoreScreen(),
               routes: [
                 GoRoute(
-                  path: 'categories',
-                  builder: (context, state) => const CategoryManagementScreen(),
+                  path: 'settings',
+                  builder: (context, state) => const SettingsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'categories',
+                      builder: (context, state) =>
+                          const CategoryManagementScreen(),
+                    ),
+                  ],
                 ),
               ],
             ),

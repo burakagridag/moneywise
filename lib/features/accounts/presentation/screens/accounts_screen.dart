@@ -218,6 +218,10 @@ class _AccountRow extends StatelessWidget {
         account.initialBalance.toStringAsFixed(2),
         style: AppTypography.moneySmall.copyWith(color: colorScheme.onSurface),
       ),
+      onTap: () => context.push(
+        Routes.accountAddEdit,
+        extra: account,
+      ),
     );
   }
 }

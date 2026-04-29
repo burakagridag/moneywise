@@ -10,5 +10,6 @@ class Routes {
 
   // Sprint 2 routes
   static const String accountAddEdit = '/accounts/add';
-  static const String categoryManagement = '/more/categories';
+  static const String settings = '/more/settings';
+  static const String categoryManagement = '/more/settings/categories';
 }

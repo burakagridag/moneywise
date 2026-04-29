@@ -12,6 +12,30 @@ import '../providers/accounts_provider.dart';
 
 const _uuid = Uuid();
 
+/// ISO 4217 currency codes shown in the currency dropdown.
+const _commonCurrencies = [
+  'USD',
+  'EUR',
+  'GBP',
+  'TRY',
+  'JPY',
+  'CNY',
+  'CHF',
+  'CAD',
+  'AUD',
+  'INR',
+  'BRL',
+  'MXN',
+  'KRW',
+  'SGD',
+  'HKD',
+  'NOK',
+  'SEK',
+  'DKK',
+  'PLN',
+  'AED',
+];
+
 /// Form screen that allows creating or editing a single [Account].
 /// When [account] is null a new account is created; otherwise the existing
 /// one is updated.
@@ -30,9 +54,9 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _balanceController;
-  late final TextEditingController _currencyController;
   late bool _includeInTotals;
   String? _selectedGroupId;
+  late String _selectedCurrency;
   bool _isSaving = false;
 
   @override
@@ -43,7 +67,11 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
     _balanceController = TextEditingController(
       text: a != null ? a.initialBalance.toStringAsFixed(2) : '0.00',
     );
-    _currencyController = TextEditingController(text: a?.currencyCode ?? 'EUR');
+    // Default to TRY (primary user locale). Fall back to TRY if saved value
+    // is not in the dropdown list.
+    final savedCurrency = a?.currencyCode ?? 'TRY';
+    _selectedCurrency =
+        _commonCurrencies.contains(savedCurrency) ? savedCurrency : 'TRY';
     _includeInTotals = a?.includeInTotals ?? true;
     _selectedGroupId = a?.groupId;
   }
@@ -52,7 +80,6 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
   void dispose() {
     _nameController.dispose();
     _balanceController.dispose();
-    _currencyController.dispose();
     super.dispose();
   }
 
@@ -73,7 +100,7 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
       id: widget.account?.id ?? _uuid.v4(),
       groupId: _selectedGroupId!,
       name: _nameController.text.trim(),
-      currencyCode: _currencyController.text.trim().toUpperCase(),
+      currencyCode: _selectedCurrency,
       initialBalance: double.tryParse(_balanceController.text.trim()) ?? 0.0,
       sortOrder: widget.account?.sortOrder ?? 0,
       isHidden: widget.account?.isHidden ?? false,
@@ -166,12 +193,22 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
             ),
             const SizedBox(height: AppSpacing.md),
 
-            // Currency
-            TextFormField(
-              controller: _currencyController,
+            // Currency dropdown
+            DropdownButtonFormField<String>(
+              initialValue: _selectedCurrency,
               decoration: InputDecoration(labelText: l10n.currency),
-              textCapitalization: TextCapitalization.characters,
-              maxLength: 3,
+              items: _commonCurrencies
+                  .map(
+                    (code) => DropdownMenuItem(
+                      value: code,
+                      child: Text(code),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (v) {
+                if (v != null) setState(() => _selectedCurrency = v);
+              },
+              validator: (v) => v == null ? l10n.currency : null,
             ),
             const SizedBox(height: AppSpacing.md),
 
@@ -196,9 +233,12 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
             // Include in totals
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(
-                l10n.includeInTotals,
-                style: AppTypography.body,
+              title: Text(l10n.includeInTotals, style: AppTypography.body),
+              subtitle: Text(
+                l10n.includeInTotalDescription,
+                style: AppTypography.footnote.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
               value: _includeInTotals,
               activeThumbColor: AppColors.brandPrimary,
