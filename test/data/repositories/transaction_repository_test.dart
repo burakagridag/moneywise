@@ -55,6 +55,24 @@ Transaction _makeDomainExpense({
   );
 }
 
+Transaction _makeDomainIncome({
+  required String accountId,
+  double amount = 100.0,
+  DateTime? date,
+}) {
+  final now = DateTime.now();
+  return Transaction(
+    id: _uuid.v4(),
+    type: 'income',
+    date: date ?? now,
+    amount: amount,
+    currencyCode: 'TRY',
+    accountId: accountId,
+    createdAt: now,
+    updatedAt: now,
+  );
+}
+
 void main() {
   late AppDatabase db;
   late TransactionRepository repo;
@@ -216,6 +234,57 @@ void main() {
       final balance = await repo.watchAccountBalance(accountId).first;
       // initialBalance=0, one expense of 75 → balance should reflect that.
       expect(balance, isA<double>());
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Sprint 4 — watchTransactionsForMonth / watchMonthlyTotals
+  // ---------------------------------------------------------------------------
+
+  group('TransactionRepository.watchTransactionsForMonth (Sprint 4)', () {
+    test('emits empty list when no transactions', () async {
+      final txs = await repo.watchTransactionsForMonth(2026, 4).first;
+      expect(txs, isEmpty);
+    });
+
+    test('returns transactions for correct month', () async {
+      final accountId = await _createTestAccount(db);
+      await repo.addTransaction(
+        _makeDomainExpense(
+          accountId: accountId,
+          categoryId: null,
+          date: DateTime(2026, 4, 10),
+          amount: 55.0,
+        ),
+      );
+      final txs = await repo.watchTransactionsForMonth(2026, 4).first;
+      expect(txs.length, 1);
+      expect(txs.first.amount, 55.0);
+    });
+  });
+
+  group('TransactionRepository.watchMonthlyTotals (Sprint 4)', () {
+    test('returns correct income and expense totals', () async {
+      final accountId = await _createTestAccount(db);
+      await repo.addTransaction(
+        _makeDomainIncome(
+          accountId: accountId,
+          amount: 1000.0,
+          date: DateTime(2026, 4, 1),
+        ),
+      );
+      await repo.addTransaction(
+        _makeDomainExpense(
+          accountId: accountId,
+          categoryId: null,
+          amount: 400.0,
+          date: DateTime(2026, 4, 20),
+        ),
+      );
+      final totals = await repo.watchMonthlyTotals(2026, 4).first;
+      expect(totals.income, 1000.0);
+      expect(totals.expense, 400.0);
+      expect(totals.net, 600.0);
     });
   });
 }

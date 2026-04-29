@@ -1,4 +1,6 @@
-// Unit tests for SelectedMonth provider and TransactionWriteNotifier — transactions feature.
+// Unit tests for Transactions feature Riverpod providers — features/transactions.
+// Covers SelectedMonth (Sprint 3), TransactionWriteNotifier (Sprint 3),
+// SelectedPeriod/SelectedPeriodNotifier/SelectedYearNotifier (Sprint 4).
 import 'package:drift/native.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,7 +66,7 @@ Transaction _makeTransaction(String accountId, {double amount = 25.0}) {
 
 void main() {
   // ---------------------------------------------------------------------------
-  // SelectedMonth
+  // SelectedMonth (Sprint 3)
   // ---------------------------------------------------------------------------
 
   group('SelectedMonth provider', () {
@@ -105,7 +107,7 @@ void main() {
   });
 
   // ---------------------------------------------------------------------------
-  // TransactionWriteNotifier
+  // TransactionWriteNotifier (Sprint 3)
   // ---------------------------------------------------------------------------
 
   group('TransactionWriteNotifier', () {
@@ -165,7 +167,7 @@ void main() {
   });
 
   // ---------------------------------------------------------------------------
-  // transactionsByMonthProvider stream
+  // transactionsByMonthProvider stream (Sprint 3)
   // ---------------------------------------------------------------------------
 
   group('transactionsByMonthProvider stream', () {
@@ -181,6 +183,198 @@ void main() {
       addTearDown(sub.close);
       final txns = await container.read(transactionsByMonthProvider.future);
       expect(txns, isEmpty);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // SelectedPeriod helpers (Sprint 4)
+  // ---------------------------------------------------------------------------
+
+  group('SelectedPeriod', () {
+    test('equality based on year and month', () {
+      const a = SelectedPeriod(year: 2026, month: 4);
+      const b = SelectedPeriod(year: 2026, month: 4);
+      expect(a, equals(b));
+    });
+
+    test('inequality when year differs', () {
+      const a = SelectedPeriod(year: 2026, month: 4);
+      const b = SelectedPeriod(year: 2025, month: 4);
+      expect(a, isNot(equals(b)));
+    });
+
+    test('inequality when month differs', () {
+      const a = SelectedPeriod(year: 2026, month: 4);
+      const b = SelectedPeriod(year: 2026, month: 5);
+      expect(a, isNot(equals(b)));
+    });
+
+    test('hashCode is consistent with equality', () {
+      const a = SelectedPeriod(year: 2026, month: 4);
+      const b = SelectedPeriod(year: 2026, month: 4);
+      expect(a.hashCode, b.hashCode);
+    });
+
+    test('copyWith overrides only specified fields', () {
+      const original = SelectedPeriod(year: 2026, month: 4);
+      final newMonth = original.copyWith(month: 7);
+      expect(newMonth.year, 2026);
+      expect(newMonth.month, 7);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // SelectedPeriod.previousMonth (Sprint 4)
+  // ---------------------------------------------------------------------------
+
+  group('SelectedPeriod.previousMonth', () {
+    test('decrements month by one', () {
+      const p = SelectedPeriod(year: 2026, month: 5);
+      final prev = p.previousMonth();
+      expect(prev.month, 4);
+      expect(prev.year, 2026);
+    });
+
+    test('wraps January to December of previous year', () {
+      const p = SelectedPeriod(year: 2026, month: 1);
+      final prev = p.previousMonth();
+      expect(prev.month, 12);
+      expect(prev.year, 2025);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // SelectedPeriod.nextMonth (Sprint 4)
+  // ---------------------------------------------------------------------------
+
+  group('SelectedPeriod.nextMonth', () {
+    test('increments month by one', () {
+      const p = SelectedPeriod(year: 2026, month: 4);
+      final next = p.nextMonth();
+      expect(next.month, 5);
+      expect(next.year, 2026);
+    });
+
+    test('wraps December to January of next year', () {
+      const p = SelectedPeriod(year: 2026, month: 12);
+      final next = p.nextMonth();
+      expect(next.month, 1);
+      expect(next.year, 2027);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // SelectedPeriodNotifier (Sprint 4)
+  // ---------------------------------------------------------------------------
+
+  group('SelectedPeriodNotifier', () {
+    test('initialises with current date', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      final now = DateTime.now();
+      final period = container.read(selectedPeriodNotifierProvider);
+      expect(period.year, now.year);
+      expect(period.month, now.month);
+    });
+
+    test('goToPreviousMonth decrements month', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      // Set to April 2026 first
+      container
+          .read(selectedPeriodNotifierProvider.notifier)
+          .goToMonth(2026, 4);
+      container
+          .read(selectedPeriodNotifierProvider.notifier)
+          .goToPreviousMonth();
+      final period = container.read(selectedPeriodNotifierProvider);
+      expect(period.month, 3);
+      expect(period.year, 2026);
+    });
+
+    test('goToNextMonth increments month', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      container
+          .read(selectedPeriodNotifierProvider.notifier)
+          .goToMonth(2026, 4);
+      container.read(selectedPeriodNotifierProvider.notifier).goToNextMonth();
+      final period = container.read(selectedPeriodNotifierProvider);
+      expect(period.month, 5);
+      expect(period.year, 2026);
+    });
+
+    test('goToMonth sets explicit year and month', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      container
+          .read(selectedPeriodNotifierProvider.notifier)
+          .goToMonth(2024, 11);
+      final period = container.read(selectedPeriodNotifierProvider);
+      expect(period.year, 2024);
+      expect(period.month, 11);
+    });
+
+    test('multiple previous navigations cross year boundary', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      container
+          .read(selectedPeriodNotifierProvider.notifier)
+          .goToMonth(2026, 2);
+      final notifier = container.read(selectedPeriodNotifierProvider.notifier);
+      notifier.goToPreviousMonth(); // Jan 2026
+      notifier.goToPreviousMonth(); // Dec 2025
+      final period = container.read(selectedPeriodNotifierProvider);
+      expect(period.month, 12);
+      expect(period.year, 2025);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // SelectedYearNotifier (Sprint 4)
+  // ---------------------------------------------------------------------------
+
+  group('SelectedYearNotifier', () {
+    test('initialises with current year', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      expect(
+        container.read(selectedYearNotifierProvider),
+        DateTime.now().year,
+      );
+    });
+
+    test('goToPreviousYear decrements year', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      container.read(selectedYearNotifierProvider.notifier).goToYear(2026);
+      container.read(selectedYearNotifierProvider.notifier).goToPreviousYear();
+      expect(container.read(selectedYearNotifierProvider), 2025);
+    });
+
+    test('goToNextYear increments year', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      container.read(selectedYearNotifierProvider.notifier).goToYear(2026);
+      container.read(selectedYearNotifierProvider.notifier).goToNextYear();
+      expect(container.read(selectedYearNotifierProvider), 2027);
+    });
+
+    test('goToYear sets explicit year', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      container.read(selectedYearNotifierProvider.notifier).goToYear(2020);
+      expect(container.read(selectedYearNotifierProvider), 2020);
+    });
+
+    test('chained next/previous returns to original year', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      container.read(selectedYearNotifierProvider.notifier).goToYear(2026);
+      final notifier = container.read(selectedYearNotifierProvider.notifier);
+      notifier.goToNextYear();
+      notifier.goToPreviousYear();
+      expect(container.read(selectedYearNotifierProvider), 2026);
     });
   });
 }

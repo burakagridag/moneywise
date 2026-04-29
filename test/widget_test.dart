@@ -66,6 +66,11 @@ void main() {
   // ---------------------------------------------------------------------------
 
   group('Placeholder screens', () {
+    // TransactionsScreen builds 4 sub-views via IndexedStack, each watching
+    // a Drift stream provider. When the widget tree is disposed, Drift's
+    // StreamQueryStore schedules zero-duration timers for cleanup. We must
+    // drain those timers before the test binding's teardown by pumping
+    // Duration.zero multiple times after replacing the widget tree.
     testWidgets('TransactionsScreen renders', (tester) async {
       final db = _testDb();
       final widget = ProviderScope(
@@ -80,8 +85,13 @@ void main() {
       );
       await tester.pumpWidget(widget);
       await tester.pump();
-      expect(find.byType(FloatingActionButton), findsOneWidget);
+      // The AppBar title from i18n is 'Trans.'
+      expect(find.text('Trans.'), findsOneWidget);
+      // Replace widget tree → ProviderScope.dispose → Drift schedules
+      // zero-duration timers for each stream. Pump several times to drain.
       await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
       await tester.pump(Duration.zero);
       await tester.pump(Duration.zero);
       await db.close();

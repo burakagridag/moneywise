@@ -241,4 +241,113 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get currentBalance => 'Current Balance';
+
+  // ---------------------------------------------------------------------------
+  // Sprint 4 — Transactions Screen
+  // ---------------------------------------------------------------------------
+
+  @override
+  String get tabDaily => 'Daily';
+
+  @override
+  String get tabCalendar => 'Calendar';
+
+  @override
+  String get tabMonthly => 'Monthly';
+
+  @override
+  String get tabSummary => 'Summary';
+
+  @override
+  String get tabDescription => 'Description';
+
+  @override
+  String get transactionsTitle => 'Trans.';
+
+  @override
+  String get expenseLabel => 'Exp.';
+
+  @override
+  String get totalLabel => 'Total';
+
+  @override
+  String get errorLoadTitle => 'Could not load data';
+
+  @override
+  String get errorLoadSubtitle => 'Please try again.';
+
+  @override
+  String get retryButton => 'Retry';
+
+  @override
+  String get dailyEmptyTitle => 'No transactions yet';
+
+  @override
+  String get dailyEmptySubtitle =>
+      'Tap + to add an income, expense or transfer.';
+
+  @override
+  String get dailyEmptyCta => 'Add Transaction';
+
+  @override
+  String get deleteTransactionTitle => 'Delete Transaction?';
+
+  @override
+  String get deleteTransactionMessage =>
+      'This transaction will be permanently deleted. This action cannot be undone.';
+
+  @override
+  String get deleteAction => 'Delete';
+
+  @override
+  String get editAction => 'Edit';
+
+  @override
+  String get calendarNoTransactions => 'No transactions';
+
+  @override
+  String get calendarDayPanelNoTransactions =>
+      'No transactions for this day.\nTap + to add one.';
+
+  @override
+  String get monthlyNoTransactions => 'No transactions this month.';
+
+  @override
+  String get monthlyCurrentWeekLabel => 'This week';
+
+  @override
+  String get savingsRateLabel => 'Savings Rate';
+
+  @override
+  String get accountsCardTitle => 'Accounts';
+
+  @override
+  String get budgetCardTitle => 'Budget';
+
+  @override
+  String get categoryBreakdownTitle => 'Spending Breakdown';
+
+  @override
+  String get exportToExcelTitle => 'Export to Excel';
+
+  @override
+  String get exportComingSoon => 'Export feature coming soon';
+
+  @override
+  String get setBudgetCta => 'Set Budget';
+
+  @override
+  String get budgetNotConfigured => 'Budget not configured yet.';
+
+  @override
+  String get seeAllButton => 'See All';
+
+  @override
+  String get noExpensesThisMonth => 'No expenses this month.';
+
+  @override
+  String get noBudgetThisMonth => 'No budget for this period.';
+
+  @override
+  String get today => 'Today';
 }

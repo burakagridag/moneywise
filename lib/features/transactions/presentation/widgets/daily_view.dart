@@ -1,0 +1,309 @@
+// DailyView — transaction list grouped by date — features/transactions US-021.
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_spacing.dart';
+import '../../../../core/constants/app_typography.dart';
+import '../../../../core/utils/currency_formatter.dart';
+import '../providers/transactions_provider.dart';
+import 'transaction_row.dart';
+
+/// Groups transactions by date (DESC) and renders date-header rows above
+/// each day's transactions.
+class DailyView extends ConsumerWidget {
+  const DailyView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final asyncTxs = ref.watch(monthlyTransactionsProvider);
+
+    return asyncTxs.when(
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: AppColors.brandPrimary),
+      ),
+      error: (e, __) => _ErrorState(
+          onRetry: () => ref.invalidate(monthlyTransactionsProvider)),
+      data: (txs) {
+        if (txs.isEmpty) return const _EmptyState();
+        return _TransactionList(transactions: txs);
+      },
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Transaction list
+// ---------------------------------------------------------------------------
+
+class _TransactionList extends StatelessWidget {
+  const _TransactionList({required this.transactions});
+
+  final List<Transaction> transactions;
+
+  /// Groups transactions by calendar day (date only, no time).
+  Map<DateTime, List<Transaction>> _groupByDay(List<Transaction> txs) {
+    final map = <DateTime, List<Transaction>>{};
+    for (final tx in txs) {
+      final key = DateTime(tx.date.year, tx.date.month, tx.date.day);
+      (map[key] ??= []).add(tx);
+    }
+    // Sort days descending
+    final sorted = map.entries.toList()..sort((a, b) => b.key.compareTo(a.key));
+    return Map.fromEntries(sorted);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final grouped = _groupByDay(transactions);
+    final days = grouped.keys.toList();
+
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final day = days[index];
+              final dayTxs = grouped[day]!;
+              return _DayGroup(day: day, transactions: dayTxs);
+            },
+            childCount: days.length,
+          ),
+        ),
+        // Bottom padding for FAB + banner ad.
+        const SliverPadding(padding: EdgeInsets.only(bottom: 120)),
+      ],
+    );
+  }
+}
+
+class _DayGroup extends StatelessWidget {
+  const _DayGroup({required this.day, required this.transactions});
+
+  final DateTime day;
+  final List<Transaction> transactions;
+
+  @override
+  Widget build(BuildContext context) {
+    double income = 0;
+    double expense = 0;
+    for (final tx in transactions) {
+      if (tx.isExcluded) continue;
+      if (tx.type == TransactionType.income) income += tx.amount;
+      if (tx.type == TransactionType.expense) expense += tx.amount;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _DayHeaderRow(day: day, income: income, expense: expense),
+        ...transactions.map(
+          (tx) => TransactionRow(
+            transaction: tx,
+            currencySymbol: '€',
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// DayHeaderRow
+// ---------------------------------------------------------------------------
+
+class _DayHeaderRow extends StatelessWidget {
+  const _DayHeaderRow({
+    required this.day,
+    required this.income,
+    required this.expense,
+  });
+
+  final DateTime day;
+  final double income;
+  final double expense;
+
+  bool get _isToday {
+    final now = DateTime.now();
+    return day.year == now.year && day.month == now.month && day.day == now.day;
+  }
+
+  /// Returns badge bg color based on weekday (Mon=1, Sun=7 in ISO).
+  Color _badgeBgColor(int weekday) {
+    if (weekday == DateTime.saturday) {
+      return AppColors.income.withAlpha(38);
+    } else if (weekday == DateTime.sunday) {
+      return AppColors.expense.withAlpha(38);
+    }
+    return AppColors.bgTertiary;
+  }
+
+  Color _badgeTextColor(int weekday) {
+    if (weekday == DateTime.saturday) return AppColors.income;
+    if (weekday == DateTime.sunday) return AppColors.expense;
+    return AppColors.textSecondary;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final weekday = day.weekday;
+    final dayLabel = DateFormat('EEE').format(day); // "Mon", "Sat"
+    final semanticsLabel = '${DateFormat('d MMMM, EEEE').format(day)}. '
+        'Income: ${CurrencyFormatter.format(income)}, '
+        'Expense: ${CurrencyFormatter.format(expense)}';
+
+    return Semantics(
+      label: semanticsLabel,
+      child: Container(
+        height: AppHeights.listItem,
+        color: AppColors.bgPrimary,
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        child: Row(
+          children: [
+            // Day number (with today highlight)
+            if (_isToday)
+              Container(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                  color: AppColors.bgTertiary,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    '${day.day}',
+                    style: AppTypography.title1.copyWith(
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+              )
+            else
+              SizedBox(
+                width: 36,
+                child: Text(
+                  '${day.day}',
+                  style: AppTypography.title1.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            const SizedBox(width: AppSpacing.sm),
+            // Day-of-week badge
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.xs,
+                vertical: 2,
+              ),
+              decoration: BoxDecoration(
+                color: _badgeBgColor(weekday),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+              ),
+              child: Text(
+                dayLabel,
+                style: AppTypography.caption2.copyWith(
+                  color: _badgeTextColor(weekday),
+                ),
+              ),
+            ),
+            const Spacer(),
+            // Income amount
+            Text(
+              CurrencyFormatter.format(income),
+              style: AppTypography.moneySmall.copyWith(
+                color: income > 0 ? AppColors.income : AppColors.textTertiary,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            // Expense amount
+            Text(
+              CurrencyFormatter.format(expense),
+              style: AppTypography.moneySmall.copyWith(
+                color: expense > 0 ? AppColors.expense : AppColors.textTertiary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Empty / Error states
+// ---------------------------------------------------------------------------
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xxxl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.receipt_long_outlined,
+              size: 80,
+              color: AppColors.textTertiary,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Text(
+              'No transactions yet',
+              style: AppTypography.title3.copyWith(
+                color: AppColors.textPrimary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Tap + to add an income, expense or transfer.',
+              style: AppTypography.subhead.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Could not load transactions',
+            style: AppTypography.headline.copyWith(
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          TextButton(
+            onPressed: onRetry,
+            child: Text(
+              'Retry',
+              style: AppTypography.subhead.copyWith(
+                color: AppColors.brandPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

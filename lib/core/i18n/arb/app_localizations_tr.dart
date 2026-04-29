@@ -242,4 +242,113 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get currentBalance => 'Mevcut Bakiye';
+
+  // ---------------------------------------------------------------------------
+  // Sprint 4 — Transactions Screen
+  // ---------------------------------------------------------------------------
+
+  @override
+  String get tabDaily => 'Günlük';
+
+  @override
+  String get tabCalendar => 'Takvim';
+
+  @override
+  String get tabMonthly => 'Aylık';
+
+  @override
+  String get tabSummary => 'Özet';
+
+  @override
+  String get tabDescription => 'Açıklama';
+
+  @override
+  String get transactionsTitle => 'İşlem';
+
+  @override
+  String get expenseLabel => 'Gider';
+
+  @override
+  String get totalLabel => 'Toplam';
+
+  @override
+  String get errorLoadTitle => 'Veriler yüklenemedi';
+
+  @override
+  String get errorLoadSubtitle => 'Lütfen tekrar deneyin.';
+
+  @override
+  String get retryButton => 'Tekrar Dene';
+
+  @override
+  String get dailyEmptyTitle => 'Henüz işlem eklenmedi';
+
+  @override
+  String get dailyEmptySubtitle =>
+      'Gelir, gider veya transfer eklemek için + butonuna dokunun.';
+
+  @override
+  String get dailyEmptyCta => 'İşlem Ekle';
+
+  @override
+  String get deleteTransactionTitle => 'İşlemi Sil?';
+
+  @override
+  String get deleteTransactionMessage =>
+      'Bu işlem kalıcı olarak silinecek. Bu işlem geri alınamaz.';
+
+  @override
+  String get deleteAction => 'Sil';
+
+  @override
+  String get editAction => 'Düzenle';
+
+  @override
+  String get calendarNoTransactions => 'İşlem yok';
+
+  @override
+  String get calendarDayPanelNoTransactions =>
+      'Bu gün için işlem yok.\nEklemek için + butonuna dokunun.';
+
+  @override
+  String get monthlyNoTransactions => 'Bu ayda işlem yok.';
+
+  @override
+  String get monthlyCurrentWeekLabel => 'Bu hafta';
+
+  @override
+  String get savingsRateLabel => 'Tasarruf Oranı';
+
+  @override
+  String get accountsCardTitle => 'Hesaplar';
+
+  @override
+  String get budgetCardTitle => 'Bütçe';
+
+  @override
+  String get categoryBreakdownTitle => 'Harcama Dağılımı';
+
+  @override
+  String get exportToExcelTitle => "Excel'e Aktar";
+
+  @override
+  String get exportComingSoon => 'Dışa aktarma özelliği yakında';
+
+  @override
+  String get setBudgetCta => 'Bütçe Ayarla';
+
+  @override
+  String get budgetNotConfigured => 'Henüz bütçe ayarlanmadı.';
+
+  @override
+  String get seeAllButton => 'Tümünü Gör';
+
+  @override
+  String get noExpensesThisMonth => 'Bu ay gider yok.';
+
+  @override
+  String get noBudgetThisMonth => 'Bu dönem için bütçe yok.';
+
+  @override
+  String get today => 'Bugün';
 }

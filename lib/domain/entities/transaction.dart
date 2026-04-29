@@ -3,6 +3,22 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'transaction.freezed.dart';
 
+/// Transaction direction — stored as raw string ('income', 'expense',
+/// 'transfer') in the database for human-readable SQLite files.
+enum TransactionType {
+  income,
+  expense,
+  transfer;
+
+  /// Maps a raw database string to [TransactionType].
+  static TransactionType fromString(String value) {
+    return TransactionType.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => throw ArgumentError('Unknown TransactionType: $value'),
+    );
+  }
+}
+
 /// Pure domain representation of a financial transaction.
 /// Has no dependency on any data-layer types.
 @freezed
@@ -32,6 +48,8 @@ class Transaction with _$Transaction {
 
     /// Sub-category id (optional).
     String? subcategoryId,
+
+    /// Optional free-text note / description.
     String? description,
 
     /// When true, transaction is visible but excluded from balance calculations.
@@ -40,4 +58,9 @@ class Transaction with _$Transaction {
     required DateTime updatedAt,
     @Default(false) bool isDeleted,
   }) = _Transaction;
+
+  const Transaction._();
+
+  /// Convenience getter that parses [type] string to [TransactionType] enum.
+  TransactionType get transactionType => TransactionType.fromString(type);
 }

@@ -541,6 +541,53 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Current Balance'**
   String get currentBalance;
+
+  // ---------------------------------------------------------------------------
+  // Sprint 4 — Transactions Screen
+  // ---------------------------------------------------------------------------
+
+  String get tabDaily;
+  String get tabCalendar;
+  String get tabMonthly;
+  String get tabSummary;
+  String get tabDescription;
+  String get transactionsTitle;
+  String get expenseLabel;
+  String get totalLabel;
+  String get errorLoadTitle;
+  String get errorLoadSubtitle;
+  String get retryButton;
+
+  // DailyView
+  String get dailyEmptyTitle;
+  String get dailyEmptySubtitle;
+  String get dailyEmptyCta;
+  String get deleteTransactionTitle;
+  String get deleteTransactionMessage;
+  String get deleteAction;
+  String get editAction;
+
+  // CalendarView
+  String get calendarNoTransactions;
+  String get calendarDayPanelNoTransactions;
+
+  // MonthlyView
+  String get monthlyNoTransactions;
+  String get monthlyCurrentWeekLabel;
+
+  // SummaryView
+  String get savingsRateLabel;
+  String get accountsCardTitle;
+  String get budgetCardTitle;
+  String get categoryBreakdownTitle;
+  String get exportToExcelTitle;
+  String get exportComingSoon;
+  String get setBudgetCta;
+  String get budgetNotConfigured;
+  String get seeAllButton;
+  String get noExpensesThisMonth;
+  String get noBudgetThisMonth;
+  String get today;
 }
 
 class _AppLocalizationsDelegate
