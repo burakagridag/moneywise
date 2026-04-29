@@ -23,8 +23,6 @@ class CalendarView extends ConsumerStatefulWidget {
 }
 
 class _CalendarViewState extends ConsumerState<CalendarView> {
-  DateTime? _selectedDay;
-
   @override
   Widget build(BuildContext context) {
     final period = ref.watch(selectedPeriodNotifierProvider);
@@ -45,22 +43,20 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
             year: period.year,
             month: period.month,
             dayTotals: dayMap,
-            selectedDay: _selectedDay,
-            onDaySelected: (day) {
-              setState(() {
-                _selectedDay = (_selectedDay == day) ? null : day;
-              });
-            },
+            onDaySelected: (day) => _onDayTapped(context, day),
           ),
         ),
-        if (_selectedDay != null) ...[
-          const Divider(height: 1, color: AppColors.divider),
-          _DayDetailPanel(
-            selectedDay: _selectedDay!,
-            onClose: () => setState(() => _selectedDay = null),
-          ),
-        ],
       ],
+    );
+  }
+
+  /// Shows the day-detail modal bottom sheet (BUG-004).
+  void _onDayTapped(BuildContext context, DateTime day) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _DayDetailSheet(selectedDay: day),
     );
   }
 }
@@ -128,14 +124,12 @@ class _CalendarGrid extends StatelessWidget {
     required this.year,
     required this.month,
     required this.dayTotals,
-    required this.selectedDay,
     required this.onDaySelected,
   });
 
   final int year;
   final int month;
   final Map<DateTime, DayTotals> dayTotals;
-  final DateTime? selectedDay;
   final ValueChanged<DateTime> onDaySelected;
 
   /// Returns a flat list of day entries to fill the 7-column grid.
@@ -206,15 +200,10 @@ class _CalendarGrid extends StatelessWidget {
               entry.day.day,
             );
             final totals = dayTotals[key];
-            final isSelected = selectedDay != null &&
-                selectedDay!.year == entry.day.year &&
-                selectedDay!.month == entry.day.month &&
-                selectedDay!.day == entry.day.day;
             return _CalendarDayCell(
               day: entry.day,
               isCurrentMonth: entry.isCurrentMonth,
               isToday: _isToday(entry.day),
-              isSelected: isSelected,
               income: totals?.income,
               expense: totals?.expense,
               onTap: entry.isCurrentMonth ? () => onDaySelected(key) : null,
@@ -246,7 +235,6 @@ class _CalendarDayCell extends StatelessWidget {
     required this.day,
     required this.isCurrentMonth,
     required this.isToday,
-    required this.isSelected,
     this.income,
     this.expense,
     this.onTap,
@@ -255,21 +243,40 @@ class _CalendarDayCell extends StatelessWidget {
   final DateTime day;
   final bool isCurrentMonth;
   final bool isToday;
-  final bool isSelected;
   final double? income;
   final double? expense;
   final VoidCallback? onTap;
+
+  bool _isFuture() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    return day.isAfter(today);
+  }
 
   @override
   Widget build(BuildContext context) {
     final hasIncome = (income ?? 0) > 0;
     final hasExpense = (expense ?? 0) > 0;
+    final isFuture = isCurrentMonth && _isFuture();
 
+    // BUG-005: today gets a full-cell brand-primary tint background.
     Color? bgColor;
-    if (isSelected) bgColor = AppColors.bgTertiary;
+    if (isToday) {
+      bgColor = AppColors.brandPrimary.withValues(alpha: 0.12);
+    }
 
-    final dayNumColor =
-        isCurrentMonth ? AppColors.textPrimary : AppColors.textTertiary;
+    // BUG-005: future dates use textTertiary; today uses textOnBrand-contrast
+    // via the circle; past/current use textPrimary; off-month uses textTertiary.
+    Color dayNumColor;
+    if (!isCurrentMonth) {
+      dayNumColor = AppColors.textTertiary;
+    } else if (isToday) {
+      dayNumColor = AppColors.textOnBrand;
+    } else if (isFuture) {
+      dayNumColor = AppColors.textTertiary;
+    } else {
+      dayNumColor = AppColors.textPrimary;
+    }
 
     final semanticsLabel = isToday
         ? 'Today, ${DateFormat('d MMMM').format(day)}.'
@@ -292,7 +299,7 @@ class _CalendarDayCell extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Day number
+              // Day number — wrapped in brand circle only for today.
               isToday
                   ? Container(
                       width: 22,
@@ -317,8 +324,8 @@ class _CalendarDayCell extends StatelessWidget {
                       ),
                     ),
               const Spacer(),
-              // Amounts (bottom)
-              if (hasIncome)
+              // Amounts (bottom) — hidden for future dates.
+              if (hasIncome && !isFuture)
                 Text(
                   CurrencyFormatter.formatCompact(income!),
                   style: AppTypography.caption2.copyWith(
@@ -327,7 +334,7 @@ class _CalendarDayCell extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-              if (hasExpense)
+              if (hasExpense && !isFuture)
                 Text(
                   CurrencyFormatter.formatCompact(expense!),
                   style: AppTypography.caption2.copyWith(
@@ -345,27 +352,24 @@ class _CalendarDayCell extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Day detail panel
+// Day detail modal bottom sheet (BUG-004)
 // ---------------------------------------------------------------------------
 
-class _DayDetailPanel extends ConsumerWidget {
-  const _DayDetailPanel({
-    required this.selectedDay,
-    required this.onClose,
-  });
+/// Modal bottom sheet showing transactions for a given [selectedDay].
+/// Presented via [showModalBottomSheet] — not rendered inline in the calendar.
+class _DayDetailSheet extends ConsumerWidget {
+  const _DayDetailSheet({required this.selectedDay});
 
   final DateTime selectedDay;
-  final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncTxs = ref.watch(dayTransactionsProvider(selectedDay));
     final title = DateFormat('EEEE, d MMMM yyyy').format(selectedDay);
+    final maxHeight = MediaQuery.of(context).size.height * 0.5;
 
     return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.5,
-      ),
+      constraints: BoxConstraints(maxHeight: maxHeight),
       decoration: const BoxDecoration(
         color: AppColors.bgSecondary,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
@@ -374,43 +378,32 @@ class _DayDetailPanel extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Panel header
+          // Drag handle
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              margin: const EdgeInsets.only(top: AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: AppColors.divider,
+                borderRadius: BorderRadius.circular(AppRadius.pill),
+              ),
+            ),
+          ),
+          // Sheet header
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.lg,
               vertical: AppSpacing.sm,
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Semantics(
-                    label: '$title transactions',
-                    child: Text(
-                      title,
-                      style: AppTypography.headline.copyWith(
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
+            child: Semantics(
+              label: '$title transactions',
+              child: Text(
+                title,
+                style: AppTypography.headline.copyWith(
+                  color: AppColors.textPrimary,
                 ),
-                Semantics(
-                  label: 'Close day panel',
-                  button: true,
-                  child: InkWell(
-                    onTap: onClose,
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                    child: const SizedBox(
-                      width: 44,
-                      height: 44,
-                      child: Icon(
-                        Icons.close,
-                        color: AppColors.textSecondary,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
           const Divider(height: 1, color: AppColors.divider),
@@ -438,13 +431,15 @@ class _DayDetailPanel extends ConsumerWidget {
                 if (txs.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.all(AppSpacing.lg),
-                    child: Text(
-                      AppLocalizations.of(context)!
-                          .calendarDayPanelNoTransactions,
-                      style: AppTypography.subhead.copyWith(
-                        color: AppColors.textSecondary,
+                    child: Center(
+                      child: Text(
+                        AppLocalizations.of(context)!
+                            .calendarDayPanelNoTransactions,
+                        style: AppTypography.subhead.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   );
                 }
@@ -459,6 +454,8 @@ class _DayDetailPanel extends ConsumerWidget {
               },
             ),
           ),
+          // Bottom safe area padding
+          SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
       ),
     );

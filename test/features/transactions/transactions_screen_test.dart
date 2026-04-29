@@ -96,7 +96,7 @@ void main() {
       await _dispose(tester, db);
     });
 
-    testWidgets('shows TabBar with Daily, Calendar, Monthly, Summary tabs',
+    testWidgets('shows TabBar with 5 tabs including Description',
         (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
@@ -106,6 +106,7 @@ void main() {
       expect(find.text('Calendar'), findsOneWidget);
       expect(find.text('Monthly'), findsOneWidget);
       expect(find.text('Summary'), findsOneWidget);
+      expect(find.text('Description'), findsOneWidget);
       await _dispose(tester, db);
     });
 
@@ -130,6 +131,29 @@ void main() {
       await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
       expect(find.byIcon(Icons.search), findsOneWidget);
+      await _dispose(tester, db);
+    });
+
+    testWidgets('shows bookmark FAB on all tabs (BUG-011 fix)', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
+      await tester.pump();
+      // Both FABs are always rendered — bookmark and add-transaction.
+      expect(find.byType(FloatingActionButton), findsNWidgets(2));
+      await _dispose(tester, db);
+    });
+
+    testWidgets('Description tab shows Coming soon placeholder (BUG-001 fix)',
+        (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
+      await tester.pump();
+      // The IndexedStack always renders all children — the placeholder text is
+      // present in the widget tree even before the tab is tapped.
+      // After tapping Description, the IndexedStack shows index 4.
+      await tester.tap(find.text('Description'));
+      await tester.pumpAndSettle();
+      expect(find.text('Coming soon'), findsOneWidget);
       await _dispose(tester, db);
     });
 

@@ -10,7 +10,7 @@ import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../providers/transactions_provider.dart';
 
-/// Scrollable column of summary cards for the selected period.
+/// Horizontally swipeable summary cards for the selected period (BUG-009).
 class SummaryView extends ConsumerWidget {
   const SummaryView({super.key});
 
@@ -33,30 +33,74 @@ class SummaryView extends ConsumerWidget {
   }
 }
 
-class _SummaryContent extends StatelessWidget {
+class _SummaryContent extends StatefulWidget {
   const _SummaryContent({required this.totals});
 
   final MonthTotals totals;
 
   @override
+  State<_SummaryContent> createState() => _SummaryContentState();
+}
+
+class _SummaryContentState extends State<_SummaryContent> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 120),
-      child: Column(
-        children: [
-          const SizedBox(height: AppSpacing.md),
-          _StatSummaryCard(totals: totals),
-          const SizedBox(height: AppSpacing.md),
-          _AccountsCard(totalExpense: totals.expense),
-          const SizedBox(height: AppSpacing.md),
-          const _BudgetCard(),
-          const SizedBox(height: AppSpacing.md),
-          const _CategoryBreakdownCard(),
-          const SizedBox(height: AppSpacing.md),
-          const _ExportCard(),
-          const SizedBox(height: AppSpacing.md),
-        ],
-      ),
+    final cards = [
+      _StatSummaryCard(totals: widget.totals),
+      _AccountsCard(totalExpense: widget.totals.expense),
+      const _BudgetCard(),
+      const _ExportCard(),
+    ];
+
+    return Column(
+      children: [
+        // Horizontal PageView of cards (BUG-009).
+        Expanded(
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: cards.length,
+            onPageChanged: (i) => setState(() => _currentPage = i),
+            itemBuilder: (context, index) => SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 120),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                child: cards[index],
+              ),
+            ),
+          ),
+        ),
+        // Page indicator dots.
+        Padding(
+          padding: const EdgeInsets.only(bottom: AppSpacing.xl),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(cards.length, (i) {
+              final isActive = i == _currentPage;
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                width: isActive ? 16 : 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? AppColors.brandPrimary
+                      : AppColors.textTertiary,
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                ),
+              );
+            }),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -82,14 +126,18 @@ class _StatSummaryCard extends StatelessWidget {
     return rate >= 0 ? AppColors.income : AppColors.expense;
   }
 
+  /// Net amount color: green for positive, coral for negative.
+  Color get _netColor => totals.net >= 0 ? AppColors.income : AppColors.expense;
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Semantics(
       container: true,
       label: 'Summary. '
           'Income: ${CurrencyFormatter.format(totals.income)}, '
           'Expense: ${CurrencyFormatter.format(totals.expense)}, '
-          'Savings rate: $_savingsRate.',
+          'Total: ${CurrencyFormatter.formatSigned(totals.net)}.',
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -97,55 +145,68 @@ class _StatSummaryCard extends StatelessWidget {
           color: AppColors.bgSecondary,
           borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Left column: income + expense mini cards
-            Expanded(
-              child: Column(
-                children: [
-                  _MiniStatCard(
-                    label: AppLocalizations.of(context)!.income,
+            // Three-column row: Income | Expense | Total (BUG-008)
+            Row(
+              children: [
+                Expanded(
+                  child: _MiniStatCard(
+                    label: l10n.income,
                     value: CurrencyFormatter.format(totals.income),
                     valueColor: AppColors.income,
                   ),
-                  const SizedBox(height: AppSpacing.sm),
-                  _MiniStatCard(
-                    label: AppLocalizations.of(context)!.expense,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: _MiniStatCard(
+                    label: l10n.expenseLabel,
                     value: CurrencyFormatter.format(totals.expense),
                     valueColor: AppColors.expense,
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: _MiniStatCard(
+                    label: l10n.totalNetLabel,
+                    value: CurrencyFormatter.formatSigned(totals.net),
+                    valueColor: _netColor,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: AppSpacing.sm),
-            // Right column: savings rate
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+            // Savings rate row — only shown when income > 0.
+            if (totals.income > 0) ...[
+              const SizedBox(height: AppSpacing.md),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.bgTertiary,
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.savingsRateLabel,
+                      l10n.savingsRateLabel,
                       style: AppTypography.caption1.copyWith(
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       _savingsRate,
-                      style: AppTypography.title2.copyWith(
+                      style: AppTypography.moneySmall.copyWith(
                         color: _savingsColor,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),
@@ -413,71 +474,6 @@ class _BudgetCard extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// CategoryBreakdownCard
-// ---------------------------------------------------------------------------
-
-class _CategoryBreakdownCard extends ConsumerWidget {
-  const _CategoryBreakdownCard();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Sprint 4: no category aggregation yet — show empty state.
-    // Full implementation in Sprint 5 (stats provider).
-    // Top-5 category colors per SPEC-012 are:
-    // brandPrimary, income, warning, success, categoryPurple.
-    return Semantics(
-      container: true,
-      label: 'Spending breakdown. No expense data yet.',
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: AppColors.bgSecondary,
-          borderRadius: BorderRadius.circular(AppRadius.lg),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              children: [
-                const Icon(
-                  Icons.pie_chart_outline,
-                  color: AppColors.textSecondary,
-                  size: 20,
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  AppLocalizations.of(context)!.categoryBreakdownTitle,
-                  style: AppTypography.headline.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const Spacer(),
-                const Icon(
-                  Icons.chevron_right,
-                  color: AppColors.textTertiary,
-                  size: 16,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Center(
-              child: Text(
-                AppLocalizations.of(context)!.noExpensesThisMonth,
-                style: AppTypography.subhead.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
             ),
           ],
         ),

@@ -469,4 +469,85 @@ void main() {
       expect(days.first.expense, closeTo(0.50, 0.001));
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // watchTransactionsWithNamesByDateRange (BUG-003)
+  // ---------------------------------------------------------------------------
+
+  group('TransactionDao.watchTransactionsWithNamesByDateRange', () {
+    test('returns empty list when no transactions', () async {
+      final rows = await db.transactionDao
+          .watchTransactionsWithNamesByDateRange(
+            DateTime(2026, 4, 1),
+            DateTime(2026, 4, 30),
+          )
+          .first;
+      expect(rows, isEmpty);
+    });
+
+    test('returns transaction with null names when no category/account name',
+        () async {
+      final accountId = await seedAccount(db);
+      await insertTx(db, accountId: accountId, date: DateTime(2026, 4, 10));
+      final rows = await db.transactionDao
+          .watchTransactionsWithNamesByDateRange(
+            DateTime(2026, 4, 1),
+            DateTime(2026, 4, 30),
+          )
+          .first;
+      expect(rows.length, 1);
+      // Category is null for this transaction; accountName comes from join.
+      expect(rows.first.categoryName, isNull);
+      expect(rows.first.accountName, isNotNull); // 'Dao Test Account'
+    });
+
+    test('accountName is resolved from accounts table', () async {
+      final accountId = await seedAccount(db);
+      await insertTx(db, accountId: accountId, date: DateTime(2026, 4, 10));
+      final rows = await db.transactionDao
+          .watchTransactionsWithNamesByDateRange(
+            DateTime(2026, 4, 1),
+            DateTime(2026, 4, 30),
+          )
+          .first;
+      expect(rows.first.accountName, 'Dao Test Account');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Money arithmetic (BUG-010) — cent-based accumulation
+  // ---------------------------------------------------------------------------
+
+  group('MonthTotals cent-based accumulation (BUG-010)', () {
+    test('50 x 0.01 EUR sums to exactly 0.50 without float drift', () async {
+      final accountId = await seedAccount(db);
+      for (var i = 0; i < 50; i++) {
+        await insertTx(
+          db,
+          accountId: accountId,
+          type: 'expense',
+          amount: 0.01,
+          date: DateTime(2026, 4, 10),
+        );
+      }
+      final totals = await db.transactionDao.watchMonthlyTotals(2026, 4).first;
+      expect(totals.expense, closeTo(0.50, 0.001));
+    });
+
+    test('watchDailyTotals accumulates 50 x 0.01 EUR correctly', () async {
+      final accountId = await seedAccount(db);
+      for (var i = 0; i < 50; i++) {
+        await insertTx(
+          db,
+          accountId: accountId,
+          type: 'expense',
+          amount: 0.01,
+          date: DateTime(2026, 4, 10),
+        );
+      }
+      final days = await db.transactionDao.watchDailyTotals(2026, 4).first;
+      expect(days.length, 1);
+      expect(days.first.expense, closeTo(0.50, 0.001));
+    });
+  });
 }

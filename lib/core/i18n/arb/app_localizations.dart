@@ -576,6 +576,7 @@ abstract class AppLocalizations {
   String get monthlyCurrentWeekLabel;
 
   // SummaryView
+  String get totalNetLabel;
   String get savingsRateLabel;
   String get accountsCardTitle;
   String get budgetCardTitle;

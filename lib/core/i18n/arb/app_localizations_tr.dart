@@ -317,6 +317,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get monthlyCurrentWeekLabel => 'Bu hafta';
 
   @override
+  String get totalNetLabel => 'Toplam';
+
+  @override
   String get savingsRateLabel => 'Tasarruf Oranı';
 
   @override

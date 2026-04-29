@@ -13,20 +13,22 @@ import '../providers/transactions_provider.dart';
 import 'transaction_row.dart';
 
 /// Groups transactions by date (DESC) and renders date-header rows above
-/// each day's transactions.
+/// each day's transactions. Uses the enriched provider that resolves category
+/// and account names via a LEFT JOIN (BUG-003).
 class DailyView extends ConsumerWidget {
   const DailyView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncTxs = ref.watch(monthlyTransactionsProvider);
+    final asyncTxs = ref.watch(monthlyTransactionsWithDetailsProvider);
 
     return asyncTxs.when(
       loading: () => const Center(
         child: CircularProgressIndicator(color: AppColors.brandPrimary),
       ),
       error: (e, __) => _ErrorState(
-          onRetry: () => ref.invalidate(monthlyTransactionsProvider)),
+          onRetry: () =>
+              ref.invalidate(monthlyTransactionsWithDetailsProvider)),
       data: (txs) {
         if (txs.isEmpty) return const _EmptyState();
         return _TransactionList(transactions: txs);
@@ -42,14 +44,17 @@ class DailyView extends ConsumerWidget {
 class _TransactionList extends StatelessWidget {
   const _TransactionList({required this.transactions});
 
-  final List<Transaction> transactions;
+  final List<TransactionWithDetails> transactions;
 
   /// Groups transactions by calendar day (date only, no time).
-  Map<DateTime, List<Transaction>> _groupByDay(List<Transaction> txs) {
-    final map = <DateTime, List<Transaction>>{};
-    for (final tx in txs) {
-      final key = DateTime(tx.date.year, tx.date.month, tx.date.day);
-      (map[key] ??= []).add(tx);
+  Map<DateTime, List<TransactionWithDetails>> _groupByDay(
+    List<TransactionWithDetails> txs,
+  ) {
+    final map = <DateTime, List<TransactionWithDetails>>{};
+    for (final item in txs) {
+      final date = item.transaction.date;
+      final key = DateTime(date.year, date.month, date.day);
+      (map[key] ??= []).add(item);
     }
     // Sort days descending
     final sorted = map.entries.toList()..sort((a, b) => b.key.compareTo(a.key));
@@ -84,25 +89,38 @@ class _DayGroup extends StatelessWidget {
   const _DayGroup({required this.day, required this.transactions});
 
   final DateTime day;
-  final List<Transaction> transactions;
+  final List<TransactionWithDetails> transactions;
 
   @override
   Widget build(BuildContext context) {
-    double income = 0;
-    double expense = 0;
-    for (final tx in transactions) {
+    // Use integer cent accumulation to avoid float drift.
+    int incomeCents = 0;
+    int expenseCents = 0;
+    for (final item in transactions) {
+      final tx = item.transaction;
       if (tx.isExcluded) continue;
-      if (tx.type == TransactionType.income) income += tx.amount;
-      if (tx.type == TransactionType.expense) expense += tx.amount;
+      if (tx.type == TransactionType.income) {
+        incomeCents += (tx.amount * 100).round();
+      }
+      if (tx.type == TransactionType.expense) {
+        expenseCents += (tx.amount * 100).round();
+      }
     }
+    final income = incomeCents / 100.0;
+    final expense = expenseCents / 100.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _DayHeaderRow(day: day, income: income, expense: expense),
         ...transactions.map(
-          (tx) => TransactionRow(
-            transaction: tx,
+          (item) => TransactionRow(
+            transaction: item.transaction,
+            categoryName: item.categoryName,
+            categoryEmoji: item.categoryEmoji,
+            categoryColor: item.categoryColorHex,
+            accountName: item.accountName,
+            toAccountName: item.toAccountName,
             currencySymbol: AppConstants.defaultCurrencySymbol,
           ),
         ),

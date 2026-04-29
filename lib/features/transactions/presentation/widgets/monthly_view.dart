@@ -11,6 +11,9 @@ import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../providers/transactions_provider.dart';
 
+// Coral highlight for current-week row (BUG-007).
+const Color _currentWeekBg = Color(0x14FF6B5C); // expense.withOpacity(0.08)
+
 /// Shows 12 month accordion cards for the selected year.
 class MonthlyView extends ConsumerWidget {
   const MonthlyView({super.key});
@@ -110,7 +113,7 @@ class _MonthListState extends State<_MonthList> {
 // Month card (accordion)
 // ---------------------------------------------------------------------------
 
-class _MonthCard extends StatelessWidget {
+class _MonthCard extends ConsumerWidget {
   const _MonthCard({
     required this.year,
     required this.month,
@@ -153,8 +156,10 @@ class _MonthCard extends StatelessWidget {
   String get _monthLabel => DateFormat('MMMM').format(DateTime(year, month));
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final weeks = _computeWeeks();
+    // BUG-006: load real weekly totals via provider.
+    final weeklyAsync = ref.watch(weeklyTotalsForMonthProvider(year, month));
     final expandedSemanticsLabel = isExpanded
         ? '$_monthLabel $year. Expanded. Tap to collapse.'
         : '$_monthLabel $year. '
@@ -229,7 +234,7 @@ class _MonthCard extends StatelessWidget {
               ),
             ),
           ),
-          // Week rows (expanded)
+          // Week rows (expanded) — BUG-006: real weekly totals.
           AnimatedSize(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
@@ -237,9 +242,16 @@ class _MonthCard extends StatelessWidget {
                 ? Column(
                     children: weeks.isEmpty
                         ? [_NoTransactionsRow()]
-                        : weeks
-                            .map((w) => _WeekRowWidget(weekRange: w))
-                            .toList(),
+                        : weeks.map((w) {
+                            final weekMap = weeklyAsync.valueOrNull ?? {};
+                            // Match by week-start date (Monday).
+                            final weekTotals = weekMap[w.start] ??
+                                const MonthTotals(income: 0, expense: 0);
+                            return _WeekRowWidget(
+                              weekRange: w,
+                              totals: weekTotals,
+                            );
+                          }).toList(),
                   )
                 : const SizedBox.shrink(),
           ),
@@ -295,17 +307,15 @@ class _WeekRange {
 }
 
 class _WeekRowWidget extends StatelessWidget {
-  const _WeekRowWidget({required this.weekRange});
+  const _WeekRowWidget({required this.weekRange, required this.totals});
 
   final _WeekRange weekRange;
+  final MonthTotals totals;
 
   @override
   Widget build(BuildContext context) {
-    // Week totals are not separately fetched in Sprint 4.
-    // The week rows show zero values; full implementation deferred.
-    const totals = MonthTotals(income: 0, expense: 0);
-    final bg =
-        weekRange.isCurrentWeek ? AppColors.bgTertiary : AppColors.bgSecondary;
+    // BUG-007: coral highlight for current week, not grey.
+    final bg = weekRange.isCurrentWeek ? _currentWeekBg : AppColors.bgSecondary;
 
     return Semantics(
       label: '${weekRange.label} week. '
@@ -331,9 +341,7 @@ class _WeekRowWidget extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            const _TotalsGroup(
-              totals: MonthTotals(income: 0, expense: 0),
-            ),
+            _TotalsGroup(totals: totals),
           ],
         ),
       ),
