@@ -101,13 +101,13 @@ All CI gates pass locally. No rebase is required. The PR can be opened immediate
 
 **GitHub Actions CI (`pr_checks.yml`):**
 
-| Check | Status |
-|-------|--------|
-| Lint, Format, Analyze & Test | pending (queued) |
+| Check | Status | Duration |
+|-------|--------|----------|
+| Lint, Format, Analyze & Test | **SUCCESS** | 3m 34s |
 
-CI run: https://github.com/burakagridag/moneywise/actions/runs/25136245356/job/73675229481
+CI run: https://github.com/burakagridag/moneywise/actions/runs/25136245356
 
-CI was in `pending` state at time of report. Update this table once the run completes.
+All CI jobs green. One non-blocking annotation: Node.js 20 actions deprecation warning (`actions/cache@v4`, `actions/checkout@v4`, `codecov/codecov-action@v4`). GitHub will enforce Node.js 24 from June 2026. Tracked as a separate backlog item — does not affect Sprint 5 ship.
 
 ---
 
