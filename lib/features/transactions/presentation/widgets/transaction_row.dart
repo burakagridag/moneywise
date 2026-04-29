@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -24,7 +25,7 @@ class TransactionRow extends StatelessWidget {
     this.categoryColor,
     this.accountName,
     this.toAccountName,
-    this.currencySymbol = '€',
+    this.currencySymbol = AppConstants.defaultCurrencySymbol,
     this.onTap,
     this.onDelete,
     this.onEdit,

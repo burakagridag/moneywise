@@ -24,7 +24,7 @@ class SummaryView extends ConsumerWidget {
       ),
       error: (_, __) => Center(
         child: Text(
-          'Could not load data',
+          AppLocalizations.of(context)!.errorLoadTitle,
           style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
         ),
       ),
@@ -104,13 +104,13 @@ class _StatSummaryCard extends StatelessWidget {
               child: Column(
                 children: [
                   _MiniStatCard(
-                    label: 'Income',
+                    label: AppLocalizations.of(context)!.income,
                     value: CurrencyFormatter.format(totals.income),
                     valueColor: AppColors.income,
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   _MiniStatCard(
-                    label: 'Expense',
+                    label: AppLocalizations.of(context)!.expense,
                     value: CurrencyFormatter.format(totals.expense),
                     valueColor: AppColors.expense,
                   ),

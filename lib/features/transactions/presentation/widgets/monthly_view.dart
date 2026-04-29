@@ -26,7 +26,7 @@ class MonthlyView extends ConsumerWidget {
       ),
       error: (e, __) => Center(
         child: Text(
-          'Could not load data',
+          AppLocalizations.of(context)!.errorLoadTitle,
           style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
         ),
       ),
