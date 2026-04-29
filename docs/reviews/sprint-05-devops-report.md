@@ -92,17 +92,30 @@ All CI gates pass locally. No rebase is required. The PR can be opened immediate
 
 ---
 
-## Pre-PR Action Items
+## PR & CI Status
 
-1. **Stage and commit (or restore) the 2 dirty files before pushing:**
-   - `docs/specs/COMPONENTS.md` — contains new Sprint 5 component documentation; should be committed.
-   - `macos/Podfile.lock` — local macOS CocoaPods lock file change; commit only if intentional, otherwise restore with `git restore macos/Podfile.lock`.
+**PR:** https://github.com/burakagridag/moneywise/pull/5
+**Title:** feat(sprint-5): Stats & Budget
+**Base:** `main` ← `sprint/05-stats-budget`
+**Opened:** 2026-04-30
 
-2. **Push branch to remote:**
-   ```bash
-   git push origin sprint/05-stats-budget
-   ```
+**GitHub Actions CI (`pr_checks.yml`):**
 
-3. **Open PR against `main`.** `pr_checks.yml` will trigger automatically.
+| Check | Status |
+|-------|--------|
+| Lint, Format, Analyze & Test | pending (queued) |
 
-4. **Backlog item (not a blocker):** Add `build_ios.yml` workflow for IPA builds on push to `develop`/`main`. This is a pre-existing gap unrelated to Sprint 5.
+CI run: https://github.com/burakagridag/moneywise/actions/runs/25136245356/job/73675229481
+
+CI was in `pending` state at time of report. Update this table once the run completes.
+
+---
+
+## Pre-PR Action Items — COMPLETED
+
+1. `macos/Podfile.lock` — restored with `git restore macos/Podfile.lock`. Not a Sprint 5 change.
+2. `docs/specs/COMPONENTS.md` + all Sprint 5 docs — committed in `d878774` before push.
+3. Branch pushed to remote: `git push origin sprint/05-stats-budget`.
+4. PR #5 opened against `main`.
+
+**Backlog item (not a blocker):** Add `build_ios.yml` workflow for IPA builds on push to `develop`/`main`. This is a pre-existing gap unrelated to Sprint 5.
