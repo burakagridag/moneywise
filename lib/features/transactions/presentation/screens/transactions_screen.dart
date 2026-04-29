@@ -1,4 +1,5 @@
-// Transactions tab screen — daily grouped list with month navigation — transactions feature.
+// TransactionsScreen — period tab bar scaffold with Daily, Calendar, Monthly,
+// Summary, and Description sub-views — features/transactions US-020 / SPEC-008.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,229 +9,287 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/router/routes.dart';
-import '../../../../core/widgets/month_navigator.dart';
-import '../../../../domain/entities/transaction.dart';
 import '../providers/transactions_provider.dart';
-import '../widgets/day_group_header.dart';
-import '../widgets/summary_bar.dart';
-import '../widgets/transaction_list_item.dart';
+import '../widgets/calendar_view.dart';
+import '../widgets/daily_view.dart';
+import '../widgets/income_summary_bar.dart';
+import '../widgets/month_navigator.dart';
+import '../widgets/monthly_view.dart';
+import '../widgets/summary_view.dart';
 
-/// The main Transactions tab.
-/// Shows a month navigator, income/expense summary bar, and a daily-grouped list.
-class TransactionsScreen extends ConsumerWidget {
+/// Tab index for Monthly tab — used to switch navigator to year-only mode.
+const int _monthlyTabIndex = 2;
+
+/// Total number of period tabs — Daily, Calendar, Monthly, Summary, Description.
+const int _tabCount = 5;
+
+/// Root screen for the Transactions bottom-nav tab.
+/// Hosts MonthNavigator, PeriodTabBar, IncomeSummaryBar, and 4 sub-views.
+class TransactionsScreen extends ConsumerStatefulWidget {
   const TransactionsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TransactionsScreen> createState() => _TransactionsScreenState();
+}
+
+class _TransactionsScreenState extends ConsumerState<TransactionsScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _tabCount, vsync: this);
+    _tabController.addListener(_onTabChanged);
+  }
+
+  @override
+  void dispose() {
+    _tabController
+      ..removeListener(_onTabChanged)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onTabChanged() {
+    // Guard: skip rebuild during mid-animation frames to avoid redundant
+    // setState calls on every frame of the tab-switch animation.
+    if (_tabController.indexIsChanging) return;
+    setState(() {});
+  }
+
+  bool get _isMonthlyTab => _tabController.index == _monthlyTabIndex;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final selectedMonth = ref.watch(selectedMonthProvider);
-    final txnsAsync = ref.watch(transactionsByMonthProvider);
+    final totalsAsync = ref.watch(monthlyTotalsProvider);
+    final yearTotalsAsync = ref.watch(yearlyTotalsProvider);
+
+    final (income, expense) = _isMonthlyTab
+        ? yearTotalsAsync.when(
+            data: (t) => (t.income, t.expense),
+            loading: () => (0.0, 0.0),
+            error: (_, __) => (0.0, 0.0),
+          )
+        : totalsAsync.when(
+            data: (t) => (t.income, t.expense),
+            loading: () => (0.0, 0.0),
+            error: (_, __) => (0.0, 0.0),
+          );
 
     return Scaffold(
       backgroundColor: AppColors.bgPrimary,
-      body: SafeArea(
-        child: Column(
-          children: [
-            MonthNavigator(
-              selectedMonth: selectedMonth,
-              onPrevious: () =>
-                  ref.read(selectedMonthProvider.notifier).previous(),
-              onNext: () => ref.read(selectedMonthProvider.notifier).next(),
-            ),
-            txnsAsync.when(
-              loading: () => const SizedBox.shrink(),
-              error: (_, __) => const SizedBox.shrink(),
-              data: (txns) {
-                // TODO(sprint-4): use user base currency setting
-                final currencySymbol =
-                    txns.isNotEmpty ? txns.first.currencyCode : 'EUR';
-                final income = txns
-                    .where((t) => t.type == 'income' && !t.isExcluded)
-                    .fold(0.0, (s, t) => s + t.amount);
-                final expense = txns
-                    .where((t) => t.type == 'expense' && !t.isExcluded)
-                    .fold(0.0, (s, t) => s + t.amount);
-                return SummaryBar(
-                  income: income,
-                  expense: expense,
-                  currencySymbol: currencySymbol,
-                );
+      appBar: AppBar(
+        backgroundColor: AppColors.bgPrimary,
+        elevation: 0,
+        leading: Semantics(
+          label: 'Search transactions',
+          button: true,
+          child: IconButton(
+            icon: const Icon(Icons.search, color: AppColors.textSecondary),
+            onPressed: () {
+              // Sprint 6: Search modal
+            },
+          ),
+        ),
+        title: Text(
+          l10n.transactionsTitle,
+          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+        ),
+        centerTitle: true,
+        actions: [
+          Semantics(
+            label: 'Open bookmarks',
+            button: true,
+            child: IconButton(
+              icon: const Icon(
+                Icons.bookmark_outline,
+                color: AppColors.textSecondary,
+              ),
+              onPressed: () {
+                // Sprint 6: Bookmark modal
               },
             ),
-            Expanded(
-              child: txnsAsync.when(
-                loading: () => const Center(
-                  child:
-                      CircularProgressIndicator(color: AppColors.brandPrimary),
-                ),
-                error: (_, __) => Center(
-                  child: Text(
-                    l10n.failedToLoadTransactions,
-                    style: AppTypography.body
-                        .copyWith(color: AppColors.textSecondary),
-                  ),
-                ),
-                data: (txns) => _TransactionList(transactions: txns),
+          ),
+          Semantics(
+            label: 'Filter transactions',
+            button: true,
+            child: IconButton(
+              icon: const Icon(
+                Icons.tune,
+                color: AppColors.textSecondary,
               ),
+              onPressed: () {
+                // Sprint 6: Filter modal
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.brandPrimary,
-        onPressed: () => context.push(Routes.transactionAddEdit),
-        child: const Icon(Icons.add, color: Colors.white),
+      body: Column(
+        children: [
+          // Month/Year navigator
+          MonthNavigator(showYearOnly: _isMonthlyTab),
+          // Period tab bar
+          _PeriodTabBar(controller: _tabController),
+          // Income / Expense / Total summary bar
+          IncomeSummaryBar(income: income, expense: expense),
+          // Page content
+          Expanded(
+            child: IndexedStack(
+              index: _tabController.index,
+              children: const [
+                DailyView(),
+                CalendarView(),
+                MonthlyView(),
+                SummaryView(),
+                _DescriptionView(),
+              ],
+            ),
+          ),
+        ],
       ),
+      floatingActionButton: const _Fabs(),
     );
   }
 }
 
 // ---------------------------------------------------------------------------
-// Internal widgets
+// Period tab bar
 // ---------------------------------------------------------------------------
 
-/// Groups transactions by day and renders headers + rows.
-class _TransactionList extends ConsumerWidget {
-  const _TransactionList({required this.transactions});
+class _PeriodTabBar extends StatelessWidget {
+  const _PeriodTabBar({required this.controller});
 
-  final List<Transaction> transactions;
+  final TabController controller;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
-    if (transactions.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.receipt_long_outlined,
-                size: 64, color: AppColors.textTertiary),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              l10n.noTransactionsThisMonth,
-              style:
-                  AppTypography.title3.copyWith(color: AppColors.textPrimary),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              l10n.tapPlusToAddFirst,
-              style: AppTypography.subhead
-                  .copyWith(color: AppColors.textSecondary),
-            ),
-          ],
+    return Container(
+      height: AppHeights.tabBar,
+      decoration: const BoxDecoration(
+        color: AppColors.bgPrimary,
+        border: Border(
+          bottom: BorderSide(color: AppColors.divider, width: 1),
         ),
-      );
-    }
-
-    // Group by date (year-month-day key).
-    final grouped = <DateTime, List<Transaction>>{};
-    for (final t in transactions) {
-      final key = DateTime(t.date.year, t.date.month, t.date.day);
-      grouped.putIfAbsent(key, () => []).add(t);
-    }
-    final sortedDays = grouped.keys.toList()..sort((a, b) => b.compareTo(a));
-
-    // Build a flat list of header + item entries.
-    final items = <_ListItem>[];
-    for (final day in sortedDays) {
-      final dayTxns = grouped[day]!;
-      final dailyTotal = dayTxns.fold(0.0, (s, t) {
-        if (t.type == 'income') return s + t.amount;
-        if (t.type == 'expense') return s - t.amount;
-        return s;
-      });
-      items.add(_HeaderItem(date: day, dailyTotal: dailyTotal));
-      for (final t in dayTxns) {
-        items.add(_TxItem(transaction: t));
-      }
-    }
-
-    // TODO(sprint-4): use user base currency setting
-    final currencySymbol =
-        transactions.isNotEmpty ? transactions.first.currencyCode : 'EUR';
-
-    final accountsAsync = ref.watch(transactionAccountListProvider);
-    final catsAsync = ref.watch(transactionCategoryListProvider);
-
-    final accounts = accountsAsync.asData?.value ?? [];
-    final cats = catsAsync.asData?.value ?? [];
-
-    return ListView.builder(
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        if (item is _HeaderItem) {
-          return DayGroupHeader(
-            date: item.date,
-            dailyTotal: item.dailyTotal.abs(),
-            currencySymbol: currencySymbol,
-          );
-        }
-        final tx = (item as _TxItem).transaction;
-        final account = accounts.where((a) => a.id == tx.accountId).firstOrNull;
-        final category = cats.where((c) => c.id == tx.categoryId).firstOrNull;
-
-        return Column(
-          children: [
-            TransactionListItem(
-              transaction: tx,
-              categoryEmoji: category?.iconEmoji,
-              categoryName: category?.name ?? 'Uncategorized',
-              categoryColor: category?.colorHex != null
-                  ? _parseColor(category!.colorHex!)
-                  : null,
-              accountName: account?.name ?? '',
-              // Use account currency; fall back to transaction currency code.
-              currencySymbol: account?.currencyCode ?? tx.currencyCode,
-              onTap: () => context.push(Routes.transactionAddEdit, extra: tx),
-              onDelete: () async {
-                try {
-                  await ref
-                      .read(transactionWriteNotifierProvider.notifier)
-                      .deleteTransaction(tx.id);
-                } catch (_) {
-                  if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.errorDeletingTransaction),
-                    ),
-                  );
-                }
-              },
-            ),
-            const Divider(height: 1, color: AppColors.divider),
-          ],
-        );
-      },
+      ),
+      child: TabBar(
+        controller: controller,
+        labelStyle: AppTypography.subhead.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: AppTypography.subhead,
+        labelColor: AppColors.textPrimary,
+        unselectedLabelColor: AppColors.textSecondary,
+        indicatorColor: AppColors.brandPrimary,
+        indicatorWeight: 2,
+        indicatorSize: TabBarIndicatorSize.tab,
+        dividerColor: Colors.transparent,
+        tabs: [
+          Semantics(
+            label: '${l10n.tabDaily} view tab.',
+            selected: controller.index == 0,
+            child: Tab(text: l10n.tabDaily),
+          ),
+          Semantics(
+            label: '${l10n.tabCalendar} view tab.',
+            selected: controller.index == 1,
+            child: Tab(text: l10n.tabCalendar),
+          ),
+          Semantics(
+            label: '${l10n.tabMonthly} view tab.',
+            selected: controller.index == 2,
+            child: Tab(text: l10n.tabMonthly),
+          ),
+          Semantics(
+            label: '${l10n.tabSummary} view tab.',
+            selected: controller.index == 3,
+            child: Tab(text: l10n.tabSummary),
+          ),
+          Semantics(
+            label: '${l10n.tabDescription} view tab.',
+            selected: controller.index == 4,
+            child: Tab(text: l10n.tabDescription),
+          ),
+        ],
+      ),
     );
   }
+}
 
-  Color? _parseColor(String hex) {
-    try {
-      final clean = hex.replaceAll('#', '');
-      return Color(int.parse('FF$clean', radix: 16));
-    } catch (_) {
-      return null;
-    }
+// ---------------------------------------------------------------------------
+// FABs
+// ---------------------------------------------------------------------------
+
+class _Fabs extends StatelessWidget {
+  const _Fabs();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: AppSpacing.lg,
+        right: 0,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Semantics(
+            label: 'Add from bookmark',
+            button: true,
+            child: SizedBox(
+              width: 44,
+              height: 44,
+              child: FloatingActionButton(
+                heroTag: 'bookmark_fab',
+                onPressed: () {
+                  // Sprint 6: BookmarkPickerModal
+                },
+                backgroundColor: AppColors.bgSecondary,
+                elevation: 2,
+                mini: true,
+                child: const Icon(
+                  Icons.bookmark_outline,
+                  color: AppColors.textSecondary,
+                  size: 20,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Semantics(
+            label: 'Add new transaction',
+            button: true,
+            child: FloatingActionButton(
+              heroTag: 'add_transaction_fab',
+              onPressed: () => context.push(Routes.addTransaction),
+              backgroundColor: AppColors.brandPrimary,
+              child: const Icon(
+                Icons.add,
+                color: AppColors.textOnBrand,
+                size: 24,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
 // ---------------------------------------------------------------------------
-// Sealed list item union types
+// Description view placeholder
 // ---------------------------------------------------------------------------
 
-sealed class _ListItem {}
+/// Placeholder for the Description tab — full implementation deferred to a
+/// future sprint.
+class _DescriptionView extends StatelessWidget {
+  const _DescriptionView();
 
-class _HeaderItem extends _ListItem {
-  _HeaderItem({required this.date, required this.dailyTotal});
-
-  final DateTime date;
-  final double dailyTotal;
-}
-
-class _TxItem extends _ListItem {
-  _TxItem({required this.transaction});
-
-  final Transaction transaction;
+  @override
+  Widget build(BuildContext context) =>
+      const Center(child: Text('Coming soon'));
 }

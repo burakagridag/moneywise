@@ -7,6 +7,10 @@ import '../local/database.dart';
 
 // Import domain entity with alias to avoid name collision with Drift-generated Transaction class.
 import '../../domain/entities/transaction.dart' as domain;
+import '../../domain/entities/transaction_with_details.dart';
+
+export '../local/daos/transaction_dao.dart'
+    show DayTotals, MonthTotals, TransactionWithNames;
 
 part 'transaction_repository.g.dart';
 
@@ -25,7 +29,7 @@ class TransactionRepository {
   final TransactionDao _dao;
 
   // ---------------------------------------------------------------------------
-  // Queries
+  // Queries — Sprint 3
   // ---------------------------------------------------------------------------
 
   /// Reactive stream of non-deleted transactions for [year]/[month].
@@ -49,6 +53,54 @@ class TransactionRepository {
   /// Reactive stream of current account balance.
   Stream<double> watchAccountBalance(String accountId) =>
       _dao.watchAccountBalance(accountId);
+
+  // ---------------------------------------------------------------------------
+  // Queries — Sprint 4 additions
+  // ---------------------------------------------------------------------------
+
+  /// Reactive stream of non-deleted transactions for [year]/[month] using
+  /// date-range queries. Alias for Sprint 4 providers.
+  Stream<List<domain.Transaction>> watchTransactionsForMonth(
+    int year,
+    int month,
+  ) {
+    final from = DateTime(year, month);
+    final to =
+        DateTime(year, month + 1).subtract(const Duration(microseconds: 1));
+    return _dao
+        .watchTransactionsByDateRange(from, to)
+        .map((rows) => rows.map(_mapToDomain).toList());
+  }
+
+  /// Reactive stream of non-deleted transactions for a specific [date].
+  Stream<List<domain.Transaction>> watchTransactionsForDay(DateTime date) {
+    return _dao
+        .watchTransactionsByDate(date)
+        .map((rows) => rows.map(_mapToDomain).toList());
+  }
+
+  /// Emits transactions enriched with resolved category and account names for
+  /// the given month. Used by DailyView (BUG-003).
+  Stream<List<TransactionWithDetails>> watchTransactionsWithDetailsForMonth(
+    int year,
+    int month,
+  ) {
+    final from = DateTime(year, month);
+    final to =
+        DateTime(year, month + 1).subtract(const Duration(microseconds: 1));
+    return _dao
+        .watchTransactionsWithNamesByDateRange(from, to)
+        .map((rows) => rows.map(_mapToDetailEntity).toList());
+  }
+
+  Stream<MonthTotals> watchMonthlyTotals(int year, int month) =>
+      _dao.watchMonthlyTotals(year, month);
+
+  Stream<List<DayTotals>> watchDailyTotals(int year, int month) =>
+      _dao.watchDailyTotals(year, month);
+
+  Stream<Map<int, MonthTotals>> watchYearlyMonthlyTotals(int year) =>
+      _dao.watchYearlyMonthlyTotals(year);
 
   // ---------------------------------------------------------------------------
   // Write paths
@@ -88,6 +140,16 @@ class TransactionRepository {
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
         isDeleted: row.isDeleted,
+      );
+
+  TransactionWithDetails _mapToDetailEntity(TransactionWithNames row) =>
+      TransactionWithDetails(
+        transaction: _mapToDomain(row.transaction),
+        categoryName: row.categoryName,
+        categoryEmoji: row.categoryEmoji,
+        categoryColorHex: row.categoryColorHex,
+        accountName: row.accountName,
+        toAccountName: row.toAccountName,
       );
 
   // ---------------------------------------------------------------------------

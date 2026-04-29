@@ -52,4 +52,7 @@ class AppColors {
     Color(0xFFF78FB3), // pink
     Color(0xFF48CAE4), // teal
   ];
+
+  // Category chart colours (used in SummaryView CategoryBreakdownCard)
+  static const Color categoryPurple = Color(0xFFAB47BC);
 }

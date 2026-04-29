@@ -541,6 +541,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Current Balance'**
   String get currentBalance;
+
+  /// No description provided for @tabDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get tabDaily;
+
+  /// No description provided for @tabCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get tabCalendar;
+
+  /// No description provided for @tabMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get tabMonthly;
+
+  /// No description provided for @tabSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get tabSummary;
+
+  /// No description provided for @tabDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get tabDescription;
+
+  /// No description provided for @transactionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trans.'**
+  String get transactionsTitle;
+
+  /// No description provided for @expenseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exp.'**
+  String get expenseLabel;
+
+  /// No description provided for @totalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get totalLabel;
+
+  /// No description provided for @errorLoadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load data'**
+  String get errorLoadTitle;
+
+  /// No description provided for @errorLoadSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please try again.'**
+  String get errorLoadSubtitle;
+
+  /// No description provided for @retryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retryButton;
+
+  /// No description provided for @dailyEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions yet'**
+  String get dailyEmptyTitle;
+
+  /// No description provided for @dailyEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to add an income, expense or transfer.'**
+  String get dailyEmptySubtitle;
+
+  /// No description provided for @dailyEmptyCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Transaction'**
+  String get dailyEmptyCta;
+
+  /// No description provided for @deleteTransactionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Transaction?'**
+  String get deleteTransactionTitle;
+
+  /// No description provided for @deleteTransactionMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This transaction will be permanently deleted. This action cannot be undone.'**
+  String get deleteTransactionMessage;
+
+  /// No description provided for @deleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteAction;
+
+  /// No description provided for @editAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editAction;
+
+  /// No description provided for @calendarNoTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions'**
+  String get calendarNoTransactions;
+
+  /// No description provided for @calendarDayPanelNoTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions for this day.\nTap + to add one.'**
+  String get calendarDayPanelNoTransactions;
+
+  /// No description provided for @monthlyNoTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions this month.'**
+  String get monthlyNoTransactions;
+
+  /// No description provided for @monthlyCurrentWeekLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get monthlyCurrentWeekLabel;
+
+  /// No description provided for @savingsRateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings Rate'**
+  String get savingsRateLabel;
+
+  /// No description provided for @accountsCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get accountsCardTitle;
+
+  /// No description provided for @budgetCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get budgetCardTitle;
+
+  /// No description provided for @categoryBreakdownTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending Breakdown'**
+  String get categoryBreakdownTitle;
+
+  /// No description provided for @exportToExcelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export to Excel'**
+  String get exportToExcelTitle;
+
+  /// No description provided for @exportComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Export feature coming soon'**
+  String get exportComingSoon;
+
+  /// No description provided for @setBudgetCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Budget'**
+  String get setBudgetCta;
+
+  /// No description provided for @budgetNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget not configured yet.'**
+  String get budgetNotConfigured;
+
+  /// No description provided for @seeAllButton.
+  ///
+  /// In en, this message translates to:
+  /// **'See All'**
+  String get seeAllButton;
+
+  /// No description provided for @noExpensesThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses this month.'**
+  String get noExpensesThisMonth;
+
+  /// No description provided for @noBudgetThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No budget for this period.'**
+  String get noBudgetThisMonth;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
 }
 
 class _AppLocalizationsDelegate

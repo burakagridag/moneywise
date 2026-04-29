@@ -15,4 +15,7 @@ class Routes {
 
   // Sprint 3 routes
   static const String transactionAddEdit = '/transactions/add';
+
+  // Sprint 4 routes — alias used by FAB in TransactionsScreen
+  static const String addTransaction = '/add-transaction';
 }

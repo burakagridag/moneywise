@@ -27,7 +27,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -56,6 +56,10 @@ class AppDatabase extends _$AppDatabase {
             await customStatement(
               'CREATE INDEX IF NOT EXISTS idx_tx_type ON transactions (type)',
             );
+          }
+          if (from < 4) {
+            await m.addColumn(transactions, transactions.isDeleted);
+            await m.addColumn(transactions, transactions.updatedAt);
           }
         },
       );

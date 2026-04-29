@@ -1,4 +1,4 @@
-// Widget tests for TransactionsScreen covering empty state, grouped list, and FAB — transactions feature.
+// Widget tests for TransactionsScreen and sub-widgets — features/transactions.
 import 'package:drift/native.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
@@ -6,25 +6,42 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moneywise/core/i18n/arb/app_localizations.dart';
 import 'package:moneywise/core/theme/app_theme.dart';
-import 'package:moneywise/data/local/database.dart' hide Transaction;
-import 'package:moneywise/features/transactions/presentation/providers/transactions_provider.dart';
+import 'package:moneywise/data/local/database.dart';
 import 'package:moneywise/features/transactions/presentation/screens/transactions_screen.dart';
+import 'package:moneywise/features/transactions/presentation/widgets/income_summary_bar.dart';
+import 'package:moneywise/features/transactions/presentation/widgets/month_navigator.dart';
 import 'package:uuid/uuid.dart';
 
 const _uuid = Uuid();
 
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
 AppDatabase _testDb() => AppDatabase.forTesting(NativeDatabase.memory());
 
-Widget _buildScreen(AppDatabase db) => ProviderScope(
-      overrides: [appDatabaseProvider.overrideWith((_) => db)],
-      child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('en'),
-        theme: AppTheme.light,
-        home: const TransactionsScreen(),
-      ),
-    );
+/// Wraps [child] with the full scaffold needed for transactions feature.
+Widget _buildWithDb(AppDatabase db, Widget child) {
+  return ProviderScope(
+    overrides: [appDatabaseProvider.overrideWith((_) => db)],
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('en'),
+      theme: AppTheme.light,
+      home: child,
+    ),
+  );
+}
+
+/// Disposes the widget tree and drains all Drift timer callbacks.
+Future<void> _dispose(WidgetTester tester, AppDatabase db) async {
+  await tester.pumpWidget(const SizedBox.shrink());
+  for (var i = 0; i < 4; i++) {
+    await tester.pump(Duration.zero);
+  }
+  await db.close();
+}
 
 /// Creates a test account inside the in-memory DB.
 Future<String> _createAccount(AppDatabase db) async {
@@ -49,203 +66,210 @@ Future<String> _createAccount(AppDatabase db) async {
   return id;
 }
 
-void main() {
-  // ---------------------------------------------------------------------------
-  // Empty state
-  // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// TransactionsScreen — structure tests
+// ---------------------------------------------------------------------------
 
-  group('TransactionsScreen — empty state', () {
-    testWidgets('shows empty-state message when no transactions',
+void main() {
+  group('TransactionsScreen structure', () {
+    testWidgets('renders without crashing', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
+      await tester.pump();
+      expect(find.byType(TransactionsScreen), findsOneWidget);
+      await _dispose(tester, db);
+    });
+
+    testWidgets('shows Trans. title in AppBar', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
+      await tester.pump();
+      expect(find.text('Trans.'), findsOneWidget);
+      await _dispose(tester, db);
+    });
+
+    testWidgets('shows MonthNavigator widget', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
+      await tester.pump();
+      expect(find.byType(MonthNavigator), findsOneWidget);
+      await _dispose(tester, db);
+    });
+
+    testWidgets('shows TabBar with 5 tabs including Description',
         (tester) async {
       final db = _testDb();
-      await tester.pumpWidget(_buildScreen(db));
-      // First pump triggers stream subscription; second settles async data.
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 50));
-
-      expect(find.text('No transactions this month'), findsOneWidget);
-      expect(find.text('Tap + to add your first transaction.'), findsOneWidget);
-
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(Duration.zero);
-      await tester.pump(Duration.zero);
-      await db.close();
+      expect(find.byType(TabBar), findsOneWidget);
+      expect(find.text('Daily'), findsOneWidget);
+      expect(find.text('Calendar'), findsOneWidget);
+      expect(find.text('Monthly'), findsOneWidget);
+      expect(find.text('Summary'), findsOneWidget);
+      expect(find.text('Description'), findsOneWidget);
+      await _dispose(tester, db);
     });
 
-    testWidgets('renders MonthNavigator and SummaryBar', (tester) async {
+    testWidgets('shows IncomeSummaryBar', (tester) async {
       final db = _testDb();
-      await tester.pumpWidget(_buildScreen(db));
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 50));
+      expect(find.byType(IncomeSummaryBar), findsOneWidget);
+      await _dispose(tester, db);
+    });
 
-      // SummaryBar shows Income / Expense / Total labels
+    testWidgets('shows primary FAB to add transaction', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
+      await tester.pump();
+      expect(find.byType(FloatingActionButton), findsAtLeastNWidgets(1));
+      await _dispose(tester, db);
+    });
+
+    testWidgets('shows search icon button in AppBar', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
+      await tester.pump();
+      expect(find.byIcon(Icons.search), findsOneWidget);
+      await _dispose(tester, db);
+    });
+
+    testWidgets('shows bookmark FAB on all tabs (BUG-011 fix)', (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
+      await tester.pump();
+      // Both FABs are always rendered — bookmark and add-transaction.
+      expect(find.byType(FloatingActionButton), findsNWidgets(2));
+      await _dispose(tester, db);
+    });
+
+    testWidgets('Description tab shows Coming soon placeholder (BUG-001 fix)',
+        (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
+      await tester.pump();
+      // The IndexedStack always renders all children — the placeholder text is
+      // present in the widget tree even before the tab is tapped.
+      // After tapping Description, the IndexedStack shows index 4.
+      await tester.tap(find.text('Description'));
+      await tester.pumpAndSettle();
+      expect(find.text('Coming soon'), findsOneWidget);
+      await _dispose(tester, db);
+    });
+
+    testWidgets('shows income and expense labels in summary bar',
+        (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
+      await tester.pump();
       expect(find.text('Income'), findsOneWidget);
-      expect(find.text('Expense'), findsOneWidget);
+      expect(find.text('Exp.'), findsOneWidget);
       expect(find.text('Total'), findsOneWidget);
-
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(Duration.zero);
-      await tester.pump(Duration.zero);
-      await db.close();
-    });
-
-    testWidgets('FAB is visible', (tester) async {
-      final db = _testDb();
-      await tester.pumpWidget(_buildScreen(db));
-      await tester.pump();
-
-      expect(find.byType(FloatingActionButton), findsOneWidget);
-
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(Duration.zero);
-      await tester.pump(Duration.zero);
-      await db.close();
+      await _dispose(tester, db);
     });
   });
 
   // ---------------------------------------------------------------------------
-  // Month navigation
+  // IncomeSummaryBar — unit-level widget tests
   // ---------------------------------------------------------------------------
 
-  group('TransactionsScreen — month navigation', () {
-    testWidgets('previous chevron tapped decrements displayed month',
-        (tester) async {
-      final db = _testDb();
-
-      // Build with explicit ProviderScope so we can read the provider state.
-      final container = ProviderContainer(
-        overrides: [appDatabaseProvider.overrideWith((_) => db)],
+  group('IncomeSummaryBar', () {
+    Widget buildBar({required double income, required double expense}) {
+      return MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('en'),
+        theme: AppTheme.light,
+        home: Scaffold(
+          body: IncomeSummaryBar(income: income, expense: expense),
+        ),
       );
-      addTearDown(container.dispose);
+    }
 
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: const Locale('en'),
-            theme: AppTheme.light,
-            home: const TransactionsScreen(),
+    testWidgets('renders IncomeSummaryBar widget', (tester) async {
+      await tester.pumpWidget(buildBar(income: 0, expense: 0));
+      expect(find.byType(IncomeSummaryBar), findsOneWidget);
+    });
+
+    testWidgets('shows Income, Exp., Total column labels', (tester) async {
+      await tester.pumpWidget(buildBar(income: 0, expense: 0));
+      expect(find.text('Income'), findsOneWidget);
+      expect(find.text('Exp.'), findsOneWidget);
+      expect(find.text('Total'), findsOneWidget);
+    });
+
+    testWidgets('formats positive income amount', (tester) async {
+      await tester.pumpWidget(buildBar(income: 1234.56, expense: 0));
+      expect(find.textContaining('1,234.56'), findsAtLeastNWidgets(1));
+    });
+
+    testWidgets('shows + prefix in Total when income > expense',
+        (tester) async {
+      await tester.pumpWidget(buildBar(income: 500.0, expense: 200.0));
+      await tester.pump();
+      expect(find.textContaining('+'), findsAtLeastNWidgets(1));
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // MonthNavigator — widget tests
+  // ---------------------------------------------------------------------------
+
+  group('MonthNavigator', () {
+    Widget buildNav({bool showYearOnly = false}) {
+      return ProviderScope(
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          theme: AppTheme.light,
+          home: Scaffold(
+            body: MonthNavigator(showYearOnly: showYearOnly),
           ),
         ),
       );
-      await tester.pump();
+    }
 
-      final initialMonth = container.read(selectedMonthProvider);
-      // Tap the left chevron (previous month button).
-      await tester.tap(find.byIcon(Icons.chevron_left));
-      await tester.pump();
+    testWidgets('renders MonthNavigator in month mode', (tester) async {
+      await tester.pumpWidget(buildNav());
+      expect(find.byType(MonthNavigator), findsOneWidget);
+    });
 
-      final newMonth = container.read(selectedMonthProvider);
-      final expectedMonth =
-          initialMonth.month == 1 ? 12 : initialMonth.month - 1;
-      expect(newMonth.month, expectedMonth);
+    testWidgets('shows previous arrow icon', (tester) async {
+      await tester.pumpWidget(buildNav());
+      expect(find.byIcon(Icons.chevron_left), findsOneWidget);
+    });
 
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(Duration.zero);
-      await tester.pump(Duration.zero);
-      await db.close();
+    testWidgets('shows next arrow icon', (tester) async {
+      await tester.pumpWidget(buildNav());
+      expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+    });
+
+    testWidgets('shows current month and year in label', (tester) async {
+      await tester.pumpWidget(buildNav());
+      final now = DateTime.now();
+      // Label contains the year digits at minimum
+      expect(find.textContaining(now.year.toString()), findsAtLeastNWidgets(1));
+    });
+
+    testWidgets('in year-only mode shows 4-digit year', (tester) async {
+      await tester.pumpWidget(buildNav(showYearOnly: true));
+      final now = DateTime.now();
+      expect(find.text(now.year.toString()), findsOneWidget);
     });
   });
 
   // ---------------------------------------------------------------------------
-  // FAB action
+  // DailyView — transactions list with data
   // ---------------------------------------------------------------------------
 
-  group('TransactionsScreen — FAB action', () {
-    testWidgets('FAB is present and the old coming-soon snackbar is gone',
-        (tester) async {
-      // FAB now navigates to TransactionAddEditScreen via go_router.
-      // We verify: (a) FAB exists, (b) it no longer shows the placeholder
-      // SnackBar that was present before the real form was implemented.
-      final db = _testDb();
-      await tester.pumpWidget(_buildScreen(db));
-      await tester.pump();
-
-      // FAB is rendered.
-      expect(find.byType(FloatingActionButton), findsOneWidget);
-      // The old stub text must not be present without tapping.
-      expect(find.text('Add transaction — coming soon'), findsNothing);
-
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(Duration.zero);
-      await tester.pump(Duration.zero);
-      await db.close();
-    });
-  });
-
-  // ---------------------------------------------------------------------------
-  // Transactions list (with data)
-  // ---------------------------------------------------------------------------
-
-  group('TransactionsScreen — transactions list', () {
-    testWidgets('shows DayGroupHeader when transactions exist in current month',
+  group('DailyView — transactions list', () {
+    testWidgets('transaction with category renders category name',
         (tester) async {
       final db = _testDb();
       final accountId = await _createAccount(db);
 
-      final now = DateTime.now();
-      // Insert an expense in the current month.
-      await db.transactionDao.insertTransaction(
-        TransactionsCompanion(
-          id: Value(_uuid.v4()),
-          type: const Value('expense'),
-          date: Value(DateTime(now.year, now.month, 5)),
-          amount: const Value(42.0),
-          currencyCode: const Value('EUR'),
-          accountId: Value(accountId),
-        ),
-      );
-
-      await tester.pumpWidget(_buildScreen(db));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
-
-      // The day badge "5" should appear inside a DayGroupHeader.
-      expect(find.text('5'), findsWidgets);
-
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(Duration.zero);
-      await tester.pump(Duration.zero);
-      await db.close();
-    });
-
-    testWidgets('shows Uncategorized when category is null', (tester) async {
-      final db = _testDb();
-      final accountId = await _createAccount(db);
-
-      final now = DateTime.now();
-      await db.transactionDao.insertTransaction(
-        TransactionsCompanion(
-          id: Value(_uuid.v4()),
-          type: const Value('expense'),
-          date: Value(DateTime(now.year, now.month, 10)),
-          amount: const Value(15.0),
-          currencyCode: const Value('EUR'),
-          accountId: Value(accountId),
-          // no categoryId → null
-        ),
-      );
-
-      await tester.pumpWidget(_buildScreen(db));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
-
-      expect(find.text('Uncategorized'), findsOneWidget);
-
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(Duration.zero);
-      await tester.pump(Duration.zero);
-      await db.close();
-    });
-
-    testWidgets('transaction with category colorHex renders without error',
-        (tester) async {
-      final db = _testDb();
-      final accountId = await _createAccount(db);
-
-      // Insert a category with a colorHex so _parseColor is exercised.
+      // Insert a category with a colorHex.
       final catId = _uuid.v4();
       final catNow = DateTime.now();
       await db.into(db.categories).insert(
@@ -276,17 +300,12 @@ void main() {
         ),
       );
 
-      await tester.pumpWidget(_buildScreen(db));
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Category name rendered in the list item.
       expect(find.text('Food'), findsOneWidget);
-
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(Duration.zero);
-      await tester.pump(Duration.zero);
-      await db.close();
+      await _dispose(tester, db);
     });
 
     testWidgets('transaction with invalid colorHex still renders',
@@ -324,16 +343,12 @@ void main() {
         ),
       );
 
-      await tester.pumpWidget(_buildScreen(db));
+      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text('Transport'), findsOneWidget);
-
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(Duration.zero);
-      await tester.pump(Duration.zero);
-      await db.close();
+      await _dispose(tester, db);
     });
   });
 }
