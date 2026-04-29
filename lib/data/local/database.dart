@@ -121,3 +121,4 @@ AppDatabase appDatabase(AppDatabaseRef ref) {
   ref.onDispose(db.close);
   return db;
 }
+
