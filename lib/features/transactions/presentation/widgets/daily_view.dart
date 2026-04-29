@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../providers/transactions_provider.dart';
 import 'transaction_row.dart';
@@ -101,7 +103,7 @@ class _DayGroup extends StatelessWidget {
         ...transactions.map(
           (tx) => TransactionRow(
             transaction: tx,
-            currencySymbol: '€',
+            currencySymbol: AppConstants.defaultCurrencySymbol,
           ),
         ),
       ],
@@ -239,6 +241,7 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xxxl),
@@ -252,7 +255,7 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'No transactions yet',
+              l10n.dailyEmptyTitle,
               style: AppTypography.title3.copyWith(
                 color: AppColors.textPrimary,
               ),
@@ -260,7 +263,7 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Tap + to add an income, expense or transfer.',
+              l10n.dailyEmptySubtitle,
               style: AppTypography.subhead.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -280,6 +283,7 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -287,7 +291,7 @@ class _ErrorState extends StatelessWidget {
           const Icon(Icons.error_outline, size: 48, color: AppColors.error),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Could not load transactions',
+            l10n.errorLoadTitle,
             style: AppTypography.headline.copyWith(
               color: AppColors.textPrimary,
             ),
@@ -296,7 +300,7 @@ class _ErrorState extends StatelessWidget {
           TextButton(
             onPressed: onRetry,
             child: Text(
-              'Retry',
+              l10n.retryButton,
               style: AppTypography.subhead.copyWith(
                 color: AppColors.brandPrimary,
               ),

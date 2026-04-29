@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../providers/transactions_provider.dart';
 
@@ -129,7 +130,7 @@ class _StatSummaryCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Savings Rate',
+                      AppLocalizations.of(context)!.savingsRateLabel,
                       style: AppTypography.caption1.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -230,7 +231,7 @@ class _AccountsCard extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    'Accounts',
+                    AppLocalizations.of(context)!.accountsCardTitle,
                     style: AppTypography.headline.copyWith(
                       color: AppColors.textPrimary,
                     ),
@@ -267,8 +268,8 @@ class _AccountsCard extends StatelessWidget {
                   children: [
                     Text(
                       totalExpense == 0
-                          ? 'No expenses this month.'
-                          : 'Exp. (Cash, Accounts)',
+                          ? AppLocalizations.of(context)!.noExpensesThisMonth
+                          : AppLocalizations.of(context)!.expenseLabel,
                       style: AppTypography.subhead.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -329,7 +330,7 @@ class _BudgetCard extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
-                  'Budget',
+                  AppLocalizations.of(context)!.budgetCardTitle,
                   style: AppTypography.headline.copyWith(
                     color: AppColors.textPrimary,
                   ),
@@ -345,7 +346,7 @@ class _BudgetCard extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      'Today',
+                      AppLocalizations.of(context)!.today,
                       style: AppTypography.caption1.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -363,42 +364,44 @@ class _BudgetCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             // Budget not configured message
             Text(
-              'Budget not configured yet.',
+              AppLocalizations.of(context)!.budgetNotConfigured,
               style: AppTypography.subhead.copyWith(
                 color: AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
             // Progress bar with Today indicator
-            Stack(
-              children: [
-                Container(
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: AppColors.bgTertiary,
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                  ),
-                ),
-                // Today marker
-                Positioned(
-                  left: todayRatio.clamp(0.0, 1.0) *
-                      (MediaQuery.of(context).size.width -
-                          2 * AppSpacing.lg * 2),
-                  top: -2,
-                  child: Container(
-                    width: 2,
-                    height: 12,
-                    color: AppColors.textTertiary,
-                  ),
-                ),
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return Stack(
+                  children: [
+                    Container(
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: AppColors.bgTertiary,
+                        borderRadius: BorderRadius.circular(AppRadius.pill),
+                      ),
+                    ),
+                    // Today marker positioned relative to available width
+                    Positioned(
+                      left: todayRatio.clamp(0.0, 1.0) * constraints.maxWidth,
+                      top: -2,
+                      child: Container(
+                        width: 2,
+                        height: 12,
+                        color: AppColors.textTertiary,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: AppSpacing.sm),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Total Budget',
+                  AppLocalizations.of(context)!.budgetCardTitle,
                   style: AppTypography.caption1.copyWith(
                     color: AppColors.textTertiary,
                   ),
@@ -454,7 +457,7 @@ class _CategoryBreakdownCard extends ConsumerWidget {
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
-                  'Spending Breakdown',
+                  AppLocalizations.of(context)!.categoryBreakdownTitle,
                   style: AppTypography.headline.copyWith(
                     color: AppColors.textPrimary,
                   ),
@@ -470,7 +473,7 @@ class _CategoryBreakdownCard extends ConsumerWidget {
             const SizedBox(height: AppSpacing.lg),
             Center(
               child: Text(
-                'No expenses this month.',
+                AppLocalizations.of(context)!.noExpensesThisMonth,
                 style: AppTypography.subhead.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -516,7 +519,7 @@ class _ExportCard extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
-                'Export to Excel',
+                AppLocalizations.of(context)!.exportToExcelTitle,
                 style: AppTypography.bodyMedium.copyWith(
                   color: AppColors.textPrimary,
                 ),
@@ -538,7 +541,7 @@ class _ExportCard extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Export feature coming soon',
+          AppLocalizations.of(context)!.exportComingSoon,
           style: AppTypography.subhead.copyWith(color: AppColors.textPrimary),
         ),
         backgroundColor: AppColors.bgTertiary,

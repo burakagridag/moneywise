@@ -44,7 +44,10 @@ class Transactions extends Table {
   BoolColumn get isExcluded => boolean().withDefault(const Constant(false))();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  /// Timestamp of the last mutation — used for sync conflict resolution.
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+
+  /// Soft-delete flag — true means the row is hidden but retained for sync.
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
 
   @override

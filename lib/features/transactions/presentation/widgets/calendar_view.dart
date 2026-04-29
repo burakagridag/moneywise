@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../providers/transactions_provider.dart';
 import 'transaction_row.dart';
@@ -426,7 +428,7 @@ class _DayDetailPanel extends ConsumerWidget {
               error: (_, __) => Padding(
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 child: Text(
-                  'Could not load transactions',
+                  AppLocalizations.of(context)!.errorLoadTitle,
                   style: AppTypography.subhead.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -437,7 +439,8 @@ class _DayDetailPanel extends ConsumerWidget {
                   return Padding(
                     padding: const EdgeInsets.all(AppSpacing.lg),
                     child: Text(
-                      'No transactions for this day.\nTap + to add one.',
+                      AppLocalizations.of(context)!
+                          .calendarDayPanelNoTransactions,
                       style: AppTypography.subhead.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -450,6 +453,7 @@ class _DayDetailPanel extends ConsumerWidget {
                   itemCount: txs.length,
                   itemBuilder: (_, i) => TransactionRow(
                     transaction: txs[i],
+                    currencySymbol: AppConstants.defaultCurrencySymbol,
                   ),
                 );
               },

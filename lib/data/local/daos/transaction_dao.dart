@@ -106,6 +106,7 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   // Queries — Sprint 4 additions
   // ---------------------------------------------------------------------------
 
+
   /// Emits all non-deleted transactions in [from]..[to] ordered by date DESC,
   /// then createdAt DESC.
   Stream<List<Transaction>> watchTransactionsByDateRange(

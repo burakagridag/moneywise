@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../domain/entities/transaction.dart';
 
@@ -172,6 +173,7 @@ class TransactionRow extends StatelessWidget {
   }
 
   Future<bool> _confirmDelete(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -180,19 +182,18 @@ class TransactionRow extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
         title: Text(
-          'Delete Transaction?',
+          l10n.deleteTransactionTitle,
           style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
         ),
         content: Text(
-          'This transaction will be permanently deleted. This action cannot '
-          'be undone.',
+          l10n.deleteTransactionMessage,
           style: AppTypography.subhead.copyWith(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
             child: Text(
-              'Cancel',
+              l10n.cancel,
               style: AppTypography.subhead.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -201,7 +202,7 @@ class TransactionRow extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
             child: Text(
-              'Delete',
+              l10n.deleteAction,
               style: AppTypography.subhead.copyWith(color: AppColors.error),
             ),
           ),

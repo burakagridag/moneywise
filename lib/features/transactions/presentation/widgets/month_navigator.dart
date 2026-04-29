@@ -42,6 +42,14 @@ class _MonthNavigatorContent extends ConsumerWidget {
 
     final date = DateTime(period.year, period.month);
     final label = DateFormat.yMMMM().format(date); // e.g. "April 2026"
+    final prevDate = DateTime(
+      period.month == 1 ? period.year - 1 : period.year,
+      period.month == 1 ? 12 : period.month - 1,
+    );
+    final nextDate = DateTime(
+      period.month == 12 ? period.year + 1 : period.year,
+      period.month == 12 ? 1 : period.month + 1,
+    );
 
     return _NavigatorBar(
       label: label,
@@ -49,8 +57,9 @@ class _MonthNavigatorContent extends ConsumerWidget {
       onNext: notifier.goToNextMonth,
       onLabelTap: () => _showMonthYearPicker(context, ref, period),
       previousSemanticsLabel:
-          'Previous month, ${DateFormat.yMMMM().format(date)}',
-      nextSemanticsLabel: 'Next month, ${DateFormat.yMMMM().format(date)}',
+          'Go to previous month, ${DateFormat.yMMMM().format(prevDate)}',
+      nextSemanticsLabel:
+          'Go to next month, ${DateFormat.yMMMM().format(nextDate)}',
       labelSemanticsHint: 'Current period: $label. Tap to change.',
     );
   }
@@ -87,8 +96,8 @@ class _YearNavigator extends ConsumerWidget {
       onPrevious: notifier.goToPreviousYear,
       onNext: notifier.goToNextYear,
       onLabelTap: () => _showYearPicker(context, ref, year),
-      previousSemanticsLabel: 'Previous year, ${year - 1}',
-      nextSemanticsLabel: 'Next year, ${year + 1}',
+      previousSemanticsLabel: 'Go to previous year, ${year - 1}',
+      nextSemanticsLabel: 'Go to next year, ${year + 1}',
       labelSemanticsHint: 'Current year: $year. Tap to change.',
     );
   }

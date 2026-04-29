@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../providers/transactions_provider.dart';
 
@@ -259,7 +260,7 @@ class _NoTransactionsRow extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          'No transactions this month.',
+          AppLocalizations.of(context)!.monthlyNoTransactions,
           style: AppTypography.caption1.copyWith(
             color: AppColors.textTertiary,
           ),
