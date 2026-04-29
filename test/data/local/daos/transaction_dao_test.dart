@@ -292,5 +292,55 @@ void main() {
           await db.transactionDao.watchAccountBalance(accountId).first;
       expect(newBal, initialBal);
     });
+
+    test('transfer debits source account', () async {
+      final sourceId = await _createTestAccount(db);
+      final destId = await _createTestAccount(db);
+
+      final sourceBefore =
+          await db.transactionDao.watchAccountBalance(sourceId).first;
+
+      // Transfer 40 from source to destination.
+      await db.transactionDao.insertTransaction(
+        TransactionsCompanion(
+          id: Value(_uuid.v4()),
+          type: const Value('transfer'),
+          date: Value(DateTime.now()),
+          amount: const Value(40.0),
+          currencyCode: const Value('TRY'),
+          accountId: Value(sourceId),
+          toAccountId: Value(destId),
+        ),
+      );
+
+      final sourceAfter =
+          await db.transactionDao.watchAccountBalance(sourceId).first;
+      expect(sourceAfter, sourceBefore - 40.0);
+    });
+
+    test('transfer credits destination account', () async {
+      final sourceId = await _createTestAccount(db);
+      final destId = await _createTestAccount(db);
+
+      final destBefore =
+          await db.transactionDao.watchAccountBalance(destId).first;
+
+      // Transfer 60 from source to destination.
+      await db.transactionDao.insertTransaction(
+        TransactionsCompanion(
+          id: Value(_uuid.v4()),
+          type: const Value('transfer'),
+          date: Value(DateTime.now()),
+          amount: const Value(60.0),
+          currencyCode: const Value('TRY'),
+          accountId: Value(sourceId),
+          toAccountId: Value(destId),
+        ),
+      );
+
+      final destAfter =
+          await db.transactionDao.watchAccountBalance(destId).first;
+      expect(destAfter, destBefore + 60.0);
+    });
   });
 }

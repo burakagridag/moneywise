@@ -6,6 +6,7 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'encryption/db_encryption_service.dart';
 
 import 'daos/account_dao.dart';
 import 'daos/category_dao.dart';
@@ -99,10 +100,14 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'moneywise.db'));
-    // NOTE: SQLCipher encryption is deferred to Sprint 3 (ADR-003).
-    // sqlcipher_flutter_libs is already linked so the binary is ready.
-    // Sprint 3 will add a key-derivation step and migration from plaintext.
-    return NativeDatabase.createInBackground(file);
+    final key = await DbEncryptionService.getEncryptionKey();
+    return NativeDatabase.createInBackground(
+      file,
+      setup: (db) {
+        // Apply the SQLCipher encryption key before Drift opens the schema.
+        db.execute("PRAGMA key = \"x'$key'\";");
+      },
+    );
   });
 }
 

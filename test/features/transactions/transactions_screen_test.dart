@@ -150,19 +150,23 @@ void main() {
   });
 
   // ---------------------------------------------------------------------------
-  // FAB snackbar
+  // FAB action
   // ---------------------------------------------------------------------------
 
   group('TransactionsScreen — FAB action', () {
-    testWidgets('tapping FAB shows coming-soon snackbar', (tester) async {
+    testWidgets('FAB is present and the old coming-soon snackbar is gone',
+        (tester) async {
+      // FAB now navigates to TransactionAddEditScreen via go_router.
+      // We verify: (a) FAB exists, (b) it no longer shows the placeholder
+      // SnackBar that was present before the real form was implemented.
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
       await tester.pump();
 
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pump();
-
-      expect(find.text('Add transaction — coming soon'), findsOneWidget);
+      // FAB is rendered.
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      // The old stub text must not be present without tapping.
+      expect(find.text('Add transaction — coming soon'), findsNothing);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);

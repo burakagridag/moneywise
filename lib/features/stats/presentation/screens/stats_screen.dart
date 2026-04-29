@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/widgets/month_navigator.dart';
-import '../../../../data/repositories/category_repository.dart';
 import '../providers/stats_provider.dart';
 import '../widgets/category_legend_row.dart';
 import '../widgets/pie_chart_widget.dart';
@@ -22,18 +22,6 @@ class StatsScreen extends ConsumerStatefulWidget {
 
 class _StatsScreenState extends ConsumerState<StatsScreen> {
   int _selectedSubTab = 0; // 0=Stats, 1=Budget, 2=Note
-
-  // Color palette per SPEC-010 (8 colors + "Other" = textTertiary)
-  static const _palette = [
-    Color(0xFFFF6B5C), // coral — brand primary
-    Color(0xFFFF9F40), // orange
-    Color(0xFFFFD166), // yellow
-    Color(0xFF06D6A0), // green
-    Color(0xFF4A90E2), // blue
-    Color(0xFF9B59B6), // purple
-    Color(0xFFF78FB3), // pink
-    Color(0xFF48CAE4), // teal
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +56,9 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                   }
                 },
               ),
-              const Expanded(child: _StatsContent(palette: _palette)),
+              const Expanded(
+                child: _StatsContent(palette: AppColors.chartPalette),
+              ),
             ] else
               Expanded(child: _PlaceholderSubTab(tabIndex: _selectedSubTab)),
           ],
@@ -78,7 +68,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   }
 }
 
-class _SubTabBar extends StatelessWidget {
+class _SubTabBar extends ConsumerWidget {
   const _SubTabBar({
     required this.selectedIndex,
     required this.onChanged,
@@ -88,8 +78,13 @@ class _SubTabBar extends StatelessWidget {
   final void Function(int) onChanged;
 
   @override
-  Widget build(BuildContext context) {
-    const tabs = ['Stats', 'Budget', 'Note'];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final tabs = [
+      l10n.statsSubTabStats,
+      l10n.statsSubTabBudget,
+      l10n.statsSubTabNote,
+    ];
     return Container(
       height: 44,
       decoration: const BoxDecoration(
@@ -141,7 +136,9 @@ class _SubTabBar extends StatelessWidget {
             ),
             child: GestureDetector(
               onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Coming soon')),
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.comingSoon),
+                ),
               ),
               child: Text(
                 'M ▼',
@@ -167,6 +164,7 @@ class _IncomeExpenseToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       height: 44,
       decoration: const BoxDecoration(
@@ -176,12 +174,12 @@ class _IncomeExpenseToggle extends StatelessWidget {
       child: Row(
         children: [
           _ToggleOption(
-            label: 'Income',
+            label: l10n.income,
             isActive: statsType == 'income',
             onTap: () => onToggle('income'),
           ),
           _ToggleOption(
-            label: 'Exp.',
+            label: l10n.expense,
             isActive: statsType == 'expense',
             onTap: () => onToggle('expense'),
           ),
@@ -235,8 +233,8 @@ class _StatsContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final breakdownAsync = ref.watch(categoryBreakdownProvider);
-    final statsType = ref.watch(statsTypeProvider);
 
     return breakdownAsync.when(
       loading: () => const Center(
@@ -250,13 +248,13 @@ class _StatsContent extends ConsumerWidget {
                 size: 64, color: AppColors.error),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'Could not load statistics.',
+              l10n.couldNotLoadStatistics,
               style:
                   AppTypography.title3.copyWith(color: AppColors.textPrimary),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Please try again.',
+              l10n.pleaseRetryStatistics,
               style: AppTypography.subhead
                   .copyWith(color: AppColors.textSecondary),
             ),
@@ -265,7 +263,7 @@ class _StatsContent extends ConsumerWidget {
               onPressed: () => ref.invalidate(categoryBreakdownProvider),
               style: FilledButton.styleFrom(
                   backgroundColor: AppColors.brandPrimary),
-              child: const Text('Retry'),
+              child: Text(l10n.retry),
             ),
           ],
         ),
@@ -273,72 +271,64 @@ class _StatsContent extends ConsumerWidget {
       data: (breakdown) {
         final segments = _buildSegments(breakdown, palette);
 
-        final catsAsync =
-            ref.watch(categoryRepositoryProvider).watchByType(statsType);
+        final catsAsyncValue = ref.watch(statsCategoryListProvider);
+        final cats = catsAsyncValue.asData?.value ?? [];
 
-        return StreamBuilder(
-          stream: catsAsync,
-          builder: (context, catSnap) {
-            final cats = catSnap.data ?? [];
+        final enrichedSegments = segments.map((s) {
+          final cat = cats.where((c) => c.id == s.label).firstOrNull;
+          return _EnrichedSegment(
+            id: s.label,
+            name: cat?.name ?? (s.label == 'Uncategorized' ? 'Other' : s.label),
+            emoji: cat?.iconEmoji,
+            amount: s.amount,
+            color: s.color,
+            percentage: s.percentage,
+          );
+        }).toList();
 
-            final enrichedSegments = segments.map((s) {
-              final cat = cats.where((c) => c.id == s.label).firstOrNull;
-              return _EnrichedSegment(
-                id: s.label,
-                name: cat?.name ??
-                    (s.label == 'Uncategorized' ? 'Other' : s.label),
-                emoji: cat?.iconEmoji,
-                amount: s.amount,
-                color: s.color,
-                percentage: s.percentage,
-              );
-            }).toList();
-
-            if (enrichedSegments.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'No data for this period',
-                      style: AppTypography.title3
-                          .copyWith(color: AppColors.textPrimary),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Add transactions to see your spending breakdown.',
-                      style: AppTypography.subhead
-                          .copyWith(color: AppColors.textSecondary),
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            return ListView(
+        if (enrichedSegments.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                PieChartWidget(segments: segments),
-                const Divider(height: 1, color: AppColors.divider),
-                ...enrichedSegments.map(
-                  (s) => Column(
-                    children: [
-                      CategoryLegendRow(
-                        categoryName: s.name,
-                        amount: s.amount,
-                        percentage: s.percentage,
-                        badgeColor: s.color,
-                        emoji: s.emoji,
-                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Coming soon')),
-                        ),
-                      ),
-                      const Divider(height: 1, color: AppColors.divider),
-                    ],
-                  ),
+                Text(
+                  l10n.noDataForPeriod,
+                  style: AppTypography.title3
+                      .copyWith(color: AppColors.textPrimary),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  l10n.addTransactionsForBreakdown,
+                  style: AppTypography.subhead
+                      .copyWith(color: AppColors.textSecondary),
                 ),
               ],
-            );
-          },
+            ),
+          );
+        }
+
+        return ListView(
+          children: [
+            PieChartWidget(segments: segments),
+            const Divider(height: 1, color: AppColors.divider),
+            ...enrichedSegments.map(
+              (s) => Column(
+                children: [
+                  CategoryLegendRow(
+                    categoryName: s.name,
+                    amount: s.amount,
+                    percentage: s.percentage,
+                    badgeColor: s.color,
+                    emoji: s.emoji,
+                    onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.comingSoon)),
+                    ),
+                  ),
+                  const Divider(height: 1, color: AppColors.divider),
+                ],
+              ),
+            ),
+          ],
         );
       },
     );
@@ -420,26 +410,27 @@ class _PlaceholderSubTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isbudget = tabIndex == 1;
+    final l10n = AppLocalizations.of(context)!;
+    final isBudget = tabIndex == 1;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            isbudget ? Icons.bar_chart_outlined : Icons.note_alt_outlined,
+            isBudget ? Icons.bar_chart_outlined : Icons.note_alt_outlined,
             size: 64,
             color: AppColors.textTertiary,
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            isbudget ? 'Budget tracking' : 'Spending notes',
+            isBudget ? l10n.budgetTracking : l10n.spendingNotes,
             style: AppTypography.title3.copyWith(color: AppColors.textPrimary),
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            isbudget
-                ? 'Budget management will be available soon.'
-                : 'Note-based summaries will be available soon.',
+            isBudget
+                ? l10n.budgetTrackingComingSoon
+                : l10n.noteSummaryComingSoon,
             style:
                 AppTypography.subhead.copyWith(color: AppColors.textSecondary),
           ),

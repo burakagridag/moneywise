@@ -1,8 +1,13 @@
 // Riverpod providers for selected month navigation and transaction write operations — transactions feature.
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../data/repositories/account_repository.dart';
+import '../../../../data/repositories/category_repository.dart';
 import '../../../../data/repositories/transaction_repository.dart';
+import '../../../../domain/entities/account.dart';
+import '../../../../domain/entities/category.dart';
 import '../../../../domain/entities/transaction.dart';
+import '../../../stats/presentation/providers/stats_provider.dart';
 
 part 'transactions_provider.g.dart';
 
@@ -54,6 +59,24 @@ Stream<List<Transaction>> transactionsByMonth(
 }
 
 // ---------------------------------------------------------------------------
+// Account and category lists exposed to presentation layer
+// ---------------------------------------------------------------------------
+
+/// Reactive account list for use in the transactions feature.
+/// Avoids direct data/ imports in screens.
+@riverpod
+Stream<List<Account>> transactionAccountList(TransactionAccountListRef ref) =>
+    ref.watch(accountRepositoryProvider).watchAccounts();
+
+/// Reactive category list for use in the transactions feature.
+/// Avoids direct data/ imports in screens.
+@riverpod
+Stream<List<Category>> transactionCategoryList(
+  TransactionCategoryListRef ref,
+) =>
+    ref.watch(categoryRepositoryProvider).watchAll();
+
+// ---------------------------------------------------------------------------
 // Write operations
 // ---------------------------------------------------------------------------
 
@@ -65,14 +88,22 @@ class TransactionWriteNotifier extends _$TransactionWriteNotifier {
   void build() {}
 
   /// Persists a new [transaction] via the repository.
-  Future<void> addTransaction(Transaction transaction) =>
-      ref.read(transactionRepositoryProvider).addTransaction(transaction);
+  Future<void> addTransaction(Transaction transaction) async {
+    await ref.read(transactionRepositoryProvider).addTransaction(transaction);
+    ref.invalidate(statsTxnsProvider);
+  }
 
   /// Updates an existing [transaction] via the repository.
-  Future<void> updateTransaction(Transaction transaction) =>
-      ref.read(transactionRepositoryProvider).updateTransaction(transaction);
+  Future<void> updateTransaction(Transaction transaction) async {
+    await ref
+        .read(transactionRepositoryProvider)
+        .updateTransaction(transaction);
+    ref.invalidate(statsTxnsProvider);
+  }
 
   /// Soft-deletes the transaction with the given [id] via the repository.
-  Future<void> deleteTransaction(String id) =>
-      ref.read(transactionRepositoryProvider).deleteTransaction(id);
+  Future<void> deleteTransaction(String id) async {
+    await ref.read(transactionRepositoryProvider).deleteTransaction(id);
+    ref.invalidate(statsTxnsProvider);
+  }
 }

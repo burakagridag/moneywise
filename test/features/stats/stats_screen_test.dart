@@ -132,13 +132,13 @@ void main() {
   // ---------------------------------------------------------------------------
 
   group('StatsScreen — income/expense toggle', () {
-    testWidgets('renders Income and Exp. toggle buttons', (tester) async {
+    testWidgets('renders Income and Expense toggle buttons', (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
       await tester.pump();
 
-      expect(find.text('Income'), findsOneWidget);
-      expect(find.text('Exp.'), findsOneWidget);
+      expect(find.text('Income'), findsAtLeastNWidgets(1));
+      expect(find.text('Expense'), findsAtLeastNWidgets(1));
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);
@@ -168,8 +168,8 @@ void main() {
       );
       await tester.pump();
 
-      // Default is 'expense'. Tap Income.
-      await tester.tap(find.text('Income'));
+      // Default is 'expense'. Tap Income toggle (last match avoids sub-tab).
+      await tester.tap(find.text('Income').last);
       await tester.pump();
 
       expect(container.read(statsTypeProvider), 'income');
@@ -202,10 +202,10 @@ void main() {
       );
       await tester.pump();
 
-      // Tap Income first, then Exp.
-      await tester.tap(find.text('Income'));
+      // Tap Income first, then Expense.
+      await tester.tap(find.text('Income').last);
       await tester.pump();
-      await tester.tap(find.text('Exp.'));
+      await tester.tap(find.text('Expense').last);
       await tester.pump();
 
       expect(container.read(statsTypeProvider), 'expense');

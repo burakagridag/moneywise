@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../domain/entities/account.dart';
+import '../../domain/entities/transaction.dart';
 import '../../features/accounts/presentation/screens/account_add_edit_screen.dart';
 import '../../features/accounts/presentation/screens/accounts_screen.dart';
 import '../../features/more/presentation/screens/category_management_screen.dart';
 import '../../features/more/presentation/screens/more_screen.dart';
 import '../../features/more/presentation/screens/settings_screen.dart';
 import '../../features/stats/presentation/screens/stats_screen.dart';
+import '../../features/transactions/presentation/screens/transaction_add_edit_screen.dart';
 import '../../features/transactions/presentation/screens/transactions_screen.dart';
 import '../i18n/arb/app_localizations.dart';
 import 'routes.dart';
@@ -26,6 +28,14 @@ final appRouter = GoRouter(
             GoRoute(
               path: Routes.transactions,
               builder: (context, state) => const TransactionsScreen(),
+              routes: [
+                GoRoute(
+                  path: 'add',
+                  builder: (context, state) => TransactionAddEditScreen(
+                    transaction: state.extra as Transaction?,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

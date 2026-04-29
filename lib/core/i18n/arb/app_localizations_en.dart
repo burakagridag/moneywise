@@ -151,4 +151,91 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorUpdatingCategory =>
       'Failed to update category. Please try again.';
+
+  @override
+  String get addTransaction => 'Add Transaction';
+
+  @override
+  String get editTransaction => 'Edit Transaction';
+
+  @override
+  String get saveAndContinue => 'Save & Continue';
+
+  @override
+  String get deleteTransaction => 'Delete Transaction';
+
+  @override
+  String get deleteTransactionConfirm =>
+      'Are you sure you want to delete this transaction?';
+
+  @override
+  String get errorDeletingTransaction =>
+      'Failed to delete transaction. Please try again.';
+
+  @override
+  String get errorSavingTransaction =>
+      'Failed to save transaction. Please try again.';
+
+  @override
+  String get noTransactionsThisMonth => 'No transactions this month';
+
+  @override
+  String get tapPlusToAddFirst => 'Tap + to add your first transaction.';
+
+  @override
+  String get failedToLoadTransactions => 'Failed to load transactions.';
+
+  @override
+  String get toAccount => 'To Account';
+
+  @override
+  String get summaryIncome => 'Income';
+
+  @override
+  String get summaryExpense => 'Expense';
+
+  @override
+  String get summaryTotal => 'Total';
+
+  @override
+  String get noDataForPeriod => 'No data for this period';
+
+  @override
+  String get addTransactionsForBreakdown =>
+      'Add transactions to see your spending breakdown.';
+
+  @override
+  String get couldNotLoadStatistics => 'Could not load statistics.';
+
+  @override
+  String get pleaseRetryStatistics => 'Please try again.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get comingSoon => 'Coming soon';
+
+  @override
+  String get statsSubTabStats => 'Stats';
+
+  @override
+  String get statsSubTabBudget => 'Budget';
+
+  @override
+  String get statsSubTabNote => 'Note';
+
+  @override
+  String get budgetTrackingComingSoon =>
+      'Budget management will be available soon.';
+
+  @override
+  String get noteSummaryComingSoon =>
+      'Note-based summaries will be available soon.';
+
+  @override
+  String get budgetTracking => 'Budget tracking';
+
+  @override
+  String get spendingNotes => 'Spending notes';
 }

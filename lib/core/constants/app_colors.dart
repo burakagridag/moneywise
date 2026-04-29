@@ -40,4 +40,16 @@ class AppColors {
   // Light mode text
   static const Color textPrimaryLight = Color(0xFF1A1B1E);
   static const Color textSecondaryLight = Color(0xFF6B6E76);
+
+  // Chart palette — 8 distinct colours per SPEC-010.
+  static const List<Color> chartPalette = [
+    Color(0xFFFF6B5C), // coral — brand primary
+    Color(0xFFFF9F40), // orange
+    Color(0xFFFFD166), // yellow
+    Color(0xFF06D6A0), // green
+    Color(0xFF4A90E2), // blue
+    Color(0xFF9B59B6), // purple
+    Color(0xFFF78FB3), // pink
+    Color(0xFF48CAE4), // teal
+  ];
 }

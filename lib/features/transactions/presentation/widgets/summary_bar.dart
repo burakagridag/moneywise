@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/i18n/arb/app_localizations.dart';
 
 /// 60dp bar displaying income / expense / total for the selected month.
 class SummaryBar extends StatelessWidget {
@@ -21,6 +22,7 @@ class SummaryBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final fmt = NumberFormat('#,##0.00', 'de_DE');
     final total = income - expense;
 
@@ -33,19 +35,19 @@ class SummaryBar extends StatelessWidget {
       child: Row(
         children: [
           _SummaryCell(
-            label: 'Income',
+            label: l10n.summaryIncome,
             value: '$currencySymbol ${fmt.format(income)}',
             valueColor: AppColors.income,
           ),
           const _Divider(),
           _SummaryCell(
-            label: 'Expense',
+            label: l10n.summaryExpense,
             value: '$currencySymbol ${fmt.format(expense)}',
             valueColor: AppColors.expense,
           ),
           const _Divider(),
           _SummaryCell(
-            label: 'Total',
+            label: l10n.summaryTotal,
             value: '$currencySymbol ${fmt.format(total)}',
             valueColor: total >= 0 ? AppColors.income : AppColors.expense,
           ),

@@ -146,6 +146,8 @@ class TransactionListItem extends StatelessWidget {
   }
 
   Future<bool> _confirmDelete(BuildContext context) async {
+    // Guard: widget may have been removed from tree before dialog is shown.
+    if (!context.mounted) return false;
     final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(

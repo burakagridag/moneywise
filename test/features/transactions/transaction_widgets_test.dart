@@ -1,7 +1,9 @@
 // Widget tests for Sprint 3 transaction and stats widgets.
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moneywise/core/constants/app_colors.dart';
+import 'package:moneywise/core/i18n/arb/app_localizations.dart';
 import 'package:moneywise/domain/entities/transaction.dart';
 import 'package:moneywise/features/stats/presentation/widgets/category_legend_row.dart';
 import 'package:moneywise/features/stats/presentation/widgets/pie_chart_widget.dart';
@@ -12,8 +14,16 @@ import 'package:uuid/uuid.dart';
 
 const _uuid = Uuid();
 
-/// Wraps a widget in a minimal MaterialApp for rendering.
-Widget _wrap(Widget child) => MaterialApp(home: Scaffold(body: child));
+/// Wraps a widget in a MaterialApp with localisation support.
+Widget _wrap(Widget child) => MaterialApp(
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: child),
+    );
 
 Transaction _makeTransaction({
   String type = 'expense',

@@ -1,13 +1,14 @@
 // Transactions tab screen — daily grouped list with month navigation — transactions feature.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/i18n/arb/app_localizations.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/widgets/month_navigator.dart';
-import '../../../../data/repositories/account_repository.dart';
-import '../../../../data/repositories/category_repository.dart';
 import '../../../../domain/entities/transaction.dart';
 import '../providers/transactions_provider.dart';
 import '../widgets/day_group_header.dart';
@@ -21,6 +22,7 @@ class TransactionsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final selectedMonth = ref.watch(selectedMonthProvider);
     final txnsAsync = ref.watch(transactionsByMonthProvider);
 
@@ -39,16 +41,19 @@ class TransactionsScreen extends ConsumerWidget {
               loading: () => const SizedBox.shrink(),
               error: (_, __) => const SizedBox.shrink(),
               data: (txns) {
+                // TODO(sprint-4): use user base currency setting
+                final currencySymbol =
+                    txns.isNotEmpty ? txns.first.currencyCode : 'EUR';
                 final income = txns
-                    .where((t) => t.type == 'income')
+                    .where((t) => t.type == 'income' && !t.isExcluded)
                     .fold(0.0, (s, t) => s + t.amount);
                 final expense = txns
-                    .where((t) => t.type == 'expense')
+                    .where((t) => t.type == 'expense' && !t.isExcluded)
                     .fold(0.0, (s, t) => s + t.amount);
                 return SummaryBar(
                   income: income,
                   expense: expense,
-                  currencySymbol: '€',
+                  currencySymbol: currencySymbol,
                 );
               },
             ),
@@ -60,7 +65,7 @@ class TransactionsScreen extends ConsumerWidget {
                 ),
                 error: (_, __) => Center(
                   child: Text(
-                    'Failed to load transactions.',
+                    l10n.failedToLoadTransactions,
                     style: AppTypography.body
                         .copyWith(color: AppColors.textSecondary),
                   ),
@@ -73,11 +78,7 @@ class TransactionsScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.brandPrimary,
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add transaction — coming soon')),
-          );
-        },
+        onPressed: () => context.push(Routes.transactionAddEdit),
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -96,6 +97,8 @@ class _TransactionList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (transactions.isEmpty) {
       return Center(
         child: Column(
@@ -105,13 +108,13 @@ class _TransactionList extends ConsumerWidget {
                 size: 64, color: AppColors.textTertiary),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'No transactions this month',
+              l10n.noTransactionsThisMonth,
               style:
                   AppTypography.title3.copyWith(color: AppColors.textPrimary),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Tap + to add your first transaction.',
+              l10n.tapPlusToAddFirst,
               style: AppTypography.subhead
                   .copyWith(color: AppColors.textSecondary),
             ),
@@ -143,57 +146,61 @@ class _TransactionList extends ConsumerWidget {
       }
     }
 
-    return StreamBuilder(
-      stream: ref.read(accountRepositoryProvider).watchAccounts(),
-      builder: (context, accountSnap) {
-        final accounts = accountSnap.data ?? [];
-        return StreamBuilder(
-          stream: ref.read(categoryRepositoryProvider).watchAll(),
-          builder: (context, catSnap) {
-            final cats = catSnap.data ?? [];
+    // TODO(sprint-4): use user base currency setting
+    final currencySymbol =
+        transactions.isNotEmpty ? transactions.first.currencyCode : 'EUR';
 
-            return ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final item = items[index];
-                if (item is _HeaderItem) {
-                  return DayGroupHeader(
-                    date: item.date,
-                    dailyTotal: item.dailyTotal.abs(),
-                    currencySymbol: '€',
+    final accountsAsync = ref.watch(transactionAccountListProvider);
+    final catsAsync = ref.watch(transactionCategoryListProvider);
+
+    final accounts = accountsAsync.asData?.value ?? [];
+    final cats = catsAsync.asData?.value ?? [];
+
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        if (item is _HeaderItem) {
+          return DayGroupHeader(
+            date: item.date,
+            dailyTotal: item.dailyTotal.abs(),
+            currencySymbol: currencySymbol,
+          );
+        }
+        final tx = (item as _TxItem).transaction;
+        final account = accounts.where((a) => a.id == tx.accountId).firstOrNull;
+        final category = cats.where((c) => c.id == tx.categoryId).firstOrNull;
+
+        return Column(
+          children: [
+            TransactionListItem(
+              transaction: tx,
+              categoryEmoji: category?.iconEmoji,
+              categoryName: category?.name ?? 'Uncategorized',
+              categoryColor: category?.colorHex != null
+                  ? _parseColor(category!.colorHex!)
+                  : null,
+              accountName: account?.name ?? '',
+              // Use account currency; fall back to transaction currency code.
+              currencySymbol: account?.currencyCode ?? tx.currencyCode,
+              onTap: () => context.push(Routes.transactionAddEdit, extra: tx),
+              onDelete: () async {
+                try {
+                  await ref
+                      .read(transactionWriteNotifierProvider.notifier)
+                      .deleteTransaction(tx.id);
+                } catch (_) {
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.errorDeletingTransaction),
+                    ),
                   );
                 }
-                final tx = (item as _TxItem).transaction;
-                final account =
-                    accounts.where((a) => a.id == tx.accountId).firstOrNull;
-                final category =
-                    cats.where((c) => c.id == tx.categoryId).firstOrNull;
-
-                return Column(
-                  children: [
-                    TransactionListItem(
-                      transaction: tx,
-                      categoryEmoji: category?.iconEmoji,
-                      categoryName: category?.name ?? 'Uncategorized',
-                      categoryColor: category?.colorHex != null
-                          ? _parseColor(category!.colorHex!)
-                          : null,
-                      accountName: account?.name ?? '',
-                      onTap: () {},
-                      onDelete: () {
-                        ref
-                            .read(
-                              transactionWriteNotifierProvider.notifier,
-                            )
-                            .deleteTransaction(tx.id);
-                      },
-                    ),
-                    const Divider(height: 1, color: AppColors.divider),
-                  ],
-                );
               },
-            );
-          },
+            ),
+            const Divider(height: 1, color: AppColors.divider),
+          ],
         );
       },
     );
