@@ -115,12 +115,11 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
         widget.selectedMonth.year,
         widget.selectedMonth.month,
       );
+      final month = widget.selectedMonth;
       final effectiveTo = _onlyThisMonth
-          ? DateTime(
-              widget.selectedMonth.year,
-              widget.selectedMonth.month + 1,
-              0,
-            )
+          ? (month.month == 12
+              ? DateTime(month.year + 1, 1, 0) // Dec 31
+              : DateTime(month.year, month.month + 1, 0)) // last day of month
           : null;
 
       await repo.upsertBudget(

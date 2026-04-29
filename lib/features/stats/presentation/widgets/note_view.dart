@@ -301,6 +301,14 @@ class _NoteTransactionRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final fmt = DateFormat('MMM d');
 
+    // Resolve category name and emoji from the reactive category list.
+    final catsAsync = ref.watch(statsCategoryListProvider);
+    final cats = catsAsync.asData?.value ?? [];
+    final cat = cats.where((c) => c.id == transaction.categoryId).firstOrNull;
+    final categoryLabel = cat != null
+        ? '${cat.iconEmoji != null ? '${cat.iconEmoji} ' : ''}${cat.name}'
+        : (transaction.categoryId ?? '—');
+
     Future<void> deleteTransaction() async {
       final l10n = AppLocalizations.of(context)!;
       final confirmed = await showDialog<bool>(
@@ -340,7 +348,8 @@ class _NoteTransactionRow extends ConsumerWidget {
     }
 
     return Semantics(
-      label: 'Transaction. ${CurrencyFormatter.format(transaction.amount)}. '
+      label: 'Transaction. $categoryLabel. '
+          '${CurrencyFormatter.format(transaction.amount)}. '
           '${fmt.format(transaction.date)}. Double-tap to view details.',
       child: Dismissible(
         key: Key('note-tx-${transaction.id}'),
@@ -364,7 +373,7 @@ class _NoteTransactionRow extends ConsumerWidget {
           ),
           child: Row(
             children: [
-              // Category icon circle placeholder
+              // Category icon circle — shows emoji or fallback icon.
               Container(
                 width: 36,
                 height: 36,
@@ -372,12 +381,17 @@ class _NoteTransactionRow extends ConsumerWidget {
                   color: AppColors.bgTertiary,
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
-                child: const Center(
-                  child: Icon(
-                    Icons.receipt_outlined,
-                    size: 18,
-                    color: AppColors.textSecondary,
-                  ),
+                child: Center(
+                  child: cat?.iconEmoji != null
+                      ? Text(
+                          cat!.iconEmoji!,
+                          style: const TextStyle(fontSize: 18),
+                        )
+                      : const Icon(
+                          Icons.receipt_outlined,
+                          size: 18,
+                          color: AppColors.textSecondary,
+                        ),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -387,7 +401,7 @@ class _NoteTransactionRow extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      transaction.categoryId ?? '—',
+                      categoryLabel,
                       style: AppTypography.bodyMedium
                           .copyWith(color: AppColors.textPrimary),
                       maxLines: 1,

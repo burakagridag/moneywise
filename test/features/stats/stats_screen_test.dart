@@ -326,20 +326,101 @@ void main() {
   });
 
   // ---------------------------------------------------------------------------
-  // Period selector snackbar
+  // Period selector — W / M / Y (BUG-006)
   // ---------------------------------------------------------------------------
 
   group('StatsScreen — period selector', () {
-    testWidgets('tapping M period selector shows coming-soon snackbar',
+    testWidgets('tapping M period selector opens bottom sheet with options',
         (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
       await tester.pump();
 
+      // The period selector shows 'M ▼' by default.
+      expect(find.text('M ▼'), findsOneWidget);
       await tester.tap(find.text('M ▼'));
+      await tester.pumpAndSettle();
+
+      // The bottom sheet should show W, M, Y options.
+      expect(find.text('Week (W)'), findsOneWidget);
+      expect(find.text('Month (M)'), findsOneWidget);
+      expect(find.text('Year (Y)'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    testWidgets('selecting Week changes period label to W ▼', (tester) async {
+      final db = _testDb();
+      final container = ProviderContainer(
+        overrides: [appDatabaseProvider.overrideWith((_) => db)],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const StatsScreen(),
+          ),
+        ),
+      );
       await tester.pump();
 
-      expect(find.text('Coming soon'), findsOneWidget);
+      // Open the period picker.
+      await tester.tap(find.text('M ▼'));
+      await tester.pumpAndSettle();
+
+      // Select Week.
+      await tester.tap(find.text('Week (W)'));
+      await tester.pumpAndSettle();
+
+      // Provider should reflect the Week mode.
+      expect(container.read(statsPeriodProvider), StatsPeriodMode.week);
+      // Label should now show 'W ▼'.
+      expect(find.text('W ▼'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    testWidgets('selecting Year changes period label to Y ▼', (tester) async {
+      final db = _testDb();
+      final container = ProviderContainer(
+        overrides: [appDatabaseProvider.overrideWith((_) => db)],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const StatsScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.tap(find.text('M ▼'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Year (Y)'));
+      await tester.pumpAndSettle();
+
+      expect(container.read(statsPeriodProvider), StatsPeriodMode.year);
+      expect(find.text('Y ▼'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);

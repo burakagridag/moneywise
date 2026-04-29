@@ -55,17 +55,86 @@ class StatsType extends _$StatsType {
 }
 
 // ---------------------------------------------------------------------------
-// Shared base: all transactions for the selected month
+// Period mode (W / M / Y) — BUG-006
 // ---------------------------------------------------------------------------
 
-/// One-shot fetch of all non-deleted transactions for the selected month.
+/// The period granularity shown in the Stats screen.
+enum StatsPeriodMode {
+  /// Current calendar week (Mon–Sun containing today).
+  week,
+
+  /// Full calendar month — the default.
+  month,
+
+  /// Full calendar year.
+  year,
+}
+
+/// Holds the currently selected [StatsPeriodMode] for the Stats screen.
+@riverpod
+class StatsPeriod extends _$StatsPeriod {
+  @override
+  StatsPeriodMode build() => StatsPeriodMode.month;
+
+  void select(StatsPeriodMode mode) => state = mode;
+}
+
+// ---------------------------------------------------------------------------
+// Category deep-link filter — BUG-005
+// ---------------------------------------------------------------------------
+
+/// Holds the categoryId that the user tapped in the pie/legend on StatsScreen.
+/// TransactionsScreen reads this on entry to pre-filter the DailyView list.
+/// Set to null to clear the filter.
+@riverpod
+class StatsCategoryFilter extends _$StatsCategoryFilter {
+  @override
+  String? build() => null;
+
+  void set(String? categoryId) => state = categoryId;
+}
+
+// ---------------------------------------------------------------------------
+// Shared base: all transactions for the selected period
+// ---------------------------------------------------------------------------
+
+/// Computes the date range [from, to] (inclusive) for the active period.
+/// Exposed as a helper so both statsTxns and the period label can use it.
+({DateTime from, DateTime to}) statsPeriodRange(
+  StatsPeriodMode mode,
+  DateTime selectedMonth,
+) {
+  final now = DateTime.now();
+  switch (mode) {
+    case StatsPeriodMode.week:
+      final today = DateTime(now.year, now.month, now.day);
+      // Week starts on Monday (weekday == 1).
+      final weekStart = today.subtract(Duration(days: today.weekday - 1));
+      final weekEnd = weekStart.add(const Duration(days: 6));
+      return (from: weekStart, to: weekEnd);
+    case StatsPeriodMode.month:
+      final from = DateTime(selectedMonth.year, selectedMonth.month);
+      final to = selectedMonth.month == 12
+          ? DateTime(selectedMonth.year + 1, 1, 0)
+          : DateTime(selectedMonth.year, selectedMonth.month + 1, 0);
+      return (from: from, to: to);
+    case StatsPeriodMode.year:
+      final from = DateTime(selectedMonth.year);
+      final to = DateTime(selectedMonth.year, 12, 31);
+      return (from: from, to: to);
+  }
+}
+
+/// One-shot fetch of all non-deleted transactions for the selected period.
 /// All stats providers derive from this to avoid N+1 DB fetches.
 @riverpod
 Future<List<Transaction>> statsTxns(StatsTxnsRef ref) async {
-  final month = ref.watch(selectedStatsMonthProvider);
+  final mode = ref.watch(statsPeriodProvider);
+  final selectedMonth = ref.watch(selectedStatsMonthProvider);
+  final range = statsPeriodRange(mode, selectedMonth);
   return ref
       .watch(transactionRepositoryProvider)
-      .getByMonth(month.year, month.month);
+      .getByDateRange(range.from, range.to);
 }
 
 // ---------------------------------------------------------------------------

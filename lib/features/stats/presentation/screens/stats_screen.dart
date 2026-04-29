@@ -1,11 +1,13 @@
 // Statistics screen showing spending breakdown by category — stats feature.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/widgets/month_navigator.dart';
 import '../../../budget/presentation/widgets/budget_view.dart';
 import '../providers/stats_provider.dart';
@@ -29,6 +31,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   Widget build(BuildContext context) {
     final selectedMonth = ref.watch(selectedStatsMonthProvider);
     final statsType = ref.watch(statsTypeProvider);
+    final periodMode = ref.watch(statsPeriodProvider);
 
     return Scaffold(
       backgroundColor: AppColors.bgPrimary,
@@ -39,14 +42,19 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
             _SubTabBar(
               selectedIndex: _selectedSubTab,
               onChanged: (i) => setState(() => _selectedSubTab = i),
+              periodMode: periodMode,
+              onPeriodChanged: (mode) =>
+                  ref.read(statsPeriodProvider.notifier).select(mode),
             ),
-            MonthNavigator(
-              selectedMonth: selectedMonth,
-              onPrevious: () =>
-                  ref.read(selectedStatsMonthProvider.notifier).previous(),
-              onNext: () =>
-                  ref.read(selectedStatsMonthProvider.notifier).next(),
-            ),
+            // Month navigator only shown for month/year modes (not week)
+            if (periodMode != StatsPeriodMode.week)
+              MonthNavigator(
+                selectedMonth: selectedMonth,
+                onPrevious: () =>
+                    ref.read(selectedStatsMonthProvider.notifier).previous(),
+                onNext: () =>
+                    ref.read(selectedStatsMonthProvider.notifier).next(),
+              ),
             _IncomeExpenseToggle(
               statsType: statsType,
               onToggle: (t) {
@@ -76,10 +84,25 @@ class _SubTabBar extends ConsumerWidget {
   const _SubTabBar({
     required this.selectedIndex,
     required this.onChanged,
+    required this.periodMode,
+    required this.onPeriodChanged,
   });
 
   final int selectedIndex;
   final void Function(int) onChanged;
+  final StatsPeriodMode periodMode;
+  final void Function(StatsPeriodMode) onPeriodChanged;
+
+  String _periodLabel(StatsPeriodMode mode) {
+    switch (mode) {
+      case StatsPeriodMode.week:
+        return 'W';
+      case StatsPeriodMode.month:
+        return 'M';
+      case StatsPeriodMode.year:
+        return 'Y';
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -127,33 +150,142 @@ class _SubTabBar extends ConsumerWidget {
               ),
             ));
           }),
-          // Spacer removed — tabs are Expanded and fill available space
-          // Period selector
-          Container(
-            margin: const EdgeInsets.only(right: AppSpacing.lg),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.xs,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.bgTertiary,
-              borderRadius: BorderRadius.circular(AppRadius.sm),
-            ),
-            child: GestureDetector(
-              onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(AppLocalizations.of(context)!.comingSoon),
-                ),
-              ),
-              child: Text(
-                'M ▼',
-                style: AppTypography.subhead
-                    .copyWith(color: AppColors.textPrimary),
-              ),
-            ),
+          // Period selector — W / M / Y
+          _PeriodSelector(
+            current: periodMode,
+            onChanged: onPeriodChanged,
+            label: _periodLabel(periodMode),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// W / M / Y period picker that shows a bottom sheet with three options.
+class _PeriodSelector extends StatelessWidget {
+  const _PeriodSelector({
+    required this.current,
+    required this.onChanged,
+    required this.label,
+  });
+
+  final StatsPeriodMode current;
+  final void Function(StatsPeriodMode) onChanged;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showPicker(context),
+      child: Semantics(
+        label: 'Period selector, currently $label. Double-tap to change.',
+        button: true,
+        child: Container(
+          margin: const EdgeInsets.only(right: AppSpacing.lg),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.xs,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.bgTertiary,
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+          ),
+          child: Text(
+            '$label ▼',
+            style: AppTypography.subhead.copyWith(color: AppColors.textPrimary),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showPicker(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.bgSecondary,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: AppSpacing.md),
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _PeriodOption(
+              label: 'Week (W)',
+              mode: StatsPeriodMode.week,
+              current: current,
+              onSelect: (m) {
+                Navigator.of(context).pop();
+                onChanged(m);
+              },
+            ),
+            _PeriodOption(
+              label: 'Month (M)',
+              mode: StatsPeriodMode.month,
+              current: current,
+              onSelect: (m) {
+                Navigator.of(context).pop();
+                onChanged(m);
+              },
+            ),
+            _PeriodOption(
+              label: 'Year (Y)',
+              mode: StatsPeriodMode.year,
+              current: current,
+              onSelect: (m) {
+                Navigator.of(context).pop();
+                onChanged(m);
+              },
+            ),
+            const SizedBox(height: AppSpacing.lg),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PeriodOption extends StatelessWidget {
+  const _PeriodOption({
+    required this.label,
+    required this.mode,
+    required this.current,
+    required this.onSelect,
+  });
+
+  final String label;
+  final StatsPeriodMode mode;
+  final StatsPeriodMode current;
+  final void Function(StatsPeriodMode) onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final isSelected = mode == current;
+    return ListTile(
+      title: Text(
+        label,
+        style: AppTypography.body.copyWith(
+          color: isSelected ? AppColors.brandPrimary : AppColors.textPrimary,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+        ),
+      ),
+      trailing: isSelected
+          ? const Icon(Icons.check, color: AppColors.brandPrimary)
+          : null,
+      onTap: () => onSelect(mode),
     );
   }
 }
@@ -334,9 +466,7 @@ class _StatsContent extends ConsumerWidget {
                         percentage: s.percentage,
                         badgeColor: s.color,
                         emoji: s.emoji,
-                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(l10n.comingSoon)),
-                        ),
+                        onTap: () => _navigateToCategory(context, ref, s.id),
                       ),
                       const Divider(height: 1, color: AppColors.divider),
                     ],
@@ -348,6 +478,19 @@ class _StatsContent extends ConsumerWidget {
         );
       },
     );
+  }
+
+  /// Sets the category filter and navigates to the Transactions tab (DailyView).
+  void _navigateToCategory(
+    BuildContext context,
+    WidgetRef ref,
+    String categoryId,
+  ) {
+    // Store the selected category so TransactionsScreen can apply the filter.
+    ref.read(statsCategoryFilterProvider.notifier).set(
+          categoryId == 'Uncategorized' ? null : categoryId,
+        );
+    context.go(Routes.transactions);
   }
 
   List<PieSegment> _buildSegments(
