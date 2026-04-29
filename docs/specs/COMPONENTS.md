@@ -56,6 +56,28 @@ This file is the canonical registry of reusable widgets that live in `lib/core/w
 
 ---
 
+## Sprint 5 Components
+
+| Component | File | Used In | Variants / Props | Notes |
+|-----------|------|---------|-----------------|-------|
+| `SubTabAndPeriodBar` | `features/stats/presentation/widgets/sub_tab_and_period_bar.dart` | SPEC-014, SPEC-015, SPEC-016 | `activeSubTab` (stats/budget/note), `activePeriod` (W/M/Y), `onSubTabChanged`, `onPeriodChanged` | 48dp height. Sub-tab toggle: segmented control (active = `brandPrimary` fill + white text; inactive = `bgSecondary` fill + `textSecondary`). Period button right-aligned, 32dp height, `bgSecondary` fill. |
+| `IncomeExpenseToggle` | `features/stats/presentation/widgets/income_expense_toggle.dart` | SPEC-014, SPEC-015, SPEC-016, SPEC-017 | `activeType` (income/expense), `incomeTotal`, `expenseTotal`, `currency`, `onChanged` | 44dp height. Two segments with amount displayed next to label on active segment. Active underline 2dp `brandPrimary`, 150ms slide animation. |
+| `PieChartWidget` | `features/stats/presentation/widgets/pie_chart_widget.dart` | SPEC-014 | `segments` (List<PieSegment>), `selectedIndex`, `onSegmentTap`, `isLoading`, `totalAmount`, `currency` | fl_chart `PieChart` wrapper. Donut hole 38% radius. Outer labels (name + %). Selected segment offsets 8dp outward, 200ms easeOutCubic. Cycles through 8-color palette. |
+| `CategoryLegendList` | `features/stats/presentation/widgets/category_legend_list.dart` | SPEC-014 | `items` (List<CategoryLegendItem>), `onItemTap`, `isLoading` | Scrollable list. Each item delegates to `CategoryLegendRow`. Loading: 5 skeleton rows. |
+| `CategoryLegendRow` | `features/stats/presentation/widgets/category_legend_row.dart` | SPEC-014 (via CategoryLegendList) | `color`, `percentage`, `emoji`, `name`, `amount`, `currency`, `onTap` | 52dp height. Left: rounded-rect color badge (36x22dp) with percentage text. Center: emoji + name. Right: amount. Full-row tap target. |
+| `BudgetSummaryCardExpanded` | `features/stats/presentation/widgets/budget_summary_card_expanded.dart` | SPEC-015 | `remaining`, `spent`, `totalBudget`, `progressRatio`, `period`, `carryOverAmount`, `currency`, `onBudgetSettingTap`, `isLoading` | Distinct from `BudgetSummaryCard` (SPEC-012 compact). Full-width card with "Budget Setting >" link, remaining amount, `BudgetProgressBar`, three-column footer. |
+| `CategoryBudgetRow` | `features/stats/presentation/widgets/category_budget_row.dart` | SPEC-015 | `emoji`, `name`, `spent`, `budget`, `progressRatio`, `currency`, `onTap` | 72dp height. Icon 40dp, name, 4dp progress bar with threshold colors, spent/budget label, over-budget `WarningCircle` icon. |
+| `CategoryBudgetList` | `features/stats/presentation/widgets/category_budget_list.dart` | SPEC-015 | `items` (List<CategoryBudgetItem>), `onItemTap`, `isLoading`, `isEmpty` | Container with `bgSecondary` fill + `AppRadius.lg` card. Delegates rows to `CategoryBudgetRow`. |
+| `BudgetProgressBar` | `core/widgets/budget_progress_bar.dart` | SPEC-015, SPEC-017 | `ratio` (0.0–1.0+), `height` (default 8dp), `showTodayIndicator` (bool), `todayRatio` (0.0–1.0) | Threshold colors: <70% `brandPrimary`, 70–99% `warning`, >=100% `error`. Today indicator: 2dp vertical line + "Today" caption above. Animated fill on load (600ms easeOutCubic). |
+| `NoteListHeader` | `features/stats/presentation/widgets/note_list_header.dart` | SPEC-016 | `sortMode` (amount/count), `onSortToggle` | 44dp static header with 3 columns: "Note" label, sort toggle button, "Amount" label. Bottom 1dp divider. |
+| `NoteGroupHeader` | `features/stats/presentation/widgets/note_group_header.dart` | SPEC-016 | `noteText` (nullable — null = "(no note)"), `count`, `totalAmount`, `currency`, `isExpanded`, `onTap` | 48dp. `bgTertiary` background. Note text truncated 1 line. Count badge (`bgSecondary` fill). Amount right-aligned. `AnimatedSize` drives row expansion. |
+| `NoteTransactionRow` | `features/stats/presentation/widgets/note_transaction_row.dart` | SPEC-016 | `transaction`, `onTap`, `onDelete` | 52dp, 20dp left indent. `CategoryIcon` 36dp. Category name + account/date sub-label. Amount colored by type. Swipe-to-delete iOS / long-press Android. |
+| `TotalBudgetRow` | `features/more/presentation/widgets/total_budget_row.dart` | SPEC-017 | `amount`, `currency`, `onTap` | 56dp. "TOTAL" bold label, no emoji. Amount right-aligned `textPrimary` or `textTertiary` if zero. Caret trailing. |
+| `CategoryBudgetSettingRow` | `features/more/presentation/widgets/category_budget_setting_row.dart` | SPEC-017 | `emoji`, `name`, `amount`, `currency`, `onTap` | 56dp. Emoji + name + amount + caret. Amount `textTertiary` if no budget set. Follows `SettingsRow` token conventions. |
+| `BudgetEditModal` | `features/more/presentation/widgets/budget_edit_modal.dart` | SPEC-017 | `categoryId` (nullable for TOTAL), `categoryEmoji`, `categoryName`, `existingAmount`, `selectedMonth`, `onSave`, `onClear` | Bottom sheet. Drag handle, header (emoji + name + "Budget" label), amount numeric input, "Only this month" checkbox, Save (`AppButton` primary), Clear budget (`AppButton` ghost `error` color). Keyboard-avoiding. |
+
+---
+
 ## Planned Components (Upcoming Sprints — not yet implemented)
 
 The entries below are identified from the screen specs and SPEC.md but are deferred to future sprints. They are listed here so that the component inventory does not diverge from what will be needed.
