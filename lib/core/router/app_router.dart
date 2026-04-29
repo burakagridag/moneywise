@@ -6,6 +6,7 @@ import '../../domain/entities/account.dart';
 import '../../domain/entities/transaction.dart';
 import '../../features/accounts/presentation/screens/account_add_edit_screen.dart';
 import '../../features/accounts/presentation/screens/accounts_screen.dart';
+import '../../features/more/presentation/screens/budget_setting_screen.dart';
 import '../../features/more/presentation/screens/category_management_screen.dart';
 import '../../features/more/presentation/screens/more_screen.dart';
 import '../../features/more/presentation/screens/settings_screen.dart';
@@ -86,6 +87,10 @@ final appRouter = GoRouter(
                           const CategoryManagementScreen(),
                     ),
                   ],
+                ),
+                GoRoute(
+                  path: 'budget-setting',
+                  builder: (context, state) => const BudgetSettingScreen(),
                 ),
               ],
             ),

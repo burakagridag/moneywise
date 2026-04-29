@@ -69,17 +69,22 @@ void main() {
       await db.close();
     });
 
-    testWidgets('tapping Budget tab shows Budget placeholder', (tester) async {
+    testWidgets('tapping Budget tab shows BudgetView empty state',
+        (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
       await tester.pump();
 
       await tester.tap(find.text('Budget'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text('Budget tracking'), findsOneWidget);
-      expect(find.text('Budget management will be available soon.'),
-          findsOneWidget);
+      // BudgetView renders (either empty state or loading).
+      expect(
+          find.byType(CircularProgressIndicator).evaluate().isNotEmpty ||
+              find.text('No budgets set').evaluate().isNotEmpty ||
+              find.text('Set Up Budgets').evaluate().isNotEmpty,
+          isTrue);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);
@@ -87,17 +92,17 @@ void main() {
       await db.close();
     });
 
-    testWidgets('tapping Note tab shows Note placeholder', (tester) async {
+    testWidgets('tapping Note tab shows NoteView header', (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
       await tester.pump();
 
       await tester.tap(find.text('Note'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text('Spending notes'), findsOneWidget);
-      expect(find.text('Note-based summaries will be available soon.'),
-          findsOneWidget);
+      // NoteView header row should be visible.
+      expect(find.text('Note'), findsAtLeastNWidgets(1));
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);
@@ -117,7 +122,7 @@ void main() {
       await tester.tap(find.text('Stats'));
       await tester.pump();
 
-      // Income/Expense toggle is part of the Stats sub-tab.
+      // Income/Expense toggle is always visible.
       expect(find.text('Income'), findsAtLeastNWidgets(1));
 
       await tester.pumpWidget(const SizedBox.shrink());

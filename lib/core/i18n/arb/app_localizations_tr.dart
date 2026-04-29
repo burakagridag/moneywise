@@ -401,4 +401,79 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get budgetCategoryRequired => 'Kategori zorunludur';
+
+  @override
+  String get budgetSettingTitle => 'Bütçe Ayarı';
+  @override
+  String get budgetSettingTotal => 'TOPLAM';
+  @override
+  String get budgetSettingNoBudget => 'Bütçe ayarlanmadı';
+  @override
+  String get budgetSettingClearBudget => 'Bütçeyi temizle';
+  @override
+  String get budgetSettingOnlyThisMonth => 'Yalnızca bu ay';
+  @override
+  String get budgetSettingAmountHint => '0,00';
+  @override
+  String get budgetSettingAmountGreaterThanZero =>
+      'Lütfen sıfırdan büyük bir tutar girin.';
+  @override
+  String get budgetSettingAmountTooLarge => 'Tutar çok büyük.';
+  @override
+  String get budgetSettingRemoveConfirmTitle => 'Bütçe kaldırılsın mı?';
+  @override
+  String get budgetSettingRemoveConfirmMessage =>
+      "'Yalnızca bu ay' seçili değilse tüm gelecek aylar etkilenir.";
+  @override
+  String get budgetSettingRemoveAction => 'Kaldır';
+  @override
+  String get budgetSettingDiscardTitle => 'Değişiklikler iptal edilsin mi?';
+  @override
+  String get budgetSettingDiscardMessage =>
+      'Kaydedilmemiş değişiklikler kaybolacak.';
+  @override
+  String get budgetSettingDiscardAction => 'İptal Et';
+  @override
+  String get budgetSettingKeepEditing => 'Düzenlemeye Devam Et';
+
+  @override
+  String get budgetViewRemainingMonthly => 'Kalan (Aylık)';
+  @override
+  String get budgetViewNoBudgetsTitle => 'Bütçe ayarlanmadı';
+  @override
+  String get budgetViewNoBudgetsSubtitle =>
+      "'Bütçe Ayarı'na tıklayarak aylık kategori limitleri belirleyin.";
+  @override
+  String get budgetViewSetUpBudgets => 'Bütçe Ayarla';
+  @override
+  String get budgetViewCouldNotLoad => 'Bütçe verileri yüklenemedi';
+  @override
+  String get budgetViewNoBudgetSet => 'Bütçe yok';
+  @override
+  String budgetViewIncludesCarryOver(String amount) =>
+      'Geçen aydan $amount devir dahil';
+  @override
+  String get budgetSetting => 'Bütçe Ayarı';
+
+  @override
+  String get noteViewNoNotes => 'Not yok';
+  @override
+  String get noteViewNoNotesSubtitle => 'Notlu işlemler burada görünecek.';
+  @override
+  String get noteViewNoNote => '(not yok)';
+  @override
+  String get noteViewSortAmount => 'Tutar';
+  @override
+  String get noteViewSortCount => 'Sayı';
+  @override
+  String get noteViewDeleteConfirmTitle => 'İşlem Silinsin Mi?';
+  @override
+  String get noteViewDeleteConfirmMessage =>
+      'Bu işlem kalıcı olarak silinecek.';
+  @override
+  String get noteViewCouldNotLoad => 'Notlar yüklenemedi.';
+  @override
+  String get noteColumnLabel => 'Not';
+  @override
+  String get amountColumnLabel => 'Tutar';
 }

@@ -125,5 +125,46 @@
   "budgetEffectiveFrom": "From month",
   "budgetEffectiveTo": "To month (leave empty for open-ended)",
   "budgetAmountRequired": "Amount is required",
-  "budgetCategoryRequired": "Category is required"
+  "budgetCategoryRequired": "Category is required",
+
+  "budgetSettingTitle": "Budget Setting",
+  "budgetSettingTotal": "TOTAL",
+  "budgetSettingNoBudget": "No budget set",
+  "budgetSettingClearBudget": "Clear budget",
+  "budgetSettingOnlyThisMonth": "Only this month",
+  "budgetSettingAmountHint": "0.00",
+  "budgetSettingAmountGreaterThanZero": "Please enter an amount greater than zero.",
+  "budgetSettingAmountTooLarge": "Amount is too large.",
+  "budgetSettingRemoveConfirmTitle": "Remove budget?",
+  "budgetSettingRemoveConfirmMessage": "This will affect all future months unless 'Only this month' is checked.",
+  "budgetSettingRemoveAction": "Remove",
+  "budgetSettingDiscardTitle": "Discard changes?",
+  "budgetSettingDiscardMessage": "Your unsaved changes will be lost.",
+  "budgetSettingDiscardAction": "Discard",
+  "budgetSettingKeepEditing": "Keep editing",
+
+  "budgetViewRemainingMonthly": "Remaining (Monthly)",
+  "budgetViewNoBudgetsTitle": "No budgets set",
+  "budgetViewNoBudgetsSubtitle": "Tap 'Budget Setting' to configure monthly limits per category.",
+  "budgetViewSetUpBudgets": "Set Up Budgets",
+  "budgetViewCouldNotLoad": "Could not load budget data",
+  "budgetViewNoBudgetSet": "No budget set",
+  "budgetViewIncludesCarryOver": "Includes {amount} carry-over from last month",
+  "@budgetViewIncludesCarryOver": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "budgetSetting": "Budget Setting",
+
+  "noteViewNoNotes": "No notes",
+  "noteViewNoNotesSubtitle": "Transactions with notes will appear here.",
+  "noteViewNoNote": "(no note)",
+  "noteViewSortAmount": "Amount",
+  "noteViewSortCount": "Count",
+  "noteViewDeleteConfirmTitle": "Delete Transaction?",
+  "noteViewDeleteConfirmMessage": "This transaction will be permanently deleted.",
+  "noteViewCouldNotLoad": "Could not load notes.",
+  "noteColumnLabel": "Note",
+  "amountColumnLabel": "Amount"
 }

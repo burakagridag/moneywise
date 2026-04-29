@@ -7,8 +7,10 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/widgets/month_navigator.dart';
+import '../../../budget/presentation/widgets/budget_view.dart';
 import '../providers/stats_provider.dart';
 import '../widgets/category_legend_row.dart';
+import '../widgets/note_view.dart';
 import '../widgets/pie_chart_widget.dart';
 
 /// The Stats tab. Shows a donut pie chart + ranked category list for the
@@ -45,22 +47,24 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               onNext: () =>
                   ref.read(selectedStatsMonthProvider.notifier).next(),
             ),
-            if (_selectedSubTab == 0) ...[
-              _IncomeExpenseToggle(
-                statsType: statsType,
-                onToggle: (t) {
-                  if (t == 'income') {
-                    ref.read(statsTypeProvider.notifier).setIncome();
-                  } else {
-                    ref.read(statsTypeProvider.notifier).setExpense();
-                  }
-                },
-              ),
+            _IncomeExpenseToggle(
+              statsType: statsType,
+              onToggle: (t) {
+                if (t == 'income') {
+                  ref.read(statsTypeProvider.notifier).setIncome();
+                } else {
+                  ref.read(statsTypeProvider.notifier).setExpense();
+                }
+              },
+            ),
+            if (_selectedSubTab == 0)
               const Expanded(
                 child: _StatsContent(palette: AppColors.chartPalette),
-              ),
-            ] else
-              Expanded(child: _PlaceholderSubTab(tabIndex: _selectedSubTab)),
+              )
+            else if (_selectedSubTab == 1)
+              const Expanded(child: BudgetView())
+            else
+              const Expanded(child: NoteView()),
           ],
         ),
       ),
@@ -413,41 +417,4 @@ class _EnrichedSegment {
   final double amount;
   final Color color;
   final double percentage;
-}
-
-class _PlaceholderSubTab extends StatelessWidget {
-  const _PlaceholderSubTab({required this.tabIndex});
-
-  final int tabIndex;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final isBudget = tabIndex == 1;
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            isBudget ? Icons.bar_chart_outlined : Icons.note_alt_outlined,
-            size: 64,
-            color: AppColors.textTertiary,
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            isBudget ? l10n.budgetTracking : l10n.spendingNotes,
-            style: AppTypography.title3.copyWith(color: AppColors.textPrimary),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            isBudget
-                ? l10n.budgetTrackingComingSoon
-                : l10n.noteSummaryComingSoon,
-            style:
-                AppTypography.subhead.copyWith(color: AppColors.textSecondary),
-          ),
-        ],
-      ),
-    );
-  }
 }

@@ -799,6 +799,42 @@ abstract class AppLocalizations {
 
   /// No description provided for @budgetCategoryRequired.
   String get budgetCategoryRequired;
+
+  String get budgetSettingTitle;
+  String get budgetSettingTotal;
+  String get budgetSettingNoBudget;
+  String get budgetSettingClearBudget;
+  String get budgetSettingOnlyThisMonth;
+  String get budgetSettingAmountHint;
+  String get budgetSettingAmountGreaterThanZero;
+  String get budgetSettingAmountTooLarge;
+  String get budgetSettingRemoveConfirmTitle;
+  String get budgetSettingRemoveConfirmMessage;
+  String get budgetSettingRemoveAction;
+  String get budgetSettingDiscardTitle;
+  String get budgetSettingDiscardMessage;
+  String get budgetSettingDiscardAction;
+  String get budgetSettingKeepEditing;
+
+  String get budgetViewRemainingMonthly;
+  String get budgetViewNoBudgetsTitle;
+  String get budgetViewNoBudgetsSubtitle;
+  String get budgetViewSetUpBudgets;
+  String get budgetViewCouldNotLoad;
+  String get budgetViewNoBudgetSet;
+  String budgetViewIncludesCarryOver(String amount);
+  String get budgetSetting;
+
+  String get noteViewNoNotes;
+  String get noteViewNoNotesSubtitle;
+  String get noteViewNoNote;
+  String get noteViewSortAmount;
+  String get noteViewSortCount;
+  String get noteViewDeleteConfirmTitle;
+  String get noteViewDeleteConfirmMessage;
+  String get noteViewCouldNotLoad;
+  String get noteColumnLabel;
+  String get amountColumnLabel;
 }
 
 class _AppLocalizationsDelegate
