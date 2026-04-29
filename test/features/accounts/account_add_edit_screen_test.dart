@@ -71,8 +71,7 @@ void main() {
       await db.close();
     });
 
-    testWidgets('renders account name, currency and balance fields',
-        (tester) async {
+    testWidgets('renders account name and currency fields', (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildAddScreen(db));
       await tester.pump();
@@ -80,7 +79,8 @@ void main() {
 
       expect(find.text('Account Name'), findsOneWidget);
       expect(find.text('Currency'), findsOneWidget);
-      expect(find.text('Initial Balance'), findsOneWidget);
+      // Initial Balance field removed — balance derives from transactions only.
+      expect(find.text('Initial Balance'), findsNothing);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);
@@ -206,7 +206,7 @@ void main() {
       await db.close();
     });
 
-    testWidgets('pre-fills balance with existing account initialBalance',
+    testWidgets('does not show initial balance text field in edit mode',
         (tester) async {
       final db = _testDb();
       final account = await _makeAccount(db);
@@ -215,8 +215,8 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Balance displayed as "500.00".
-      expect(find.widgetWithText(TextFormField, '500.00'), findsOneWidget);
+      // Initial Balance field was removed — balance derives from transactions.
+      expect(find.text('Initial Balance'), findsNothing);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);
@@ -295,33 +295,23 @@ void main() {
       await db.close();
     });
 
-    testWidgets('invalid balance shows validation error', (tester) async {
+    testWidgets('only name and group fields are required for save',
+        (tester) async {
+      // This test replaces the removed 'invalid balance' test.
+      // The balance field no longer exists; only name + group are validated.
       final db = _testDb();
       await tester.pumpWidget(_buildAddScreen(db));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Enter a name so name validation passes.
-      await tester.enterText(find.byType(TextFormField).first, 'Test');
+      // Initial Balance field must not exist.
+      expect(find.text('Initial Balance'), findsNothing);
 
-      // Enter invalid balance.
-      final balanceField = find.byType(TextFormField).last;
-      await tester.enterText(balanceField, 'not-a-number');
-
-      // Select group from dropdown.
-      final groupDropdown = find.byType(DropdownButtonFormField<String>).first;
-      await tester.tap(groupDropdown);
-      await tester.pumpAndSettle();
-      final items = find.byType(DropdownMenuItem<String>);
-      if (items.evaluate().isNotEmpty) {
-        await tester.tap(items.first);
-        await tester.pumpAndSettle();
-      }
-
+      // Tap Save without filling any field — name validation should fire.
       await tester.tap(find.text('Save'));
       await tester.pump();
 
-      expect(find.text('Please enter a valid number'), findsOneWidget);
+      expect(find.text('Account name is required'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);

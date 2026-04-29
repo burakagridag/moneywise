@@ -28,8 +28,7 @@ class PieChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 240,
+    return SizedBox.expand(
       child: PieChart(
         PieChartData(
           sections: segments.isEmpty

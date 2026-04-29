@@ -95,10 +95,11 @@ class _SubTabBar extends ConsumerWidget {
         children: [
           ...List.generate(tabs.length, (i) {
             final isActive = i == selectedIndex;
-            return InkWell(
+            return Expanded(
+                child: InkWell(
               onTap: () => onChanged(i),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
                 child: Stack(
                   alignment: Alignment.bottomCenter,
                   children: [
@@ -120,9 +121,9 @@ class _SubTabBar extends ConsumerWidget {
                   ],
                 ),
               ),
-            );
+            ));
           }),
-          const Spacer(),
+          // Spacer removed — tabs are Expanded and fill available space
           // Period selector
           Container(
             margin: const EdgeInsets.only(right: AppSpacing.lg),
@@ -309,7 +310,12 @@ class _StatsContent extends ConsumerWidget {
 
         return Column(
           children: [
-            SizedBox(height: 260, child: PieChartWidget(segments: segments)),
+            ClipRect(
+              child: SizedBox(
+                height: 280,
+                child: PieChartWidget(segments: segments),
+              ),
+            ),
             const Divider(height: 1, color: AppColors.divider),
             Expanded(
               child: ListView.builder(

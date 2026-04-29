@@ -143,13 +143,14 @@ void main() {
       await _tearDown(tester, db);
     });
 
-    testWidgets('renders initial balance field with 0.00 default',
+    testWidgets('does not render initial balance field in add mode',
         (tester) async {
+      // Initial Balance field was removed; balance derives from transactions.
       final db = _testDb();
       await tester.pumpWidget(_wrapWithDb(const AccountAddEditScreen(), db));
       await _settle(tester);
 
-      expect(find.widgetWithText(TextFormField, '0.00'), findsOneWidget);
+      expect(find.text('Initial Balance'), findsNothing);
 
       await _tearDown(tester, db);
     });
@@ -205,7 +206,9 @@ void main() {
       expect(find.text('USD'), findsOneWidget);
     });
 
-    testWidgets('pre-populates balance field when editing', (tester) async {
+    testWidgets('does not render initial balance field in edit mode',
+        (tester) async {
+      // Initial Balance field was removed; balance derives from transactions.
       final existing = _buildAccount(
         groupId: _kFakeGroupId,
         name: 'Funded',
@@ -217,7 +220,7 @@ void main() {
       ));
       await _settle(tester);
 
-      expect(find.widgetWithText(TextFormField, '999.99'), findsOneWidget);
+      expect(find.text('Initial Balance'), findsNothing);
     });
   });
 }

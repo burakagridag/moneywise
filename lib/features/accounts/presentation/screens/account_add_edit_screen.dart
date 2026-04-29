@@ -53,7 +53,6 @@ class AccountAddEditScreen extends ConsumerStatefulWidget {
 class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
-  late final TextEditingController _balanceController;
   late bool _includeInTotals;
   String? _selectedGroupId;
   late String _selectedCurrency;
@@ -64,9 +63,6 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
     super.initState();
     final a = widget.account;
     _nameController = TextEditingController(text: a?.name ?? '');
-    _balanceController = TextEditingController(
-      text: a != null ? a.initialBalance.toStringAsFixed(2) : '0.00',
-    );
     // Default to TRY (primary user locale). Fall back to TRY if saved value
     // is not in the dropdown list.
     final savedCurrency = a?.currencyCode ?? 'TRY';
@@ -79,7 +75,6 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
   @override
   void dispose() {
     _nameController.dispose();
-    _balanceController.dispose();
     super.dispose();
   }
 
@@ -101,7 +96,7 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
       groupId: _selectedGroupId!,
       name: _nameController.text.trim(),
       currencyCode: _selectedCurrency,
-      initialBalance: double.tryParse(_balanceController.text.trim()) ?? 0.0,
+      initialBalance: widget.account?.initialBalance ?? 0.0,
       sortOrder: widget.account?.sortOrder ?? 0,
       isHidden: widget.account?.isHidden ?? false,
       includeInTotals: _includeInTotals,
@@ -223,24 +218,6 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
                 if (v != null) setState(() => _selectedCurrency = v);
               },
               validator: (v) => v == null ? l10n.currency : null,
-            ),
-            const SizedBox(height: AppSpacing.md),
-
-            // Initial balance
-            TextFormField(
-              controller: _balanceController,
-              decoration: InputDecoration(labelText: l10n.initialBalance),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-                signed: true,
-              ),
-              validator: (v) {
-                if (v == null || v.trim().isEmpty) return null;
-                if (double.tryParse(v.trim()) == null) {
-                  return l10n.invalidBalance;
-                }
-                return null;
-              },
             ),
             const SizedBox(height: AppSpacing.md),
 
