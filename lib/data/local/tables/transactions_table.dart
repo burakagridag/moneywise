@@ -44,6 +44,7 @@ class Transactions extends Table {
   BoolColumn get isExcluded => boolean().withDefault(const Constant(false))();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
   /// Timestamp of the last mutation — used for sync conflict resolution.
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 

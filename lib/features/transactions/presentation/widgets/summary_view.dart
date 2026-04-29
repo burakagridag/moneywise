@@ -169,7 +169,7 @@ class _StatSummaryCard extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: _MiniStatCard(
-                    label: l10n.totalNetLabel,
+                    label: l10n.totalLabel,
                     value: CurrencyFormatter.formatSigned(totals.net),
                     valueColor: _netColor,
                   ),

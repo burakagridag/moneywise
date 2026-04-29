@@ -242,10 +242,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get currentBalance => 'Current Balance';
 
-  // ---------------------------------------------------------------------------
-  // Sprint 4 — Transactions Screen
-  // ---------------------------------------------------------------------------
-
   @override
   String get tabDaily => 'Daily';
 
@@ -314,9 +310,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get monthlyCurrentWeekLabel => 'This week';
-
-  @override
-  String get totalNetLabel => 'Total';
 
   @override
   String get savingsRateLabel => 'Savings Rate';

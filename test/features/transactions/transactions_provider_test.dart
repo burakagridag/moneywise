@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moneywise/data/local/database.dart' hide Transaction;
 import 'package:moneywise/data/repositories/transaction_repository.dart';
-import 'package:moneywise/domain/entities/transaction.dart';
 import 'package:moneywise/features/transactions/presentation/providers/transactions_provider.dart';
 import 'package:uuid/uuid.dart';
 

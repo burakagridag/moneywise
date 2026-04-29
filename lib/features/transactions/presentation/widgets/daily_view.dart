@@ -99,10 +99,10 @@ class _DayGroup extends StatelessWidget {
     for (final item in transactions) {
       final tx = item.transaction;
       if (tx.isExcluded) continue;
-      if (tx.type == TransactionType.income) {
+      if (tx.transactionType == TransactionType.income) {
         incomeCents += (tx.amount * 100).round();
       }
-      if (tx.type == TransactionType.expense) {
+      if (tx.transactionType == TransactionType.expense) {
         expenseCents += (tx.amount * 100).round();
       }
     }

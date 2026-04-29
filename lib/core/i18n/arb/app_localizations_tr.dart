@@ -243,10 +243,6 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get currentBalance => 'Mevcut Bakiye';
 
-  // ---------------------------------------------------------------------------
-  // Sprint 4 — Transactions Screen
-  // ---------------------------------------------------------------------------
-
   @override
   String get tabDaily => 'Günlük';
 
@@ -317,9 +313,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get monthlyCurrentWeekLabel => 'Bu hafta';
 
   @override
-  String get totalNetLabel => 'Toplam';
-
-  @override
   String get savingsRateLabel => 'Tasarruf Oranı';
 
   @override
@@ -332,7 +325,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get categoryBreakdownTitle => 'Harcama Dağılımı';
 
   @override
-  String get exportToExcelTitle => "Excel'e Aktar";
+  String get exportToExcelTitle => 'Excel\'e Aktar';
 
   @override
   String get exportComingSoon => 'Dışa aktarma özelliği yakında';

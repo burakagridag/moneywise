@@ -11,7 +11,6 @@ import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../domain/entities/account.dart';
 import '../../../../domain/entities/category.dart';
-import '../../../../domain/entities/transaction.dart';
 import '../providers/transactions_provider.dart';
 import '../widgets/account_picker_sheet.dart';
 import '../widgets/category_picker_sheet.dart';

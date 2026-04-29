@@ -46,7 +46,7 @@ class TransactionRow extends StatelessWidget {
 
   Color get _amountColor {
     if (transaction.isExcluded) return AppColors.textTertiary;
-    switch (transaction.type) {
+    switch (transaction.transactionType) {
       case TransactionType.income:
         return AppColors.income;
       case TransactionType.expense:
@@ -57,7 +57,7 @@ class TransactionRow extends StatelessWidget {
   }
 
   Color get _iconBgColor {
-    switch (transaction.type) {
+    switch (transaction.transactionType) {
       case TransactionType.income:
         return AppColors.income.withAlpha(38);
       case TransactionType.expense:
@@ -68,7 +68,7 @@ class TransactionRow extends StatelessWidget {
   }
 
   String get _subtitle {
-    if (transaction.type == TransactionType.transfer) {
+    if (transaction.transactionType == TransactionType.transfer) {
       final from = accountName ?? '';
       final to = toAccountName ?? '';
       return '$from → $to';
@@ -107,7 +107,8 @@ class TransactionRow extends StatelessWidget {
               children: [
                 _CategoryIcon(
                   emoji: categoryEmoji,
-                  isTransfer: transaction.type == TransactionType.transfer,
+                  isTransfer:
+                      transaction.transactionType == TransactionType.transfer,
                   bgColor: _iconBgColor,
                 ),
                 const SizedBox(width: AppSpacing.md),
@@ -154,7 +155,7 @@ class TransactionRow extends StatelessWidget {
   }
 
   String get _iconLabel {
-    switch (transaction.type) {
+    switch (transaction.transactionType) {
       case TransactionType.income:
         return 'Income';
       case TransactionType.expense:

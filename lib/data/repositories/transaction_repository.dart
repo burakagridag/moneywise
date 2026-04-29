@@ -9,7 +9,6 @@ import '../local/database.dart';
 import '../../domain/entities/transaction.dart' as domain;
 import '../../domain/entities/transaction_with_details.dart';
 
-
 export '../local/daos/transaction_dao.dart'
     show DayTotals, MonthTotals, TransactionWithNames;
 
@@ -92,20 +91,6 @@ class TransactionRepository {
     return _dao
         .watchTransactionsWithNamesByDateRange(from, to)
         .map((rows) => rows.map(_mapToDetailEntity).toList());
-  }
-
-  /// Emits transactions enriched with resolved category and account names for
-  /// the given month. Used by DailyView (BUG-003).
-  Stream<List<TransactionWithDetails>> watchTransactionsWithDetailsForMonth(
-    int year,
-    int month,
-  ) {
-    final from = DateTime(year, month);
-    final to =
-        DateTime(year, month + 1).subtract(const Duration(microseconds: 1));
-    return _dao
-        .watchTransactionsWithNamesByDateRange(from, to)
-        .map((rows) => rows.map(_toDetailEntity).toList());
   }
 
   Stream<MonthTotals> watchMonthlyTotals(int year, int month) =>
