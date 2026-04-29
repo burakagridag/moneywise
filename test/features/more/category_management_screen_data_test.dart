@@ -163,5 +163,30 @@ void main() {
 
       await _tearDown(tester, db);
     });
+
+    testWidgets('saving a new category via the real DB notifier closes sheet',
+        (tester) async {
+      final db = _testDb();
+      await tester.pumpWidget(_wrap(const CategoryManagementScreen(), db));
+      await _settle(tester);
+
+      // Open the add-category sheet.
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      // Enter a name.
+      final nameField = find.byType(TextFormField).first;
+      await tester.enterText(nameField, 'My New Category');
+      await tester.pump();
+
+      // Tap Save to execute the real _save() path.
+      await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+      await tester.pumpAndSettle();
+
+      // Sheet should be dismissed — only CategoryManagementScreen visible.
+      expect(find.byType(CategoryManagementScreen), findsOneWidget);
+
+      await _tearDown(tester, db);
+    });
   });
 }

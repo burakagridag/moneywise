@@ -6,17 +6,20 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'encryption/db_encryption_service.dart';
 
 import 'daos/account_dao.dart';
 import 'daos/category_dao.dart';
+import 'daos/transaction_dao.dart';
 import 'seed_data.dart';
 import 'tables/account_groups_table.dart';
 import 'tables/accounts_table.dart';
 import 'tables/categories_table.dart';
+import 'tables/transactions_table.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [AccountGroups, Accounts, Categories])
+@DriftDatabase(tables: [AccountGroups, Accounts, Categories, Transactions])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -24,7 +27,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -39,6 +42,21 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(categories);
             await _seedDefaultData();
           }
+          if (from < 3) {
+            await m.createTable(transactions);
+            await customStatement(
+              'CREATE INDEX IF NOT EXISTS idx_tx_account ON transactions (account_id)',
+            );
+            await customStatement(
+              'CREATE INDEX IF NOT EXISTS idx_tx_date ON transactions (date)',
+            );
+            await customStatement(
+              'CREATE INDEX IF NOT EXISTS idx_tx_deleted ON transactions (is_deleted)',
+            );
+            await customStatement(
+              'CREATE INDEX IF NOT EXISTS idx_tx_type ON transactions (type)',
+            );
+          }
         },
       );
 
@@ -48,6 +66,7 @@ class AppDatabase extends _$AppDatabase {
 
   late final accountDao = AccountDao(this);
   late final categoryDao = CategoryDao(this);
+  late final transactionDao = TransactionDao(this);
 
   // ---------------------------------------------------------------------------
   // Seed helpers
@@ -81,10 +100,31 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'moneywise.db'));
-    // NOTE: SQLCipher encryption is deferred to Sprint 3 (ADR-003).
-    // sqlcipher_flutter_libs is already linked so the binary is ready.
-    // Sprint 3 will add a key-derivation step and migration from plaintext.
-    return NativeDatabase.createInBackground(file);
+    final key = await DbEncryptionService.getEncryptionKey();
+
+    // Detect a pre-encryption plaintext database created by Sprint 2.
+    // SQLite plaintext files begin with the 15-byte magic header
+    // "SQLite format 3". A SQLCipher-encrypted file starts with random bytes.
+    // Opening a plaintext file with PRAGMA key set causes SqliteException(26).
+    // For this dev upgrade path we delete the stale file so SQLCipher creates
+    // a fresh encrypted database from scratch.
+    if (await file.exists()) {
+      final header = await file
+          .openRead(0, 16)
+          .first
+          .then((bytes) => String.fromCharCodes(bytes.take(15)));
+      if (header == 'SQLite format 3') {
+        await file.delete();
+      }
+    }
+
+    return NativeDatabase.createInBackground(
+      file,
+      setup: (db) {
+        // Apply the SQLCipher encryption key before Drift opens the schema.
+        db.execute("PRAGMA key = \"x'$key'\";");
+      },
+    );
   });
 }
 

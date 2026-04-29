@@ -182,14 +182,22 @@ class _AccountGroupSection extends StatelessWidget {
 // Individual account row
 // ---------------------------------------------------------------------------
 
-class _AccountRow extends StatelessWidget {
+class _AccountRow extends ConsumerWidget {
   const _AccountRow({required this.account});
 
   final Account account;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final balanceAsync = ref.watch(accountBalanceProvider(account.id));
+
+    final balanceText = balanceAsync.when(
+      data: (balance) => balance.toStringAsFixed(2),
+      loading: () => account.initialBalance.toStringAsFixed(2),
+      error: (_, __) => account.initialBalance.toStringAsFixed(2),
+    );
+
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -212,10 +220,8 @@ class _AccountRow extends StatelessWidget {
           color: colorScheme.onSurfaceVariant,
         ),
       ),
-      // TODO(sprint-3): replace initialBalance with computed currentBalance
-      // (transactions not yet implemented).
       trailing: Text(
-        account.initialBalance.toStringAsFixed(2),
+        balanceText,
         style: AppTypography.moneySmall.copyWith(color: colorScheme.onSurface),
       ),
       onTap: () => context.push(

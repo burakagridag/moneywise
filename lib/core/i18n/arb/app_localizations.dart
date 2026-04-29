@@ -373,6 +373,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to update category. Please try again.'**
   String get errorUpdatingCategory;
+
+  /// No description provided for @addTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Transaction'**
+  String get addTransaction;
+
+  /// No description provided for @editTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Transaction'**
+  String get editTransaction;
+
+  /// No description provided for @saveAndContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & Continue'**
+  String get saveAndContinue;
+
+  /// No description provided for @deleteTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Transaction'**
+  String get deleteTransaction;
+
+  /// No description provided for @deleteTransactionConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this transaction?'**
+  String get deleteTransactionConfirm;
+
+  /// No description provided for @errorDeletingTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete transaction. Please try again.'**
+  String get errorDeletingTransaction;
+
+  /// No description provided for @errorSavingTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save transaction. Please try again.'**
+  String get errorSavingTransaction;
+
+  /// No description provided for @noTransactionsThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions this month'**
+  String get noTransactionsThisMonth;
+
+  /// No description provided for @tapPlusToAddFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to add your first transaction.'**
+  String get tapPlusToAddFirst;
+
+  /// No description provided for @failedToLoadTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load transactions.'**
+  String get failedToLoadTransactions;
+
+  /// No description provided for @toAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'To Account'**
+  String get toAccount;
+
+  /// No description provided for @summaryIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get summaryIncome;
+
+  /// No description provided for @summaryExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get summaryExpense;
+
+  /// No description provided for @summaryTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get summaryTotal;
+
+  /// No description provided for @noDataForPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'No data for this period'**
+  String get noDataForPeriod;
+
+  /// No description provided for @addTransactionsForBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Add transactions to see your spending breakdown.'**
+  String get addTransactionsForBreakdown;
+
+  /// No description provided for @couldNotLoadStatistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load statistics.'**
+  String get couldNotLoadStatistics;
+
+  /// No description provided for @pleaseRetryStatistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Please try again.'**
+  String get pleaseRetryStatistics;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get comingSoon;
+
+  /// No description provided for @statsSubTabStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get statsSubTabStats;
+
+  /// No description provided for @statsSubTabBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get statsSubTabBudget;
+
+  /// No description provided for @statsSubTabNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get statsSubTabNote;
+
+  /// No description provided for @budgetTrackingComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget management will be available soon.'**
+  String get budgetTrackingComingSoon;
+
+  /// No description provided for @noteSummaryComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Note-based summaries will be available soon.'**
+  String get noteSummaryComingSoon;
+
+  /// No description provided for @budgetTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget tracking'**
+  String get budgetTracking;
+
+  /// No description provided for @spendingNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending notes'**
+  String get spendingNotes;
+
+  /// No description provided for @currentBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Balance'**
+  String get currentBalance;
 }
 
 class _AppLocalizationsDelegate

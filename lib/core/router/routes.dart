@@ -12,4 +12,7 @@ class Routes {
   static const String accountAddEdit = '/accounts/add';
   static const String settings = '/more/settings';
   static const String categoryManagement = '/more/settings/categories';
+
+  // Sprint 3 routes
+  static const String transactionAddEdit = '/transactions/add';
 }

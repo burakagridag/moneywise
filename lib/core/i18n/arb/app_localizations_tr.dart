@@ -152,4 +152,94 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get errorUpdatingCategory =>
       'Kategori güncellenemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get addTransaction => 'İşlem Ekle';
+
+  @override
+  String get editTransaction => 'İşlemi Düzenle';
+
+  @override
+  String get saveAndContinue => 'Kaydet ve Devam Et';
+
+  @override
+  String get deleteTransaction => 'İşlemi Sil';
+
+  @override
+  String get deleteTransactionConfirm =>
+      'Bu işlemi silmek istediğinizden emin misiniz?';
+
+  @override
+  String get errorDeletingTransaction =>
+      'İşlem silinemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get errorSavingTransaction =>
+      'İşlem kaydedilemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get noTransactionsThisMonth => 'Bu ay işlem yok';
+
+  @override
+  String get tapPlusToAddFirst => 'İlk işleminizi eklemek için + tuşuna basın.';
+
+  @override
+  String get failedToLoadTransactions => 'İşlemler yüklenemedi.';
+
+  @override
+  String get toAccount => 'Hedef Hesap';
+
+  @override
+  String get summaryIncome => 'Gelir';
+
+  @override
+  String get summaryExpense => 'Gider';
+
+  @override
+  String get summaryTotal => 'Toplam';
+
+  @override
+  String get noDataForPeriod => 'Bu dönem için veri yok';
+
+  @override
+  String get addTransactionsForBreakdown =>
+      'Harcama dağılımını görmek için işlem ekleyin.';
+
+  @override
+  String get couldNotLoadStatistics => 'İstatistikler yüklenemedi.';
+
+  @override
+  String get pleaseRetryStatistics => 'Lütfen tekrar deneyin.';
+
+  @override
+  String get retry => 'Yeniden Dene';
+
+  @override
+  String get comingSoon => 'Yakında';
+
+  @override
+  String get statsSubTabStats => 'İstatistik';
+
+  @override
+  String get statsSubTabBudget => 'Bütçe';
+
+  @override
+  String get statsSubTabNote => 'Not';
+
+  @override
+  String get budgetTrackingComingSoon =>
+      'Bütçe yönetimi yakında kullanılabilir olacak.';
+
+  @override
+  String get noteSummaryComingSoon =>
+      'Not tabanlı özetler yakında kullanılabilir olacak.';
+
+  @override
+  String get budgetTracking => 'Bütçe Takibi';
+
+  @override
+  String get spendingNotes => 'Harcama Notları';
+
+  @override
+  String get currentBalance => 'Mevcut Bakiye';
 }

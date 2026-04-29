@@ -53,7 +53,6 @@ class AccountAddEditScreen extends ConsumerStatefulWidget {
 class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
-  late final TextEditingController _balanceController;
   late bool _includeInTotals;
   String? _selectedGroupId;
   late String _selectedCurrency;
@@ -64,9 +63,6 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
     super.initState();
     final a = widget.account;
     _nameController = TextEditingController(text: a?.name ?? '');
-    _balanceController = TextEditingController(
-      text: a != null ? a.initialBalance.toStringAsFixed(2) : '0.00',
-    );
     // Default to TRY (primary user locale). Fall back to TRY if saved value
     // is not in the dropdown list.
     final savedCurrency = a?.currencyCode ?? 'TRY';
@@ -79,7 +75,6 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
   @override
   void dispose() {
     _nameController.dispose();
-    _balanceController.dispose();
     super.dispose();
   }
 
@@ -101,7 +96,7 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
       groupId: _selectedGroupId!,
       name: _nameController.text.trim(),
       currencyCode: _selectedCurrency,
-      initialBalance: double.tryParse(_balanceController.text.trim()) ?? 0.0,
+      initialBalance: widget.account?.initialBalance ?? 0.0,
       sortOrder: widget.account?.sortOrder ?? 0,
       isHidden: widget.account?.isHidden ?? false,
       includeInTotals: _includeInTotals,
@@ -135,6 +130,11 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
     final groupsAsync = ref.watch(accountGroupsProvider);
     final isEditing = widget.account != null;
 
+    // Reactive computed balance shown when editing an existing account.
+    final balanceAsync = isEditing
+        ? ref.watch(accountBalanceProvider(widget.account!.id))
+        : null;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -161,6 +161,15 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.md),
           children: [
+            // Current balance card — only shown when editing an existing account.
+            if (isEditing && balanceAsync != null) ...[
+              _CurrentBalanceCard(
+                balanceAsync: balanceAsync,
+                currencyCode: widget.account!.currencyCode,
+              ),
+              const SizedBox(height: AppSpacing.md),
+            ],
+
             // Account name
             TextFormField(
               controller: _nameController,
@@ -212,24 +221,6 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
             ),
             const SizedBox(height: AppSpacing.md),
 
-            // Initial balance
-            TextFormField(
-              controller: _balanceController,
-              decoration: InputDecoration(labelText: l10n.initialBalance),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-                signed: true,
-              ),
-              validator: (v) {
-                if (v == null || v.trim().isEmpty) return null;
-                if (double.tryParse(v.trim()) == null) {
-                  return l10n.invalidBalance;
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: AppSpacing.md),
-
             // Include in totals
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
@@ -246,6 +237,60 @@ class _AccountAddEditScreenState extends ConsumerState<AccountAddEditScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Current balance display card (edit-mode only)
+// ---------------------------------------------------------------------------
+
+/// Read-only card that shows the reactive computed balance for an existing
+/// account. Uses [accountBalanceProvider] so it always reflects the sum of
+/// all posted transactions on top of the seed initialBalance.
+class _CurrentBalanceCard extends StatelessWidget {
+  const _CurrentBalanceCard({
+    required this.balanceAsync,
+    required this.currencyCode,
+  });
+
+  final AsyncValue<double> balanceAsync;
+  final String currencyCode;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final balanceText = balanceAsync.when(
+      data: (b) => '$currencyCode ${b.toStringAsFixed(2)}',
+      loading: () => '...',
+      error: (_, __) => l10n.errorSavingAccount,
+    );
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.currentBalance,
+            style: AppTypography.footnote.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            balanceText,
+            style: AppTypography.title2.copyWith(color: colorScheme.onSurface),
+          ),
+        ],
       ),
     );
   }
