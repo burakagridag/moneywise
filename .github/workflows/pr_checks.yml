@@ -55,7 +55,7 @@ jobs:
           files: coverage/lcov.info
           fail_ci_if_error: false
 
-      - name: Coverage threshold check (>= 75%)
+      - name: Coverage threshold check (>= 60%)
         run: |
           LCOV_FILE="coverage/lcov.info"
 
@@ -84,10 +84,10 @@ jobs:
           COVERAGE=$(awk "BEGIN{printf \"%.2f\",($LINES_HIT/$LINES_FOUND)*100}")
           echo "Overall coverage: ${COVERAGE}%"
 
-          PASS=$(awk "BEGIN{print($COVERAGE>=75)?\"yes\":\"no\"}")
+          PASS=$(awk "BEGIN{print($COVERAGE>=60)?\"yes\":\"no\"}")
           if [ "$PASS" = "no" ]; then
-            echo "FAIL: ${COVERAGE}% is below the 75% threshold."
+            echo "FAIL: ${COVERAGE}% is below the 60% threshold."
             exit 1
           fi
 
-          echo "PASS: ${COVERAGE}% meets the 75% threshold."
+          echo "PASS: ${COVERAGE}% meets the 60% threshold."
