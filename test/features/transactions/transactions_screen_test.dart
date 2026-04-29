@@ -239,5 +239,101 @@ void main() {
       await tester.pump(Duration.zero);
       await db.close();
     });
+
+    testWidgets('transaction with category colorHex renders without error',
+        (tester) async {
+      final db = _testDb();
+      final accountId = await _createAccount(db);
+
+      // Insert a category with a colorHex so _parseColor is exercised.
+      final catId = _uuid.v4();
+      final catNow = DateTime.now();
+      await db.into(db.categories).insert(
+            CategoriesCompanion(
+              id: Value(catId),
+              name: const Value('Food'),
+              type: const Value('expense'),
+              iconEmoji: const Value('🍕'),
+              colorHex: const Value('FF5733'),
+              sortOrder: const Value(99),
+              isDefault: const Value(false),
+              isDeleted: const Value(false),
+              createdAt: Value(catNow),
+              updatedAt: Value(catNow),
+            ),
+          );
+
+      final now = DateTime.now();
+      await db.transactionDao.insertTransaction(
+        TransactionsCompanion(
+          id: Value(_uuid.v4()),
+          type: const Value('expense'),
+          date: Value(DateTime(now.year, now.month, 12)),
+          amount: const Value(88.0),
+          currencyCode: const Value('EUR'),
+          accountId: Value(accountId),
+          categoryId: Value(catId),
+        ),
+      );
+
+      await tester.pumpWidget(_buildScreen(db));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // Category name rendered in the list item.
+      expect(find.text('Food'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    testWidgets('transaction with invalid colorHex still renders',
+        (tester) async {
+      final db = _testDb();
+      final accountId = await _createAccount(db);
+
+      final catId = _uuid.v4();
+      final catNow = DateTime.now();
+      // Intentionally invalid hex → _parseColor catches the error and returns null.
+      await db.into(db.categories).insert(
+            CategoriesCompanion(
+              id: Value(catId),
+              name: const Value('Transport'),
+              type: const Value('expense'),
+              colorHex: const Value('GGGGGG'),
+              sortOrder: const Value(100),
+              isDefault: const Value(false),
+              isDeleted: const Value(false),
+              createdAt: Value(catNow),
+              updatedAt: Value(catNow),
+            ),
+          );
+
+      final now = DateTime.now();
+      await db.transactionDao.insertTransaction(
+        TransactionsCompanion(
+          id: Value(_uuid.v4()),
+          type: const Value('expense'),
+          date: Value(DateTime(now.year, now.month, 14)),
+          amount: const Value(22.0),
+          currencyCode: const Value('EUR'),
+          accountId: Value(accountId),
+          categoryId: Value(catId),
+        ),
+      );
+
+      await tester.pumpWidget(_buildScreen(db));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text('Transport'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
   });
 }

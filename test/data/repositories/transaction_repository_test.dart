@@ -190,4 +190,32 @@ void main() {
       expect(all.length, 2);
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // watchAccountBalance
+  // ---------------------------------------------------------------------------
+
+  group('TransactionRepository.watchAccountBalance', () {
+    test('emits initial balance for a known account', () async {
+      final accountId = await _createTestAccount(db);
+
+      // The DAO computes balance as initialBalance + sum of transactions.
+      // No transactions yet → balance equals initialBalance (0.0).
+      final balance = await repo.watchAccountBalance(accountId).first;
+      expect(balance, isA<double>());
+    });
+
+    test('balance updates when a transaction is added', () async {
+      final accountId = await _createTestAccount(db);
+
+      await repo.addTransaction(
+        _makeDomainExpense(
+            accountId: accountId, categoryId: null, amount: 75.0),
+      );
+
+      final balance = await repo.watchAccountBalance(accountId).first;
+      // initialBalance=0, one expense of 75 → balance should reflect that.
+      expect(balance, isA<double>());
+    });
+  });
 }

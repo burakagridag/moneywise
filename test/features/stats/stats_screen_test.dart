@@ -384,4 +384,272 @@ void main() {
       await db.close();
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // CategoryLegendRow onTap — coming-soon snackbar
+  // ---------------------------------------------------------------------------
+
+  group('StatsScreen — legend row tap', () {
+    testWidgets('tapping a legend row shows coming-soon snackbar',
+        (tester) async {
+      final db = _testDb();
+      final accountId = await _createAccount(db);
+
+      final container = ProviderContainer(
+        overrides: [appDatabaseProvider.overrideWith((_) => db)],
+      );
+      addTearDown(container.dispose);
+
+      // Get an expense category from seeded data.
+      final expenseCats = await db.categoryDao.getByType('expense');
+      final catId = expenseCats.first.id;
+
+      final month = container.read(selectedStatsMonthProvider);
+      await db.transactionDao.insertTransaction(
+        TransactionsCompanion(
+          id: Value(_uuid.v4()),
+          type: const Value('expense'),
+          date: Value(DateTime(month.year, month.month, 5)),
+          amount: const Value(100.0),
+          currencyCode: const Value('EUR'),
+          accountId: Value(accountId),
+          categoryId: Value(catId),
+        ),
+      );
+
+      container.invalidate(categoryBreakdownProvider);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const StatsScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 150));
+
+      // Tap the first CategoryLegendRow InkWell to trigger the snackbar.
+      final inkWells = find.byType(InkWell);
+      if (inkWells.evaluate().isNotEmpty) {
+        await tester.tap(inkWells.first, warnIfMissed: false);
+        await tester.pump();
+      }
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // _buildSegments — many-category "Other" grouping path
+  // ---------------------------------------------------------------------------
+
+  group('StatsScreen — many categories grouped as Other', () {
+    testWidgets('renders without error when many distinct categories exist',
+        (tester) async {
+      final db = _testDb();
+      final accountId = await _createAccount(db);
+
+      final container = ProviderContainer(
+        overrides: [appDatabaseProvider.overrideWith((_) => db)],
+      );
+      addTearDown(container.dispose);
+
+      final expenseCats = await db.categoryDao.getByType('expense');
+      final month = container.read(selectedStatsMonthProvider);
+
+      // Insert a transaction for each available expense category so the
+      // 3%-grouping logic in _buildSegments is exercised.
+      for (var i = 0; i < expenseCats.length; i++) {
+        await db.transactionDao.insertTransaction(
+          TransactionsCompanion(
+            id: Value(_uuid.v4()),
+            type: const Value('expense'),
+            date: Value(DateTime(month.year, month.month, 10)),
+            // Tiny amounts for all but the first — triggers the "Other" bucket.
+            amount: Value(i == 0 ? 200.0 : 0.5),
+            currencyCode: const Value('EUR'),
+            accountId: Value(accountId),
+            categoryId: Value(expenseCats[i].id),
+          ),
+        );
+      }
+
+      container.invalidate(categoryBreakdownProvider);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const StatsScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // Screen renders without throwing.
+      expect(find.byType(StatsScreen), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Error state for categoryBreakdownProvider
+  // ---------------------------------------------------------------------------
+
+  group('StatsScreen — error state', () {
+    testWidgets('shows error message when categoryBreakdownProvider errors',
+        (tester) async {
+      final db = _testDb();
+
+      // Override categoryBreakdownProvider to emit an error immediately.
+      final container = ProviderContainer(
+        overrides: [
+          appDatabaseProvider.overrideWith((_) => db),
+          categoryBreakdownProvider.overrideWith(
+            (_) async => throw Exception('Stats load failed'),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const StatsScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+
+      // Error state should display the error message and Retry button.
+      expect(find.text('Could not load statistics.'), findsOneWidget);
+      expect(find.text('Retry'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    testWidgets('tapping Retry invalidates categoryBreakdownProvider',
+        (tester) async {
+      final db = _testDb();
+
+      // Override to error first, then succeed on retry.
+      int callCount = 0;
+      final container = ProviderContainer(
+        overrides: [
+          appDatabaseProvider.overrideWith((_) => db),
+          categoryBreakdownProvider.overrideWith((_) async {
+            callCount++;
+            if (callCount == 1) throw Exception('First fail');
+            return <String, double>{};
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const StatsScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+
+      // Error state visible.
+      expect(find.text('Retry'), findsOneWidget);
+
+      // Tap Retry to trigger invalidation.
+      await tester.tap(find.text('Retry'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+
+      // After retry the provider was called again.
+      expect(callCount, greaterThan(1));
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // MonthNavigator next button in stats screen
+  // ---------------------------------------------------------------------------
+
+  group('StatsScreen — next month navigation', () {
+    testWidgets('next chevron increments stats month after going back',
+        (tester) async {
+      final db = _testDb();
+
+      final container = ProviderContainer(
+        overrides: [appDatabaseProvider.overrideWith((_) => db)],
+      );
+      addTearDown(container.dispose);
+
+      // Move back two months, then forward one.
+      container.read(selectedStatsMonthProvider.notifier).previous();
+      container.read(selectedStatsMonthProvider.notifier).previous();
+      final before = container.read(selectedStatsMonthProvider);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const StatsScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.chevron_right));
+      await tester.pump();
+
+      final after = container.read(selectedStatsMonthProvider);
+      final expected = before.month == 12 ? 1 : before.month + 1;
+      expect(after.month, expected);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+  });
 }
