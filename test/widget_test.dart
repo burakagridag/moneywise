@@ -67,13 +67,45 @@ void main() {
 
   group('Placeholder screens', () {
     testWidgets('TransactionsScreen renders', (tester) async {
-      await tester.pumpWidget(_buildScreen(const TransactionsScreen()));
-      expect(find.text('Transactions'), findsOneWidget);
+      final db = _testDb();
+      final widget = ProviderScope(
+        overrides: [appDatabaseProvider.overrideWith((_) => db)],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          theme: AppTheme.light,
+          home: const TransactionsScreen(),
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
     });
 
     testWidgets('StatsScreen renders', (tester) async {
-      await tester.pumpWidget(_buildScreen(const StatsScreen()));
-      expect(find.text('Stats'), findsOneWidget);
+      final db = _testDb();
+      final widget = ProviderScope(
+        overrides: [appDatabaseProvider.overrideWith((_) => db)],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          theme: AppTheme.light,
+          home: const StatsScreen(),
+        ),
+      );
+      await tester.pumpWidget(widget);
+      await tester.pump();
+      expect(find.byType(StatsScreen), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
     });
 
     testWidgets('MoreScreen renders with settings menu item', (tester) async {

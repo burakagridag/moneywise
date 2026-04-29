@@ -9,14 +9,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'daos/account_dao.dart';
 import 'daos/category_dao.dart';
+import 'daos/transaction_dao.dart';
 import 'seed_data.dart';
 import 'tables/account_groups_table.dart';
 import 'tables/accounts_table.dart';
 import 'tables/categories_table.dart';
+import 'tables/transactions_table.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [AccountGroups, Accounts, Categories])
+@DriftDatabase(tables: [AccountGroups, Accounts, Categories, Transactions])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -24,7 +26,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -39,6 +41,21 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(categories);
             await _seedDefaultData();
           }
+          if (from < 3) {
+            await m.createTable(transactions);
+            await customStatement(
+              'CREATE INDEX IF NOT EXISTS idx_tx_account ON transactions (account_id)',
+            );
+            await customStatement(
+              'CREATE INDEX IF NOT EXISTS idx_tx_date ON transactions (date)',
+            );
+            await customStatement(
+              'CREATE INDEX IF NOT EXISTS idx_tx_deleted ON transactions (is_deleted)',
+            );
+            await customStatement(
+              'CREATE INDEX IF NOT EXISTS idx_tx_type ON transactions (type)',
+            );
+          }
         },
       );
 
@@ -48,6 +65,7 @@ class AppDatabase extends _$AppDatabase {
 
   late final accountDao = AccountDao(this);
   late final categoryDao = CategoryDao(this);
+  late final transactionDao = TransactionDao(this);
 
   // ---------------------------------------------------------------------------
   // Seed helpers

@@ -260,4 +260,63 @@ void main() {
       expect(incomeAfter.length, incomeBaseline);
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // CategoryWriteNotifier.updateCategory
+  // ---------------------------------------------------------------------------
+
+  group('CategoryWriteNotifier.updateCategory', () {
+    test('updates category name via repository', () async {
+      final (container, db) = _buildContainer();
+      addTearDown(() async {
+        container.dispose();
+        await db.close();
+      });
+
+      final id = _uuid.v4();
+      final original =
+          _buildCategory(id: id, name: 'Old Name', type: 'expense');
+      await container
+          .read(categoryWriteNotifierProvider.notifier)
+          .addCategory(original);
+
+      final updated = original.copyWith(name: 'New Name');
+      await container
+          .read(categoryWriteNotifierProvider.notifier)
+          .updateCategory(updated);
+
+      final repo = container.read(categoryRepositoryProvider);
+      final expenses = await repo.watchByType('expense').first;
+      expect(expenses.firstWhere((c) => c.id == id).name, 'New Name');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // CategoryWriteNotifier.deleteCategory
+  // ---------------------------------------------------------------------------
+
+  group('CategoryWriteNotifier.deleteCategory', () {
+    test('soft-deletes category so it no longer appears in stream', () async {
+      final (container, db) = _buildContainer();
+      addTearDown(() async {
+        container.dispose();
+        await db.close();
+      });
+
+      final id = _uuid.v4();
+      final category =
+          _buildCategory(id: id, name: 'ToDelete', type: 'expense');
+      await container
+          .read(categoryWriteNotifierProvider.notifier)
+          .addCategory(category);
+
+      await container
+          .read(categoryWriteNotifierProvider.notifier)
+          .deleteCategory(id);
+
+      final repo = container.read(categoryRepositoryProvider);
+      final expenses = await repo.watchByType('expense').first;
+      expect(expenses.any((c) => c.id == id), isFalse);
+    });
+  });
 }
