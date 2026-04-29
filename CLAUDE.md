@@ -85,6 +85,40 @@ Product Sponsor  [weekly review & acceptance]
 
 ---
 
+## Git Branching Strategy (CRITICAL — prevents merge conflicts)
+
+Every sprint worktree MUST be created from the **latest `origin/main`**, not from a
+stale local commit. The Orchestrator MUST run the following before handing off to
+Flutter Engineer at the start of every sprint:
+
+```bash
+git fetch origin
+git checkout origin/main -b sprint/NN-short-name
+```
+
+Or when using the Agent `isolation: "worktree"` option, always `git fetch origin`
+inside the worktree as the first step and rebase onto `origin/main` before any code is
+written.
+
+### Rules
+1. **Never branch from a local `main` that hasn't been fetched** — always `git fetch origin` first.
+2. **One sprint, one branch** — no long-lived feature branches that diverge from main for more than one sprint.
+3. **Rebase before PR, not after conflict** — Flutter Engineer rebases onto `origin/main`
+   as the very last step before opening the PR (`git fetch origin && git rebase origin/main`).
+   If rebase finds conflicts at this point they are trivial (≤1 sprint of drift). Resolving
+   conflicts post-PR after multiple sprints have landed is expensive and error-prone.
+4. **Sprint N+1 starts only after Sprint N is merged** — do not open a new sprint worktree
+   while the previous sprint's PR is still open. If parallel work is needed, branch Sprint N+1
+   from Sprint N's branch (not main) and rebase onto main after Sprint N merges.
+
+### What went wrong in Sprint 4 (post-mortem)
+Sprint 4 worktree was opened while Sprint 3 was still in review. By the time Sprint 4 was
+ready to merge, Sprint 3 had landed on `main` with overlapping files (`transaction_dao`,
+`transactions_screen`, ARB files, router). A full rebase + manual conflict resolution was
+required, taking significant time and introducing regressions that required extra fix rounds.
+
+---
+
 ## Tech Stack
 
 - **Framework:** Flutter 3.22+ / Dart 3.4+ (single codebase)
