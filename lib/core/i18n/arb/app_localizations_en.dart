@@ -238,4 +238,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spendingNotes => 'Spending notes';
+
+  @override
+  String get currentBalance => 'Current Balance';
 }

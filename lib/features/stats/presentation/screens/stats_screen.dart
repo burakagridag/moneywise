@@ -307,25 +307,31 @@ class _StatsContent extends ConsumerWidget {
           );
         }
 
-        return ListView(
+        return Column(
           children: [
             SizedBox(height: 260, child: PieChartWidget(segments: segments)),
             const Divider(height: 1, color: AppColors.divider),
-            ...enrichedSegments.map(
-              (s) => Column(
-                children: [
-                  CategoryLegendRow(
-                    categoryName: s.name,
-                    amount: s.amount,
-                    percentage: s.percentage,
-                    badgeColor: s.color,
-                    emoji: s.emoji,
-                    onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.comingSoon)),
-                    ),
-                  ),
-                  const Divider(height: 1, color: AppColors.divider),
-                ],
+            Expanded(
+              child: ListView.builder(
+                itemCount: enrichedSegments.length,
+                itemBuilder: (_, i) {
+                  final s = enrichedSegments[i];
+                  return Column(
+                    children: [
+                      CategoryLegendRow(
+                        categoryName: s.name,
+                        amount: s.amount,
+                        percentage: s.percentage,
+                        badgeColor: s.color,
+                        emoji: s.emoji,
+                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(l10n.comingSoon)),
+                        ),
+                      ),
+                      const Divider(height: 1, color: AppColors.divider),
+                    ],
+                  );
+                },
               ),
             ),
           ],

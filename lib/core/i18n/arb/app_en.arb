@@ -72,5 +72,6 @@
   "budgetTrackingComingSoon": "Budget management will be available soon.",
   "noteSummaryComingSoon": "Note-based summaries will be available soon.",
   "budgetTracking": "Budget tracking",
-  "spendingNotes": "Spending notes"
+  "spendingNotes": "Spending notes",
+  "currentBalance": "Current Balance"
 }

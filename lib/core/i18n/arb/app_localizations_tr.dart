@@ -239,4 +239,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get spendingNotes => 'Harcama Notları';
+
+  @override
+  String get currentBalance => 'Mevcut Bakiye';
 }
