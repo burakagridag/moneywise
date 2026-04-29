@@ -8,6 +8,7 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../domain/entities/account.dart';
+import '../../../accounts/presentation/providers/accounts_provider.dart';
 import '../providers/transactions_provider.dart';
 
 /// Modal bottom sheet that lists all non-deleted accounts.
@@ -82,41 +83,14 @@ class AccountPickerSheet extends ConsumerWidget {
                       itemCount: accounts.length,
                       itemBuilder: (context, index) {
                         final acc = accounts[index];
-                        final isDisabled = acc.id == disabledAccountId;
-                        return ListTile(
-                          enabled: !isDisabled,
-                          leading: CircleAvatar(
-                            backgroundColor: AppColors.bgTertiary,
-                            child: Icon(
-                              Icons.account_balance_wallet_outlined,
-                              color: isDisabled
-                                  ? AppColors.textTertiary
-                                  : AppColors.textSecondary,
-                            ),
-                          ),
-                          title: Text(
-                            acc.name,
-                            style: AppTypography.bodyMedium.copyWith(
-                              color: isDisabled
-                                  ? AppColors.textTertiary
-                                  : AppColors.textPrimary,
-                            ),
-                          ),
-                          subtitle: Text(
-                            // TODO(sprint-4): use live balance from stream
-                            '${acc.currencyCode} ${fmt.format(acc.initialBalance)}',
-                            style: AppTypography.caption1.copyWith(
-                              color: isDisabled
-                                  ? AppColors.textTertiary
-                                  : AppColors.textSecondary,
-                            ),
-                          ),
-                          onTap: isDisabled
-                              ? null
-                              : () {
-                                  onSelected(acc);
-                                  Navigator.of(context).pop();
-                                },
+                        return _AccountPickerRow(
+                          account: acc,
+                          isDisabled: acc.id == disabledAccountId,
+                          fmt: fmt,
+                          onTap: () {
+                            onSelected(acc);
+                            Navigator.of(context).pop();
+                          },
                         );
                       },
                     );
@@ -127,6 +101,52 @@ class AccountPickerSheet extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+}
+
+/// A single row in the account picker that watches [accountBalanceProvider]
+/// so the displayed balance is always up-to-date with all recorded transactions.
+class _AccountPickerRow extends ConsumerWidget {
+  const _AccountPickerRow({
+    required this.account,
+    required this.isDisabled,
+    required this.fmt,
+    required this.onTap,
+  });
+
+  final Account account;
+  final bool isDisabled;
+  final NumberFormat fmt;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final balanceAsync = ref.watch(accountBalanceProvider(account.id));
+    final balance = balanceAsync.valueOrNull ?? account.initialBalance;
+
+    return ListTile(
+      enabled: !isDisabled,
+      leading: CircleAvatar(
+        backgroundColor: AppColors.bgTertiary,
+        child: Icon(
+          Icons.account_balance_wallet_outlined,
+          color: isDisabled ? AppColors.textTertiary : AppColors.textSecondary,
+        ),
+      ),
+      title: Text(
+        account.name,
+        style: AppTypography.bodyMedium.copyWith(
+          color: isDisabled ? AppColors.textTertiary : AppColors.textPrimary,
+        ),
+      ),
+      subtitle: Text(
+        '${account.currencyCode} ${fmt.format(balance)}',
+        style: AppTypography.caption1.copyWith(
+          color: isDisabled ? AppColors.textTertiary : AppColors.textSecondary,
+        ),
+      ),
+      onTap: isDisabled ? null : onTap,
     );
   }
 }
