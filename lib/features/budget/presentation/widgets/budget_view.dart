@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -100,7 +101,7 @@ class _BudgetContent extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.lg),
                 child: Container(
-                  color: AppColors.bgSecondary,
+                  color: context.bgSecondary,
                   child: Column(
                     children: [
                       for (var i = 0; i < budgets.length; i++) ...[
@@ -109,9 +110,9 @@ class _BudgetContent extends StatelessWidget {
                           category: _categoryFor(budgets[i].budget.categoryId),
                         ),
                         if (i < budgets.length - 1)
-                          const Divider(
+                          Divider(
                             height: 1,
-                            color: AppColors.divider,
+                            color: context.dividerColor,
                             indent: 56,
                           ),
                       ],
@@ -169,7 +170,7 @@ class _BudgetSummaryCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: AppColors.bgSecondary,
+          color: context.bgSecondary,
           borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
         child: Column(
@@ -182,7 +183,7 @@ class _BudgetSummaryCard extends StatelessWidget {
                 Text(
                   l10n.budgetViewRemainingMonthly,
                   style: AppTypography.subhead
-                      .copyWith(color: AppColors.textSecondary),
+                      .copyWith(color: context.textSecondary),
                 ),
                 GestureDetector(
                   onTap: () => context.push(Routes.budgetSetting),
@@ -205,7 +206,7 @@ class _BudgetSummaryCard extends StatelessWidget {
             Text(
               CurrencyFormatter.format(remaining),
               style: AppTypography.title1.copyWith(
-                color: isOverBudget ? AppColors.error : AppColors.textPrimary,
+                color: isOverBudget ? AppColors.error : context.textPrimary,
               ),
             ),
             if (carryOver > 0) ...[
@@ -215,7 +216,7 @@ class _BudgetSummaryCard extends StatelessWidget {
                   CurrencyFormatter.format(carryOver),
                 ),
                 style: AppTypography.caption1
-                    .copyWith(color: AppColors.textTertiary),
+                    .copyWith(color: context.textTertiary),
               ),
             ],
             const SizedBox(height: AppSpacing.md),
@@ -236,7 +237,7 @@ class _BudgetSummaryCard extends StatelessWidget {
                     Text(
                       l10n.budgetSpent,
                       style: AppTypography.footnote
-                          .copyWith(color: AppColors.textSecondary),
+                          .copyWith(color: context.textSecondary),
                     ),
                     Text(
                       CurrencyFormatter.format(spent),
@@ -252,12 +253,12 @@ class _BudgetSummaryCard extends StatelessWidget {
                     Text(
                       l10n.budgetOf,
                       style: AppTypography.footnote
-                          .copyWith(color: AppColors.textSecondary),
+                          .copyWith(color: context.textSecondary),
                     ),
                     Text(
                       CurrencyFormatter.format(totalBudget),
                       style: AppTypography.moneySmall
-                          .copyWith(color: AppColors.textPrimary),
+                          .copyWith(color: context.textPrimary),
                     ),
                   ],
                 ),
@@ -311,7 +312,7 @@ class _CategoryBudgetRow extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: AppColors.bgTertiary,
+                    color: context.bgTertiary,
                     borderRadius: BorderRadius.circular(AppRadius.sm),
                   ),
                   child: Center(
@@ -331,7 +332,7 @@ class _CategoryBudgetRow extends StatelessWidget {
                       Text(
                         category?.name ?? bws.budget.categoryId,
                         style: AppTypography.bodyMedium
-                            .copyWith(color: AppColors.textPrimary),
+                            .copyWith(color: context.textPrimary),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -347,17 +348,17 @@ class _CategoryBudgetRow extends StatelessWidget {
                             Text(
                               CurrencyFormatter.format(bws.spent),
                               style: AppTypography.caption1
-                                  .copyWith(color: AppColors.textSecondary),
+                                  .copyWith(color: context.textSecondary),
                             ),
                             Text(
                               ' / ',
                               style: AppTypography.caption1
-                                  .copyWith(color: AppColors.textTertiary),
+                                  .copyWith(color: context.textTertiary),
                             ),
                             Text(
                               CurrencyFormatter.format(bws.effective),
                               style: AppTypography.caption1
-                                  .copyWith(color: AppColors.textSecondary),
+                                  .copyWith(color: context.textSecondary),
                             ),
                           ],
                         ),
@@ -365,7 +366,7 @@ class _CategoryBudgetRow extends StatelessWidget {
                         Text(
                           l10n.budgetViewNoBudgetSet,
                           style: AppTypography.caption1
-                              .copyWith(color: AppColors.textTertiary),
+                              .copyWith(color: context.textTertiary),
                         ),
                     ],
                   ),
@@ -406,22 +407,21 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.savings_outlined,
               size: 64,
-              color: AppColors.textTertiary,
+              color: context.textTertiary,
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               l10n.budgetViewNoBudgetsTitle,
-              style:
-                  AppTypography.title3.copyWith(color: AppColors.textPrimary),
+              style: AppTypography.title3.copyWith(color: context.textPrimary),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               l10n.budgetViewNoBudgetsSubtitle,
-              style: AppTypography.subhead
-                  .copyWith(color: AppColors.textSecondary),
+              style:
+                  AppTypography.subhead.copyWith(color: context.textSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),
@@ -466,7 +466,7 @@ class _ErrorState extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             l10n.budgetViewCouldNotLoad,
-            style: AppTypography.title3.copyWith(color: AppColors.textPrimary),
+            style: AppTypography.title3.copyWith(color: context.textPrimary),
           ),
           const SizedBox(height: AppSpacing.lg),
           FilledButton(

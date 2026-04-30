@@ -6,10 +6,12 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../domain/entities/account.dart';
+import '../../../../domain/entities/bookmark.dart';
 import '../../../../domain/entities/category.dart';
 import '../providers/transactions_provider.dart';
 import '../widgets/account_picker_sheet.dart';
@@ -19,10 +21,18 @@ const _uuid = Uuid();
 
 /// Fullscreen form for adding a new transaction or editing an existing one.
 /// Pass [transaction] = null for add mode; non-null for edit mode.
+/// Pass [prefillBookmark] to pre-populate the form from a saved bookmark template.
 class TransactionAddEditScreen extends ConsumerStatefulWidget {
-  const TransactionAddEditScreen({super.key, this.transaction});
+  const TransactionAddEditScreen({
+    super.key,
+    this.transaction,
+    this.prefillBookmark,
+  });
 
   final Transaction? transaction;
+
+  /// When set, the form is pre-populated with this bookmark's fields (add mode).
+  final Bookmark? prefillBookmark;
 
   @override
   ConsumerState<TransactionAddEditScreen> createState() =>
@@ -50,11 +60,21 @@ class _TransactionAddEditScreenState
   void initState() {
     super.initState();
     final tx = widget.transaction;
+    final bm = widget.prefillBookmark;
     if (tx != null) {
       _type = tx.type;
       _amountController.text = tx.amount.toStringAsFixed(2);
       _noteController.text = tx.description ?? '';
       _selectedDate = tx.date;
+    } else if (bm != null) {
+      // Pre-fill from bookmark template (add mode).
+      _type = bm.type;
+      if (bm.amount != null) {
+        _amountController.text = bm.amount!.toStringAsFixed(2);
+      }
+      _noteController.text = bm.note ?? '';
+      _selectedDate = DateTime.now();
+      // accountId / categoryId / toAccountId resolved in _tryInitPickers.
     } else {
       _type = 'expense';
       _selectedDate = DateTime.now();
@@ -66,30 +86,48 @@ class _TransactionAddEditScreenState
   /// Pre-populates [_selectedCategory] and [_selectedAccount] from the lists
   /// provided by the repository-backed providers. Called after the first frame
   /// so that [ref] is available and providers have had a chance to emit.
+  /// Handles both edit mode (from [widget.transaction]) and bookmark pre-fill
+  /// mode (from [widget.prefillBookmark]).
   void _tryInitPickers() {
-    if (_pickersInitialized || !_isEditMode) return;
-    final tx = widget.transaction!;
+    if (_pickersInitialized) return;
+
+    final tx = widget.transaction;
+    final bm = widget.prefillBookmark;
+
+    // Only attempt picker init for edit mode or bookmark pre-fill.
+    if (tx == null && bm == null) {
+      _pickersInitialized = true;
+      return;
+    }
 
     final accounts =
         ref.read(transactionAccountListProvider).asData?.value ?? [];
     final categories =
         ref.read(transactionCategoryListProvider).asData?.value ?? [];
 
-    final account = accounts.where((a) => a.id == tx.accountId).firstOrNull;
-    final toAccount = tx.toAccountId != null
-        ? accounts.where((a) => a.id == tx.toAccountId).firstOrNull
-        : null;
-    final category = tx.categoryId != null
-        ? categories.where((c) => c.id == tx.categoryId).firstOrNull
-        : null;
+    if (accounts.isEmpty) return; // retry next rebuild
 
-    // Only mark initialized once we get at least the account (it is required).
-    // If providers haven't loaded yet this will be retried next rebuild.
-    if (accounts.isNotEmpty) {
-      _pickersInitialized = true;
-      _selectedAccount = account;
-      _selectedToAccount = toAccount;
-      _selectedCategory = category;
+    _pickersInitialized = true;
+
+    if (tx != null) {
+      _selectedAccount =
+          accounts.where((a) => a.id == tx.accountId).firstOrNull;
+      _selectedToAccount = tx.toAccountId != null
+          ? accounts.where((a) => a.id == tx.toAccountId).firstOrNull
+          : null;
+      _selectedCategory = tx.categoryId != null
+          ? categories.where((c) => c.id == tx.categoryId).firstOrNull
+          : null;
+    } else if (bm != null) {
+      _selectedAccount = bm.accountId != null
+          ? accounts.where((a) => a.id == bm.accountId).firstOrNull
+          : null;
+      _selectedToAccount = bm.toAccountId != null
+          ? accounts.where((a) => a.id == bm.toAccountId).firstOrNull
+          : null;
+      _selectedCategory = bm.categoryId != null
+          ? categories.where((c) => c.id == bm.categoryId).firstOrNull
+          : null;
     }
   }
 
@@ -209,14 +247,14 @@ class _TransactionAddEditScreenState
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.bgSecondary,
+        backgroundColor: ctx.bgSecondary,
         title: Text(
           l10n.deleteTransaction,
-          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headline.copyWith(color: ctx.textPrimary),
         ),
         content: Text(
           l10n.deleteTransactionConfirm,
-          style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+          style: AppTypography.body.copyWith(color: ctx.textSecondary),
         ),
         actions: [
           TextButton(
@@ -225,9 +263,9 @@ class _TransactionAddEditScreenState
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(
-              l10n.deleteTransaction,
-              style: const TextStyle(color: AppColors.error),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: AppColors.error),
             ),
           ),
         ],
@@ -259,10 +297,12 @@ class _TransactionAddEditScreenState
 
   @override
   Widget build(BuildContext context) {
-    // In edit mode, watch the account/category lists so this widget rebuilds
-    // when they emit data. _tryInitPickers() then reads them synchronously to
-    // set the picker state before the rest of the widget tree is built.
-    if (_isEditMode && !_pickersInitialized) {
+    // In edit mode or bookmark pre-fill mode, watch the account/category lists
+    // so this widget rebuilds when they emit data. _tryInitPickers() then reads
+    // them synchronously to set the picker state before the rest of the widget
+    // tree is built.
+    if ((_isEditMode || widget.prefillBookmark != null) &&
+        !_pickersInitialized) {
       ref.watch(transactionAccountListProvider);
       ref.watch(transactionCategoryListProvider);
     }
@@ -281,16 +321,14 @@ class _TransactionAddEditScreenState
         final leave = await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            backgroundColor: AppColors.bgSecondary,
+            backgroundColor: ctx.bgSecondary,
             title: Text(
               'Discard changes?',
-              style:
-                  AppTypography.headline.copyWith(color: AppColors.textPrimary),
+              style: AppTypography.headline.copyWith(color: ctx.textPrimary),
             ),
             content: Text(
               'Your changes will be lost.',
-              style:
-                  AppTypography.body.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.body.copyWith(color: ctx.textSecondary),
             ),
             actions: [
               TextButton(
@@ -310,16 +348,15 @@ class _TransactionAddEditScreenState
         if (leave == true && mounted) navigator.pop();
       },
       child: Scaffold(
-        backgroundColor: AppColors.bgPrimary,
+        backgroundColor: context.bgPrimary,
         appBar: AppBar(
-          backgroundColor: AppColors.bgSecondary,
+          backgroundColor: context.bgSecondary,
           title: Text(
             _isEditMode ? l10n.editTransaction : l10n.addTransaction,
-            style:
-                AppTypography.headline.copyWith(color: AppColors.textPrimary),
+            style: AppTypography.headline.copyWith(color: context.textPrimary),
           ),
           leading: IconButton(
-            icon: const Icon(Icons.close, color: AppColors.textPrimary),
+            icon: Icon(Icons.close, color: context.textPrimary),
             onPressed: () => Navigator.of(context).maybePop(),
           ),
           actions: [
@@ -352,13 +389,13 @@ class _TransactionAddEditScreenState
                   FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
                 ],
                 style: AppTypography.title2.copyWith(
-                  color: AppColors.textPrimary,
+                  color: context.textPrimary,
                 ),
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
                   hintText: '0.00',
                   hintStyle: AppTypography.title2.copyWith(
-                    color: AppColors.textTertiary,
+                    color: context.textTertiary,
                   ),
                   border: InputBorder.none,
                 ),
@@ -369,7 +406,7 @@ class _TransactionAddEditScreenState
                   return null;
                 },
               ),
-              const Divider(color: AppColors.divider),
+              Divider(color: context.dividerColor),
               const SizedBox(height: AppSpacing.sm),
 
               // Category (hidden for transfer)
@@ -391,7 +428,7 @@ class _TransactionAddEditScreenState
                     ),
                   ),
                 ),
-                const Divider(color: AppColors.divider),
+                Divider(color: context.dividerColor),
               ],
 
               // Account
@@ -409,7 +446,7 @@ class _TransactionAddEditScreenState
                   ),
                 ),
               ),
-              const Divider(color: AppColors.divider),
+              Divider(color: context.dividerColor),
 
               // To Account (transfer only)
               if (_type == 'transfer') ...[
@@ -428,7 +465,7 @@ class _TransactionAddEditScreenState
                     ),
                   ),
                 ),
-                const Divider(color: AppColors.divider),
+                Divider(color: context.dividerColor),
               ],
 
               // Date
@@ -438,27 +475,27 @@ class _TransactionAddEditScreenState
                 value: dateFmt.format(_selectedDate),
                 onTap: _pickDate,
               ),
-              const Divider(color: AppColors.divider),
+              Divider(color: context.dividerColor),
 
               // Note
               TextFormField(
                 controller: _noteController,
                 style: AppTypography.body.copyWith(
-                  color: AppColors.textPrimary,
+                  color: context.textPrimary,
                 ),
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(
+                  prefixIcon: Icon(
                     Icons.notes,
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                   hintText: l10n.note,
                   hintStyle: AppTypography.body.copyWith(
-                    color: AppColors.textTertiary,
+                    color: context.textTertiary,
                   ),
                   border: InputBorder.none,
                 ),
               ),
-              const Divider(color: AppColors.divider),
+              Divider(color: context.dividerColor),
 
               const SizedBox(height: AppSpacing.xxl),
 
@@ -526,7 +563,7 @@ class _TypeSegmentedButton extends StatelessWidget {
       style: SegmentedButton.styleFrom(
         selectedBackgroundColor: AppColors.brandPrimary,
         selectedForegroundColor: AppColors.textOnBrand,
-        foregroundColor: AppColors.textSecondary,
+        foregroundColor: context.textSecondary,
       ),
     );
   }
@@ -549,16 +586,16 @@ class _PickerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: AppColors.textSecondary),
+      leading: Icon(icon, color: context.textSecondary),
       title: Text(
         value ?? label,
         style: AppTypography.body.copyWith(
-          color: value != null ? AppColors.textPrimary : AppColors.textTertiary,
+          color: value != null ? context.textPrimary : context.textTertiary,
         ),
       ),
-      trailing: const Icon(
+      trailing: Icon(
         Icons.chevron_right,
-        color: AppColors.textTertiary,
+        color: context.textTertiary,
       ),
       onTap: onTap,
     );

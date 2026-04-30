@@ -5,17 +5,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/router/routes.dart';
 import '../providers/transactions_provider.dart';
+import '../widgets/bookmark_picker_modal.dart';
 import '../widgets/calendar_view.dart';
 import '../widgets/daily_view.dart';
+import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/income_summary_bar.dart';
 import '../widgets/month_navigator.dart';
 import '../widgets/monthly_view.dart';
 import '../widgets/summary_view.dart';
+import '../widgets/transaction_search_bar.dart';
 
 /// Tab index for Monthly tab — used to switch navigator to year-only mode.
 const int _monthlyTabIndex = 2;
@@ -35,6 +39,7 @@ class TransactionsScreen extends ConsumerStatefulWidget {
 class _TransactionsScreenState extends ConsumerState<TransactionsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _showSearchBar = false;
 
   @override
   void initState() {
@@ -60,6 +65,28 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen>
 
   bool get _isMonthlyTab => _tabController.index == _monthlyTabIndex;
 
+  void _toggleSearchBar() {
+    setState(() => _showSearchBar = !_showSearchBar);
+  }
+
+  void _showBookmarkPicker(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const BookmarkPickerModal(),
+    );
+  }
+
+  void _showFilterSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const FilterBottomSheet(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -79,23 +106,21 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen>
           );
 
     return Scaffold(
-      backgroundColor: AppColors.bgPrimary,
+      backgroundColor: context.bgPrimary,
       appBar: AppBar(
-        backgroundColor: AppColors.bgPrimary,
+        backgroundColor: context.bgPrimary,
         elevation: 0,
         leading: Semantics(
           label: 'Search transactions',
           button: true,
           child: IconButton(
-            icon: const Icon(Icons.search, color: AppColors.textSecondary),
-            onPressed: () {
-              // Sprint 6: Search modal
-            },
+            icon: Icon(Icons.search, color: context.textSecondary),
+            onPressed: _toggleSearchBar,
           ),
         ),
         title: Text(
           l10n.transactionsTitle,
-          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headline.copyWith(color: context.textPrimary),
         ),
         centerTitle: true,
         actions: [
@@ -103,32 +128,30 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen>
             label: 'Open bookmarks',
             button: true,
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.bookmark_outline,
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
-              onPressed: () {
-                // Sprint 6: Bookmark modal
-              },
+              onPressed: () => _showBookmarkPicker(context),
             ),
           ),
           Semantics(
             label: 'Filter transactions',
             button: true,
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.tune,
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
-              onPressed: () {
-                // Sprint 6: Filter modal
-              },
+              onPressed: () => _showFilterSheet(context),
             ),
           ),
         ],
       ),
       body: Column(
         children: [
+          // Animated search bar below AppBar
+          TransactionSearchBar(isVisible: _showSearchBar),
           // Month/Year navigator
           MonthNavigator(showYearOnly: _isMonthlyTab),
           // Period tab bar
@@ -169,10 +192,10 @@ class _PeriodTabBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Container(
       height: AppHeights.tabBar,
-      decoration: const BoxDecoration(
-        color: AppColors.bgPrimary,
+      decoration: BoxDecoration(
+        color: context.bgPrimary,
         border: Border(
-          bottom: BorderSide(color: AppColors.divider, width: 1),
+          bottom: BorderSide(color: context.dividerColor, width: 1),
         ),
       ),
       child: TabBar(
@@ -183,8 +206,8 @@ class _PeriodTabBar extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
         unselectedLabelStyle: AppTypography.subhead,
-        labelColor: AppColors.textPrimary,
-        unselectedLabelColor: AppColors.textSecondary,
+        labelColor: context.textPrimary,
+        unselectedLabelColor: context.textSecondary,
         indicatorColor: AppColors.brandPrimary,
         indicatorWeight: 2,
         indicatorSize: TabBarIndicatorSize.tab,
@@ -248,14 +271,19 @@ class _Fabs extends StatelessWidget {
               child: FloatingActionButton(
                 heroTag: 'bookmark_fab',
                 onPressed: () {
-                  // Sprint 6: BookmarkPickerModal
+                  showModalBottomSheet<void>(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => const BookmarkPickerModal(),
+                  );
                 },
-                backgroundColor: AppColors.bgSecondary,
+                backgroundColor: context.bgSecondary,
                 elevation: 2,
                 mini: true,
-                child: const Icon(
+                child: Icon(
                   Icons.bookmark_outline,
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                   size: 20,
                 ),
               ),

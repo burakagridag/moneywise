@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -25,7 +26,7 @@ class SummaryView extends ConsumerWidget {
       error: (_, __) => Center(
         child: Text(
           AppLocalizations.of(context)!.errorLoadTitle,
-          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headline.copyWith(color: context.textPrimary),
         ),
       ),
       data: (totals) => _SummaryContent(totals: totals),
@@ -142,7 +143,7 @@ class _StatSummaryCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: AppColors.bgSecondary,
+          color: context.bgSecondary,
           borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
         child: Column(
@@ -185,7 +186,7 @@ class _StatSummaryCard extends StatelessWidget {
                   vertical: AppSpacing.sm,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.bgTertiary,
+                  color: context.bgTertiary,
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 child: Row(
@@ -194,7 +195,7 @@ class _StatSummaryCard extends StatelessWidget {
                     Text(
                       l10n.savingsRateLabel,
                       style: AppTypography.caption1.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                     Text(
@@ -231,7 +232,7 @@ class _MiniStatCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.bgTertiary,
+        color: context.bgTertiary,
         borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Column(
@@ -240,7 +241,7 @@ class _MiniStatCard extends StatelessWidget {
           Text(
             label,
             style: AppTypography.caption1.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
           const SizedBox(height: 4),
@@ -275,7 +276,7 @@ class _AccountsCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         decoration: BoxDecoration(
-          color: AppColors.bgSecondary,
+          color: context.bgSecondary,
           borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
         child: Column(
@@ -285,22 +286,22 @@ class _AccountsCard extends StatelessWidget {
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.account_balance_wallet_outlined,
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     size: 20,
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     AppLocalizations.of(context)!.accountsCardTitle,
                     style: AppTypography.headline.copyWith(
-                      color: AppColors.textPrimary,
+                      color: context.textPrimary,
                     ),
                   ),
                   const Spacer(),
-                  const Icon(
+                  Icon(
                     Icons.chevron_right,
-                    color: AppColors.textTertiary,
+                    color: context.textTertiary,
                     size: 16,
                   ),
                 ],
@@ -321,7 +322,7 @@ class _AccountsCard extends StatelessWidget {
                   vertical: AppSpacing.md,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.bgTertiary,
+                  color: context.bgTertiary,
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 child: Row(
@@ -332,7 +333,7 @@ class _AccountsCard extends StatelessWidget {
                           ? AppLocalizations.of(context)!.noExpensesThisMonth
                           : AppLocalizations.of(context)!.expenseLabel,
                       style: AppTypography.subhead.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                     if (totalExpense > 0)
@@ -375,7 +376,7 @@ class _BudgetCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: AppColors.bgSecondary,
+          color: context.bgSecondary,
           borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
         child: Column(
@@ -384,16 +385,16 @@ class _BudgetCard extends StatelessWidget {
             // Header
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.bar_chart,
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                   size: 20,
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   AppLocalizations.of(context)!.budgetCardTitle,
                   style: AppTypography.headline.copyWith(
-                    color: AppColors.textPrimary,
+                    color: context.textPrimary,
                   ),
                 ),
                 const Spacer(),
@@ -402,22 +403,22 @@ class _BudgetCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: AppColors.bgTertiary,
+                    color: context.bgTertiary,
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                   ),
                   child: Center(
                     child: Text(
                       AppLocalizations.of(context)!.today,
                       style: AppTypography.caption1.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                const Icon(
+                Icon(
                   Icons.chevron_right,
-                  color: AppColors.textTertiary,
+                  color: context.textTertiary,
                   size: 16,
                 ),
               ],
@@ -427,7 +428,7 @@ class _BudgetCard extends StatelessWidget {
             Text(
               AppLocalizations.of(context)!.budgetNotConfigured,
               style: AppTypography.subhead.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -439,7 +440,7 @@ class _BudgetCard extends StatelessWidget {
                     Container(
                       height: 8,
                       decoration: BoxDecoration(
-                        color: AppColors.bgTertiary,
+                        color: context.bgTertiary,
                         borderRadius: BorderRadius.circular(AppRadius.pill),
                       ),
                     ),
@@ -450,7 +451,7 @@ class _BudgetCard extends StatelessWidget {
                       child: Container(
                         width: 2,
                         height: 12,
-                        color: AppColors.textTertiary,
+                        color: context.textTertiary,
                       ),
                     ),
                   ],
@@ -464,13 +465,13 @@ class _BudgetCard extends StatelessWidget {
                 Text(
                   AppLocalizations.of(context)!.budgetCardTitle,
                   style: AppTypography.caption1.copyWith(
-                    color: AppColors.textTertiary,
+                    color: context.textTertiary,
                   ),
                 ),
                 Text(
                   CurrencyFormatter.format(budget),
                   style: AppTypography.moneySmall.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
               ],
@@ -503,7 +504,7 @@ class _ExportCard extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           decoration: BoxDecoration(
-            color: AppColors.bgSecondary,
+            color: context.bgSecondary,
             borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
           child: Row(
@@ -517,13 +518,13 @@ class _ExportCard extends StatelessWidget {
               Text(
                 AppLocalizations.of(context)!.exportToExcelTitle,
                 style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.textPrimary,
+                  color: context.textPrimary,
                 ),
               ),
               const Spacer(),
-              const Icon(
+              Icon(
                 Icons.chevron_right,
-                color: AppColors.textTertiary,
+                color: context.textTertiary,
                 size: 16,
               ),
             ],
@@ -538,9 +539,9 @@ class _ExportCard extends StatelessWidget {
       SnackBar(
         content: Text(
           AppLocalizations.of(context)!.exportComingSoon,
-          style: AppTypography.subhead.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.subhead.copyWith(color: context.textPrimary),
         ),
-        backgroundColor: AppColors.bgTertiary,
+        backgroundColor: context.bgTertiary,
         duration: const Duration(seconds: 2),
       ),
     );

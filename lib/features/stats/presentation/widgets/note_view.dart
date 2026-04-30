@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -71,9 +72,9 @@ class _NoteListHeader extends StatelessWidget {
 
     return Container(
       height: 44,
-      decoration: const BoxDecoration(
-        color: AppColors.bgPrimary,
-        border: Border(bottom: BorderSide(color: AppColors.divider)),
+      decoration: BoxDecoration(
+        color: context.bgPrimary,
+        border: Border(bottom: BorderSide(color: context.dividerColor)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Row(
@@ -81,7 +82,7 @@ class _NoteListHeader extends StatelessWidget {
           Text(
             l10n.noteColumnLabel,
             style:
-                AppTypography.footnote.copyWith(color: AppColors.textSecondary),
+                AppTypography.footnote.copyWith(color: context.textSecondary),
           ),
           Expanded(
             child: Center(
@@ -97,22 +98,22 @@ class _NoteListHeader extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.arrow_downward,
                           size: 14,
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                         const SizedBox(width: 2),
                         Text(
                           sortLabel,
                           style: AppTypography.footnote
-                              .copyWith(color: AppColors.textSecondary),
+                              .copyWith(color: context.textSecondary),
                         ),
                         const SizedBox(width: 2),
-                        const Icon(
+                        Icon(
                           Icons.expand_more,
                           size: 12,
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ],
                     ),
@@ -124,7 +125,7 @@ class _NoteListHeader extends StatelessWidget {
           Text(
             l10n.amountColumnLabel,
             style:
-                AppTypography.footnote.copyWith(color: AppColors.textSecondary),
+                AppTypography.footnote.copyWith(color: context.textSecondary),
           ),
         ],
       ),
@@ -237,7 +238,7 @@ class _NoteGroupHeader extends StatelessWidget {
         onTap: onTap,
         child: Container(
           height: 48,
-          color: AppColors.bgTertiary,
+          color: context.bgTertiary,
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Row(
             children: [
@@ -245,9 +246,8 @@ class _NoteGroupHeader extends StatelessWidget {
                 child: Text(
                   noteText,
                   style: AppTypography.bodyMedium.copyWith(
-                    color: isNoNote
-                        ? AppColors.textTertiary
-                        : AppColors.textPrimary,
+                    color:
+                        isNoNote ? context.textTertiary : context.textPrimary,
                     fontStyle: isNoNote ? FontStyle.italic : FontStyle.normal,
                   ),
                   maxLines: 1,
@@ -262,13 +262,13 @@ class _NoteGroupHeader extends StatelessWidget {
                   vertical: 2,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.bgSecondary,
+                  color: context.bgSecondary,
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
                 child: Text(
                   '$count',
                   style: AppTypography.caption2
-                      .copyWith(color: AppColors.textSecondary),
+                      .copyWith(color: context.textSecondary),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -314,15 +314,14 @@ class _NoteTransactionRow extends ConsumerWidget {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
-          backgroundColor: AppColors.bgSecondary,
+          backgroundColor: ctx.bgSecondary,
           title: Text(
             l10n.noteViewDeleteConfirmTitle,
-            style:
-                AppTypography.headline.copyWith(color: AppColors.textPrimary),
+            style: AppTypography.headline.copyWith(color: ctx.textPrimary),
           ),
           content: Text(
             l10n.noteViewDeleteConfirmMessage,
-            style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+            style: AppTypography.body.copyWith(color: ctx.textSecondary),
           ),
           actions: [
             TextButton(
@@ -366,7 +365,7 @@ class _NoteTransactionRow extends ConsumerWidget {
         ),
         child: Container(
           height: 52,
-          color: AppColors.bgSecondary,
+          color: context.bgSecondary,
           padding: const EdgeInsets.only(
             left: AppSpacing.xl,
             right: AppSpacing.lg,
@@ -378,7 +377,7 @@ class _NoteTransactionRow extends ConsumerWidget {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: AppColors.bgTertiary,
+                  color: context.bgTertiary,
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
                 child: Center(
@@ -387,10 +386,10 @@ class _NoteTransactionRow extends ConsumerWidget {
                           cat!.iconEmoji!,
                           style: const TextStyle(fontSize: 18),
                         )
-                      : const Icon(
+                      : Icon(
                           Icons.receipt_outlined,
                           size: 18,
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                 ),
               ),
@@ -403,14 +402,14 @@ class _NoteTransactionRow extends ConsumerWidget {
                     Text(
                       categoryLabel,
                       style: AppTypography.bodyMedium
-                          .copyWith(color: AppColors.textPrimary),
+                          .copyWith(color: context.textPrimary),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       fmt.format(transaction.date),
                       style: AppTypography.caption1
-                          .copyWith(color: AppColors.textTertiary),
+                          .copyWith(color: context.textTertiary),
                     ),
                   ],
                 ),
@@ -443,22 +442,21 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.note_alt_outlined,
               size: 64,
-              color: AppColors.textTertiary,
+              color: context.textTertiary,
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               l10n.noteViewNoNotes,
-              style:
-                  AppTypography.title3.copyWith(color: AppColors.textPrimary),
+              style: AppTypography.title3.copyWith(color: context.textPrimary),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               l10n.noteViewNoNotesSubtitle,
-              style: AppTypography.subhead
-                  .copyWith(color: AppColors.textSecondary),
+              style:
+                  AppTypography.subhead.copyWith(color: context.textSecondary),
               textAlign: TextAlign.center,
             ),
           ],
@@ -484,8 +482,7 @@ class _ErrorState extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             l10n.noteViewCouldNotLoad,
-            style:
-                AppTypography.headline.copyWith(color: AppColors.textPrimary),
+            style: AppTypography.headline.copyWith(color: context.textPrimary),
           ),
           const SizedBox(height: AppSpacing.sm),
           TextButton(

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../constants/app_colors.dart';
+import '../constants/app_colors_ext.dart';
 import '../constants/app_spacing.dart';
 import '../constants/app_typography.dart';
 
@@ -29,16 +29,16 @@ class MonthNavigator extends StatelessWidget {
 
     return Container(
       height: 48,
-      decoration: const BoxDecoration(
-        color: AppColors.bgPrimary,
-        border: Border(bottom: BorderSide(color: AppColors.divider)),
+      decoration: BoxDecoration(
+        color: context.bgPrimary,
+        border: Border(bottom: BorderSide(color: context.dividerColor)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: const Icon(Icons.chevron_left,
-                color: AppColors.textPrimary, size: 24),
+            icon:
+                Icon(Icons.chevron_left, color: context.textPrimary, size: 24),
             onPressed: onPrevious,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           ),
@@ -47,16 +47,16 @@ class MonthNavigator extends StatelessWidget {
             child: Center(
               child: Text(
                 label,
-                style: AppTypography.subhead
-                    .copyWith(color: AppColors.textPrimary),
+                style:
+                    AppTypography.subhead.copyWith(color: context.textPrimary),
               ),
             ),
           ),
           Opacity(
             opacity: isCurrentMonth ? 0.4 : 1.0,
             child: IconButton(
-              icon: const Icon(Icons.chevron_right,
-                  color: AppColors.textPrimary, size: 24),
+              icon: Icon(Icons.chevron_right,
+                  color: context.textPrimary, size: 24),
               onPressed: isCurrentMonth ? null : onNext,
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             ),

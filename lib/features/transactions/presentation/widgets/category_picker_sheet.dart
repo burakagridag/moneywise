@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -33,9 +34,9 @@ class CategoryPickerSheet extends ConsumerWidget {
       expand: false,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.bgSecondary,
-            borderRadius: BorderRadius.vertical(
+          decoration: BoxDecoration(
+            color: context.bgSecondary,
+            borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppRadius.lg),
             ),
           ),
@@ -46,7 +47,7 @@ class CategoryPickerSheet extends ConsumerWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.textTertiary,
+                  color: context.textTertiary,
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
               ),
@@ -55,7 +56,7 @@ class CategoryPickerSheet extends ConsumerWidget {
                 child: Text(
                   l10n.category,
                   style: AppTypography.headline
-                      .copyWith(color: AppColors.textPrimary),
+                      .copyWith(color: context.textPrimary),
                 ),
               ),
               Expanded(
@@ -69,7 +70,7 @@ class CategoryPickerSheet extends ConsumerWidget {
                     child: Text(
                       l10n.errorSavingCategory,
                       style: AppTypography.body
-                          .copyWith(color: AppColors.textSecondary),
+                          .copyWith(color: context.textSecondary),
                     ),
                   ),
                   data: (cats) {
@@ -81,8 +82,8 @@ class CategoryPickerSheet extends ConsumerWidget {
                         final cat = filtered[index];
                         return ListTile(
                           leading: CircleAvatar(
-                            backgroundColor: _parseColor(cat.colorHex) ??
-                                AppColors.bgTertiary,
+                            backgroundColor:
+                                _parseColor(cat.colorHex) ?? context.bgTertiary,
                             child: Text(
                               cat.iconEmoji ?? '',
                               style: const TextStyle(fontSize: 18),
@@ -91,7 +92,7 @@ class CategoryPickerSheet extends ConsumerWidget {
                           title: Text(
                             cat.name,
                             style: AppTypography.bodyMedium
-                                .copyWith(color: AppColors.textPrimary),
+                                .copyWith(color: context.textPrimary),
                           ),
                           onTap: () {
                             onSelected(cat);

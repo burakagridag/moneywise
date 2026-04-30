@@ -1051,6 +1051,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Amount'**
   String get amountColumnLabel;
+
+  /// No description provided for @appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get themeSystem;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search transactions...'**
+  String get searchHint;
+
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
+  /// No description provided for @searchNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions found'**
+  String get searchNoResults;
+
+  /// No description provided for @bookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get bookmarks;
+
+  /// No description provided for @addBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Bookmark'**
+  String get addBookmark;
+
+  /// No description provided for @editBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Bookmark'**
+  String get editBookmark;
+
+  /// No description provided for @bookmarkDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Bookmark'**
+  String get bookmarkDeleteAction;
+
+  /// No description provided for @bookmarkDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this bookmark?'**
+  String get bookmarkDeleteConfirm;
+
+  /// No description provided for @bookmarkEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks yet'**
+  String get bookmarkEmptyTitle;
+
+  /// No description provided for @bookmarkEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save frequently used transactions as bookmarks for quick entry.'**
+  String get bookmarkEmptySubtitle;
+
+  /// No description provided for @bookmarkName.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark Name'**
+  String get bookmarkName;
+
+  /// No description provided for @bookmarkNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Morning Coffee'**
+  String get bookmarkNameHint;
+
+  /// No description provided for @bookmarkNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get bookmarkNameRequired;
+
+  /// No description provided for @bookmarkPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Bookmark'**
+  String get bookmarkPickerTitle;
+
+  /// No description provided for @bookmarkPickerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks yet'**
+  String get bookmarkPickerEmpty;
+
+  /// No description provided for @bookmarkPickerGoToBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Bookmarks'**
+  String get bookmarkPickerGoToBookmarks;
+
+  /// No description provided for @errorSavingBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save bookmark. Please try again.'**
+  String get errorSavingBookmark;
+
+  /// No description provided for @errorDeletingBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete bookmark. Please try again.'**
+  String get errorDeletingBookmark;
+
+  /// No description provided for @bookmarkSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark saved'**
+  String get bookmarkSavedSuccess;
+
+  /// No description provided for @bookmarkDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark deleted'**
+  String get bookmarkDeletedSuccess;
+
+  /// No description provided for @filterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filterTitle;
+
+  /// No description provided for @filterTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get filterTypes;
+
+  /// No description provided for @filterCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get filterCategory;
+
+  /// No description provided for @filterNoCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'All categories'**
+  String get filterNoCategory;
+
+  /// No description provided for @filterDateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Range'**
+  String get filterDateRange;
+
+  /// No description provided for @filterReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get filterReset;
+
+  /// No description provided for @filterApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get filterApply;
 }
 
 class _AppLocalizationsDelegate

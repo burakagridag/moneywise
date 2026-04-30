@@ -130,7 +130,9 @@ void main() {
       final db = _testDb();
       await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
-      expect(find.byIcon(Icons.search), findsOneWidget);
+      // The search icon may appear in both the AppBar action and the
+      // TransactionSearchBar widget — verify at least one is present.
+      expect(find.byIcon(Icons.search), findsAtLeastNWidgets(1));
       await _dispose(tester, db);
     });
 

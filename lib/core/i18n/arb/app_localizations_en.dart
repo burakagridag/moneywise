@@ -508,4 +508,97 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get amountColumnLabel => 'Amount';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get searchHint => 'Search transactions...';
+
+  @override
+  String get clearSearch => 'Clear search';
+
+  @override
+  String get searchNoResults => 'No transactions found';
+
+  @override
+  String get bookmarks => 'Bookmarks';
+
+  @override
+  String get addBookmark => 'Add Bookmark';
+
+  @override
+  String get editBookmark => 'Edit Bookmark';
+
+  @override
+  String get bookmarkDeleteAction => 'Delete Bookmark';
+
+  @override
+  String get bookmarkDeleteConfirm => 'Delete this bookmark?';
+
+  @override
+  String get bookmarkEmptyTitle => 'No bookmarks yet';
+
+  @override
+  String get bookmarkEmptySubtitle =>
+      'Save frequently used transactions as bookmarks for quick entry.';
+
+  @override
+  String get bookmarkName => 'Bookmark Name';
+
+  @override
+  String get bookmarkNameHint => 'e.g. Morning Coffee';
+
+  @override
+  String get bookmarkNameRequired => 'Name is required';
+
+  @override
+  String get bookmarkPickerTitle => 'Choose Bookmark';
+
+  @override
+  String get bookmarkPickerEmpty => 'No bookmarks yet';
+
+  @override
+  String get bookmarkPickerGoToBookmarks => 'Manage Bookmarks';
+
+  @override
+  String get errorSavingBookmark =>
+      'Failed to save bookmark. Please try again.';
+
+  @override
+  String get errorDeletingBookmark =>
+      'Failed to delete bookmark. Please try again.';
+
+  @override
+  String get bookmarkSavedSuccess => 'Bookmark saved';
+
+  @override
+  String get bookmarkDeletedSuccess => 'Bookmark deleted';
+
+  @override
+  String get filterTitle => 'Filter';
+
+  @override
+  String get filterTypes => 'Type';
+
+  @override
+  String get filterCategory => 'Category';
+
+  @override
+  String get filterNoCategory => 'All categories';
+
+  @override
+  String get filterDateRange => 'Date Range';
+
+  @override
+  String get filterReset => 'Reset';
+
+  @override
+  String get filterApply => 'Apply';
 }

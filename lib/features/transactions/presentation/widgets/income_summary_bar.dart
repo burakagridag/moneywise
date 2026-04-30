@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/utils/currency_formatter.dart';
@@ -35,10 +36,10 @@ class IncomeSummaryBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Container(
       height: 60,
-      decoration: const BoxDecoration(
-        color: AppColors.bgPrimary,
+      decoration: BoxDecoration(
+        color: context.bgPrimary,
         border: Border(
-          bottom: BorderSide(color: AppColors.divider, width: 1),
+          bottom: BorderSide(color: context.dividerColor, width: 1),
         ),
       ),
       child: Row(
@@ -110,7 +111,7 @@ class _SummaryColumn extends StatelessWidget {
                 Text(
                   label,
                   style: AppTypography.caption1.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -139,7 +140,7 @@ class _VerticalDivider extends StatelessWidget {
     return Container(
       width: 1,
       height: 32,
-      color: AppColors.divider,
+      color: context.dividerColor,
     );
   }
 }

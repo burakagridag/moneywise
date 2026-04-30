@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -28,9 +29,9 @@ class SummaryBar extends StatelessWidget {
 
     return Container(
       height: 60,
-      decoration: const BoxDecoration(
-        color: AppColors.bgSecondary,
-        border: Border(bottom: BorderSide(color: AppColors.divider)),
+      decoration: BoxDecoration(
+        color: context.bgSecondary,
+        border: Border(bottom: BorderSide(color: context.dividerColor)),
       ),
       child: Row(
         children: [
@@ -77,7 +78,7 @@ class _SummaryCell extends StatelessWidget {
           Text(
             label,
             style:
-                AppTypography.caption1.copyWith(color: AppColors.textSecondary),
+                AppTypography.caption1.copyWith(color: context.textSecondary),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
@@ -100,7 +101,7 @@ class _Divider extends StatelessWidget {
     return Container(
       width: 1,
       height: 32,
-      color: AppColors.divider,
+      color: context.dividerColor,
     );
   }
 }

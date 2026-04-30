@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -38,9 +39,9 @@ class AccountPickerSheet extends ConsumerWidget {
       expand: false,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.bgSecondary,
-            borderRadius: BorderRadius.vertical(
+          decoration: BoxDecoration(
+            color: context.bgSecondary,
+            borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppRadius.lg),
             ),
           ),
@@ -51,7 +52,7 @@ class AccountPickerSheet extends ConsumerWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.textTertiary,
+                  color: context.textTertiary,
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
               ),
@@ -60,7 +61,7 @@ class AccountPickerSheet extends ConsumerWidget {
                 child: Text(
                   l10n.account,
                   style: AppTypography.headline
-                      .copyWith(color: AppColors.textPrimary),
+                      .copyWith(color: context.textPrimary),
                 ),
               ),
               Expanded(
@@ -74,7 +75,7 @@ class AccountPickerSheet extends ConsumerWidget {
                     child: Text(
                       l10n.errorSavingAccount,
                       style: AppTypography.body
-                          .copyWith(color: AppColors.textSecondary),
+                          .copyWith(color: context.textSecondary),
                     ),
                   ),
                   data: (accounts) {
@@ -128,22 +129,22 @@ class _AccountPickerRow extends ConsumerWidget {
     return ListTile(
       enabled: !isDisabled,
       leading: CircleAvatar(
-        backgroundColor: AppColors.bgTertiary,
+        backgroundColor: context.bgTertiary,
         child: Icon(
           Icons.account_balance_wallet_outlined,
-          color: isDisabled ? AppColors.textTertiary : AppColors.textSecondary,
+          color: isDisabled ? context.textTertiary : context.textSecondary,
         ),
       ),
       title: Text(
         account.name,
         style: AppTypography.bodyMedium.copyWith(
-          color: isDisabled ? AppColors.textTertiary : AppColors.textPrimary,
+          color: isDisabled ? context.textTertiary : context.textPrimary,
         ),
       ),
       subtitle: Text(
         '${account.currencyCode} ${fmt.format(balance)}',
         style: AppTypography.caption1.copyWith(
-          color: isDisabled ? AppColors.textTertiary : AppColors.textSecondary,
+          color: isDisabled ? context.textTertiary : context.textSecondary,
         ),
       ),
       onTap: isDisabled ? null : onTap,

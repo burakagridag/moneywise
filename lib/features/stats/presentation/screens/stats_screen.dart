@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -34,7 +35,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
     final periodMode = ref.watch(statsPeriodProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgPrimary,
+      backgroundColor: context.bgPrimary,
       body: SafeArea(
         child: Column(
           children: [
@@ -114,9 +115,9 @@ class _SubTabBar extends ConsumerWidget {
     ];
     return Container(
       height: 44,
-      decoration: const BoxDecoration(
-        color: AppColors.bgPrimary,
-        border: Border(bottom: BorderSide(color: AppColors.divider)),
+      decoration: BoxDecoration(
+        color: context.bgPrimary,
+        border: Border(bottom: BorderSide(color: context.dividerColor)),
       ),
       child: Row(
         children: [
@@ -137,8 +138,8 @@ class _SubTabBar extends ConsumerWidget {
                           tabs[i],
                           style: AppTypography.subhead.copyWith(
                             color: isActive
-                                ? AppColors.textPrimary
-                                : AppColors.textSecondary,
+                                ? context.textPrimary
+                                : context.textSecondary,
                           ),
                         ),
                       ),
@@ -188,12 +189,12 @@ class _PeriodSelector extends StatelessWidget {
             vertical: AppSpacing.xs,
           ),
           decoration: BoxDecoration(
-            color: AppColors.bgTertiary,
+            color: context.bgTertiary,
             borderRadius: BorderRadius.circular(AppRadius.sm),
           ),
           child: Text(
             '$label ▼',
-            style: AppTypography.subhead.copyWith(color: AppColors.textPrimary),
+            style: AppTypography.subhead.copyWith(color: context.textPrimary),
           ),
         ),
       ),
@@ -203,11 +204,11 @@ class _PeriodSelector extends StatelessWidget {
   void _showPicker(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: AppColors.bgSecondary,
+      backgroundColor: context.bgSecondary,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
-      builder: (_) => SafeArea(
+      builder: (sheetCtx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -217,7 +218,7 @@ class _PeriodSelector extends StatelessWidget {
                 width: 36,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: sheetCtx.dividerColor,
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
               ),
@@ -278,7 +279,7 @@ class _PeriodOption extends StatelessWidget {
       title: Text(
         label,
         style: AppTypography.body.copyWith(
-          color: isSelected ? AppColors.brandPrimary : AppColors.textPrimary,
+          color: isSelected ? AppColors.brandPrimary : context.textPrimary,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
         ),
       ),
@@ -304,9 +305,9 @@ class _IncomeExpenseToggle extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Container(
       height: 44,
-      decoration: const BoxDecoration(
-        color: AppColors.bgPrimary,
-        border: Border(bottom: BorderSide(color: AppColors.divider)),
+      decoration: BoxDecoration(
+        color: context.bgPrimary,
+        border: Border(bottom: BorderSide(color: context.dividerColor)),
       ),
       child: Row(
         children: [
@@ -349,9 +350,7 @@ class _ToggleOption extends StatelessWidget {
               child: Text(
                 label,
                 style: AppTypography.bodyMedium.copyWith(
-                  color: isActive
-                      ? AppColors.textPrimary
-                      : AppColors.textSecondary,
+                  color: isActive ? context.textPrimary : context.textSecondary,
                 ),
               ),
             ),
@@ -386,14 +385,13 @@ class _StatsContent extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
             Text(
               l10n.couldNotLoadStatistics,
-              style:
-                  AppTypography.title3.copyWith(color: AppColors.textPrimary),
+              style: AppTypography.title3.copyWith(color: context.textPrimary),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               l10n.pleaseRetryStatistics,
-              style: AppTypography.subhead
-                  .copyWith(color: AppColors.textSecondary),
+              style:
+                  AppTypography.subhead.copyWith(color: context.textSecondary),
             ),
             const SizedBox(height: AppSpacing.lg),
             FilledButton(
@@ -430,14 +428,14 @@ class _StatsContent extends ConsumerWidget {
               children: [
                 Text(
                   l10n.noDataForPeriod,
-                  style: AppTypography.title3
-                      .copyWith(color: AppColors.textPrimary),
+                  style:
+                      AppTypography.title3.copyWith(color: context.textPrimary),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   l10n.addTransactionsForBreakdown,
                   style: AppTypography.subhead
-                      .copyWith(color: AppColors.textSecondary),
+                      .copyWith(color: context.textSecondary),
                 ),
               ],
             ),
@@ -452,7 +450,7 @@ class _StatsContent extends ConsumerWidget {
                 child: PieChartWidget(segments: segments),
               ),
             ),
-            const Divider(height: 1, color: AppColors.divider),
+            Divider(height: 1, color: context.dividerColor),
             Expanded(
               child: ListView.builder(
                 itemCount: enrichedSegments.length,
@@ -468,7 +466,7 @@ class _StatsContent extends ConsumerWidget {
                         emoji: s.emoji,
                         onTap: () => _navigateToCategory(context, ref, s.id),
                       ),
-                      const Divider(height: 1, color: AppColors.divider),
+                      Divider(height: 1, color: context.dividerColor),
                     ],
                   );
                 },

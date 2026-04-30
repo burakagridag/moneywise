@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 
@@ -67,7 +67,7 @@ class CategoryLegendRow extends StatelessWidget {
                 child: Text(
                   categoryName,
                   style: AppTypography.bodyMedium
-                      .copyWith(color: AppColors.textPrimary),
+                      .copyWith(color: context.textPrimary),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -76,7 +76,7 @@ class CategoryLegendRow extends StatelessWidget {
               Text(
                 fmt.format(amount),
                 style: AppTypography.moneySmall
-                    .copyWith(color: AppColors.textPrimary),
+                    .copyWith(color: context.textPrimary),
               ),
             ],
           ),

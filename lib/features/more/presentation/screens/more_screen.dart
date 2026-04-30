@@ -23,6 +23,13 @@ class MoreScreen extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
+            leading: const Icon(Icons.bookmark_outline),
+            title: Text(l10n.bookmarks, style: AppTypography.body),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(Routes.bookmarks),
+          ),
+          const Divider(height: 1),
+          ListTile(
             leading: const Icon(Icons.settings_outlined),
             title: Text(l10n.settings, style: AppTypography.body),
             trailing: const Icon(Icons.chevron_right),

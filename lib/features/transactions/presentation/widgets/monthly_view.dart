@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -30,7 +31,7 @@ class MonthlyView extends ConsumerWidget {
       error: (e, __) => Center(
         child: Text(
           AppLocalizations.of(context)!.errorLoadTitle,
-          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headline.copyWith(color: context.textPrimary),
         ),
       ),
       data: (monthMap) => _MonthList(year: year, monthTotals: monthMap),
@@ -180,8 +181,7 @@ class _MonthCard extends ConsumerWidget {
               onTap: onToggle,
               child: Container(
                 height: 52,
-                color:
-                    isExpanded ? AppColors.bgTertiary : AppColors.bgSecondary,
+                color: isExpanded ? context.bgTertiary : context.bgSecondary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.lg,
                 ),
@@ -199,9 +199,9 @@ class _MonthCard extends ConsumerWidget {
                     AnimatedRotation(
                       turns: isExpanded ? 0.25 : 0,
                       duration: const Duration(milliseconds: 250),
-                      child: const Icon(
+                      child: Icon(
                         Icons.chevron_right,
-                        color: AppColors.textTertiary,
+                        color: context.textTertiary,
                         size: 16,
                       ),
                     ),
@@ -212,7 +212,7 @@ class _MonthCard extends ConsumerWidget {
                       child: Text(
                         _monthLabel,
                         style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.textPrimary,
+                          color: context.textPrimary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -223,7 +223,7 @@ class _MonthCard extends ConsumerWidget {
                     Text(
                       _dateRangeLabel,
                       style: AppTypography.caption1.copyWith(
-                        color: AppColors.textTertiary,
+                        color: context.textTertiary,
                       ),
                     ),
                     const Spacer(),
@@ -255,7 +255,7 @@ class _MonthCard extends ConsumerWidget {
                   )
                 : const SizedBox.shrink(),
           ),
-          const Divider(height: 1, color: AppColors.divider),
+          Divider(height: 1, color: context.dividerColor),
         ],
       ),
     );
@@ -267,14 +267,14 @@ class _NoTransactionsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      color: AppColors.bgSecondary,
+      color: context.bgSecondary,
       padding: const EdgeInsets.only(left: AppSpacing.xl),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
           AppLocalizations.of(context)!.monthlyNoTransactions,
           style: AppTypography.caption1.copyWith(
-            color: AppColors.textTertiary,
+            color: context.textTertiary,
           ),
         ),
       ),
@@ -315,7 +315,7 @@ class _WeekRowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // BUG-007: coral highlight for current week, not grey.
-    final bg = weekRange.isCurrentWeek ? _currentWeekBg : AppColors.bgSecondary;
+    final bg = weekRange.isCurrentWeek ? _currentWeekBg : context.bgSecondary;
 
     return Semantics(
       label: '${weekRange.label} week. '
@@ -336,7 +336,7 @@ class _WeekRowWidget extends StatelessWidget {
               child: Text(
                 weekRange.label,
                 style: AppTypography.caption1.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ),
             ),
@@ -368,7 +368,7 @@ class _TotalsGroup extends StatelessWidget {
             CurrencyFormatter.format(totals.income),
             style: AppTypography.moneySmall.copyWith(
               color:
-                  totals.income > 0 ? AppColors.income : AppColors.textTertiary,
+                  totals.income > 0 ? AppColors.income : context.textTertiary,
             ),
             textAlign: TextAlign.right,
             maxLines: 1,
@@ -381,9 +381,8 @@ class _TotalsGroup extends StatelessWidget {
           child: Text(
             CurrencyFormatter.format(totals.expense),
             style: AppTypography.moneySmall.copyWith(
-              color: totals.expense > 0
-                  ? AppColors.expense
-                  : AppColors.textTertiary,
+              color:
+                  totals.expense > 0 ? AppColors.expense : context.textTertiary,
             ),
             textAlign: TextAlign.right,
             maxLines: 1,

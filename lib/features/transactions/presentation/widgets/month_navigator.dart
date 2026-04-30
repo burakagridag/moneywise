@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../providers/transactions_provider.dart';
@@ -146,7 +147,7 @@ class _NavigatorBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 48,
-      color: AppColors.bgPrimary,
+      color: context.bgPrimary,
       child: Row(
         children: [
           Semantics(
@@ -155,13 +156,13 @@ class _NavigatorBar extends StatelessWidget {
             child: InkWell(
               onTap: onPrevious,
               borderRadius: BorderRadius.circular(AppRadius.pill),
-              child: const SizedBox(
+              child: SizedBox(
                 width: 44,
                 height: 44,
                 child: Center(
                   child: Icon(
                     Icons.chevron_left,
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     size: 24,
                   ),
                 ),
@@ -178,7 +179,7 @@ class _NavigatorBar extends StatelessWidget {
                   child: Text(
                     label,
                     style: AppTypography.title2.copyWith(
-                      color: AppColors.textPrimary,
+                      color: context.textPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -193,13 +194,13 @@ class _NavigatorBar extends StatelessWidget {
             child: InkWell(
               onTap: onNext,
               borderRadius: BorderRadius.circular(AppRadius.pill),
-              child: const SizedBox(
+              child: SizedBox(
                 width: 44,
                 height: 44,
                 child: Center(
                   child: Icon(
                     Icons.chevron_right,
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     size: 24,
                   ),
                 ),
@@ -241,7 +242,7 @@ class _MonthYearPickerSheet extends StatefulWidget {
   }) {
     return showModalBottomSheet<_PickerResult>(
       context: context,
-      backgroundColor: AppColors.bgSecondary,
+      backgroundColor: context.bgSecondary,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
@@ -280,7 +281,7 @@ class _MonthYearPickerSheetState extends State<_MonthYearPickerSheet> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.bgTertiary,
+              color: context.bgTertiary,
               borderRadius: BorderRadius.circular(AppRadius.pill),
             ),
           ),
@@ -295,7 +296,7 @@ class _MonthYearPickerSheetState extends State<_MonthYearPickerSheet> {
                   child: Text(
                     'Cancel',
                     style: AppTypography.headline.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                   ),
                 ),
@@ -336,7 +337,7 @@ class _MonthYearPickerSheetState extends State<_MonthYearPickerSheet> {
                           child: Text(
                             DateFormat.MMMM().format(DateTime(2000, i + 1)),
                             style: AppTypography.body.copyWith(
-                              color: AppColors.textPrimary,
+                              color: context.textPrimary,
                             ),
                           ),
                         ),
@@ -357,7 +358,7 @@ class _MonthYearPickerSheetState extends State<_MonthYearPickerSheet> {
                         child: Text(
                           '${2000 + i}',
                           style: AppTypography.body.copyWith(
-                            color: AppColors.textPrimary,
+                            color: context.textPrimary,
                           ),
                         ),
                       ),
