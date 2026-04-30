@@ -6,6 +6,7 @@ import '../../domain/entities/account.dart';
 import '../../domain/entities/transaction.dart';
 import '../../features/accounts/presentation/screens/account_add_edit_screen.dart';
 import '../../features/accounts/presentation/screens/accounts_screen.dart';
+import '../../features/more/presentation/screens/budget_setting_screen.dart';
 import '../../features/more/presentation/screens/category_management_screen.dart';
 import '../../features/more/presentation/screens/more_screen.dart';
 import '../../features/more/presentation/screens/settings_screen.dart';
@@ -18,13 +19,6 @@ import 'routes.dart';
 final appRouter = GoRouter(
   initialLocation: Routes.transactions,
   routes: [
-    // Sprint 3 stub — full AddTransactionScreen implemented in Sprint 3.
-    GoRoute(
-      path: Routes.addTransaction,
-      builder: (context, state) => const Scaffold(
-        body: Center(child: Text('Add Transaction — Sprint 3')),
-      ),
-    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return ScaffoldWithBottomNav(navigationShell: navigationShell);
@@ -86,6 +80,10 @@ final appRouter = GoRouter(
                           const CategoryManagementScreen(),
                     ),
                   ],
+                ),
+                GoRoute(
+                  path: 'budget-setting',
+                  builder: (context, state) => const BudgetSettingScreen(),
                 ),
               ],
             ),

@@ -346,4 +346,166 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get today => 'Today';
+
+  @override
+  String get budgetOf => 'Budget';
+
+  @override
+  String get budgetSpent => 'Spent';
+
+  @override
+  String get budgetRemaining => 'Remaining';
+
+  @override
+  String get budgetOverBy => 'Over by';
+
+  @override
+  String get budgetCarryOver => 'Carry-over';
+
+  @override
+  String get budgetEffective => 'Effective budget';
+
+  @override
+  String get budgetAddNew => 'Add Budget';
+
+  @override
+  String get budgetEditExisting => 'Edit Budget';
+
+  @override
+  String get budgetDeleteConfirm => 'Delete this budget?';
+
+  @override
+  String get budgetDeleteAction => 'Delete Budget';
+
+  @override
+  String get budgetSavedSuccess => 'Budget saved';
+
+  @override
+  String get budgetDeletedSuccess => 'Budget deleted';
+
+  @override
+  String get budgetErrorSaving => 'Failed to save budget. Please try again.';
+
+  @override
+  String get budgetErrorDeleting =>
+      'Failed to delete budget. Please try again.';
+
+  @override
+  String get budgetEffectiveFrom => 'From month';
+
+  @override
+  String get budgetEffectiveTo => 'To month (leave empty for open-ended)';
+
+  @override
+  String get budgetAmountRequired => 'Amount is required';
+
+  @override
+  String get budgetCategoryRequired => 'Category is required';
+
+  @override
+  String get budgetSettingTitle => 'Budget Setting';
+
+  @override
+  String get budgetSettingTotal => 'TOTAL';
+
+  @override
+  String get budgetSettingNoBudget => 'No budget set';
+
+  @override
+  String get budgetSettingClearBudget => 'Clear budget';
+
+  @override
+  String get budgetSettingOnlyThisMonth => 'Only this month';
+
+  @override
+  String get budgetSettingAmountHint => '0.00';
+
+  @override
+  String get budgetSettingAmountGreaterThanZero =>
+      'Please enter an amount greater than zero.';
+
+  @override
+  String get budgetSettingAmountTooLarge => 'Amount is too large.';
+
+  @override
+  String get budgetSettingRemoveConfirmTitle => 'Remove budget?';
+
+  @override
+  String get budgetSettingRemoveConfirmMessage =>
+      'This will affect all future months unless \'Only this month\' is checked.';
+
+  @override
+  String get budgetSettingRemoveAction => 'Remove';
+
+  @override
+  String get budgetSettingDiscardTitle => 'Discard changes?';
+
+  @override
+  String get budgetSettingDiscardMessage =>
+      'Your unsaved changes will be lost.';
+
+  @override
+  String get budgetSettingDiscardAction => 'Discard';
+
+  @override
+  String get budgetSettingKeepEditing => 'Keep editing';
+
+  @override
+  String get budgetViewRemainingMonthly => 'Remaining (Monthly)';
+
+  @override
+  String get budgetViewNoBudgetsTitle => 'No budgets set';
+
+  @override
+  String get budgetViewNoBudgetsSubtitle =>
+      'Tap \'Budget Setting\' to configure monthly limits per category.';
+
+  @override
+  String get budgetViewSetUpBudgets => 'Set Up Budgets';
+
+  @override
+  String get budgetViewCouldNotLoad => 'Could not load budget data';
+
+  @override
+  String get budgetViewNoBudgetSet => 'No budget set';
+
+  @override
+  String budgetViewIncludesCarryOver(String amount) {
+    return 'Includes $amount carry-over from last month';
+  }
+
+  @override
+  String get budgetSetting => 'Budget Setting';
+
+  @override
+  String get noteViewNoNotes => 'No notes';
+
+  @override
+  String get noteViewNoNotesSubtitle =>
+      'Transactions with notes will appear here.';
+
+  @override
+  String get noteViewNoNote => '(no note)';
+
+  @override
+  String get noteViewSortAmount => 'Amount';
+
+  @override
+  String get noteViewSortCount => 'Count';
+
+  @override
+  String get noteViewDeleteConfirmTitle => 'Delete Transaction?';
+
+  @override
+  String get noteViewDeleteConfirmMessage =>
+      'This transaction will be permanently deleted.';
+
+  @override
+  String get noteViewCouldNotLoad => 'Could not load notes.';
+
+  @override
+  String get noteColumnLabel => 'Note';
+
+  @override
+  String get amountColumnLabel => 'Amount';
 }

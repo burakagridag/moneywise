@@ -50,6 +50,15 @@ class TransactionRepository {
     return rows.map(_mapToDomain).toList();
   }
 
+  /// One-shot fetch of non-deleted transactions within [from]..[to] (inclusive).
+  Future<List<domain.Transaction>> getByDateRange(
+    DateTime from,
+    DateTime to,
+  ) async {
+    final rows = await _dao.getTransactionsByDateRange(from, to);
+    return rows.map(_mapToDomain).toList();
+  }
+
   /// Reactive stream of current account balance.
   Stream<double> watchAccountBalance(String accountId) =>
       _dao.watchAccountBalance(accountId);

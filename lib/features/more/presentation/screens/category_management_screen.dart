@@ -37,6 +37,7 @@ class CategoryManagementScreen extends ConsumerWidget {
           ),
         ),
         floatingActionButton: FloatingActionButton(
+          heroTag: 'add_category_fab',
           onPressed: () => _showCategorySheet(context, null),
           backgroundColor: AppColors.brandPrimary,
           foregroundColor: AppColors.textOnBrand,

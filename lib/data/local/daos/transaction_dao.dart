@@ -106,6 +106,31 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   // Queries — Sprint 4 additions
   // ---------------------------------------------------------------------------
 
+  /// One-shot fetch of non-deleted transactions in [from, to) — to is exclusive.
+  Future<List<Transaction>> getTransactionsByDateRange(
+    DateTime from,
+    DateTime to,
+  ) {
+    return (select(transactions)
+          ..where(
+            (t) =>
+                t.isDeleted.equals(false) &
+                t.date.isBiggerOrEqualValue(from) &
+                t.date.isSmallerThanValue(to),
+          )
+          ..orderBy([
+            (t) => OrderingTerm(
+                  expression: t.date,
+                  mode: OrderingMode.desc,
+                ),
+            (t) => OrderingTerm(
+                  expression: t.createdAt,
+                  mode: OrderingMode.desc,
+                ),
+          ]))
+        .get();
+  }
+
   /// Emits all non-deleted transactions in [from]..[to] ordered by date DESC,
   /// then createdAt DESC.
   Stream<List<Transaction>> watchTransactionsByDateRange(

@@ -28,6 +28,7 @@ class AccountsScreen extends ConsumerWidget {
         centerTitle: false,
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'add_account_fab',
         onPressed: () => context.push(Routes.accountAddEdit),
         backgroundColor: AppColors.brandPrimary,
         foregroundColor: AppColors.textOnBrand,

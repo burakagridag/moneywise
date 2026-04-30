@@ -745,6 +745,312 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Today'**
   String get today;
+
+  /// No description provided for @budgetOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get budgetOf;
+
+  /// No description provided for @budgetSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get budgetSpent;
+
+  /// No description provided for @budgetRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get budgetRemaining;
+
+  /// No description provided for @budgetOverBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Over by'**
+  String get budgetOverBy;
+
+  /// No description provided for @budgetCarryOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Carry-over'**
+  String get budgetCarryOver;
+
+  /// No description provided for @budgetEffective.
+  ///
+  /// In en, this message translates to:
+  /// **'Effective budget'**
+  String get budgetEffective;
+
+  /// No description provided for @budgetAddNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Budget'**
+  String get budgetAddNew;
+
+  /// No description provided for @budgetEditExisting.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Budget'**
+  String get budgetEditExisting;
+
+  /// No description provided for @budgetDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this budget?'**
+  String get budgetDeleteConfirm;
+
+  /// No description provided for @budgetDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Budget'**
+  String get budgetDeleteAction;
+
+  /// No description provided for @budgetSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget saved'**
+  String get budgetSavedSuccess;
+
+  /// No description provided for @budgetDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget deleted'**
+  String get budgetDeletedSuccess;
+
+  /// No description provided for @budgetErrorSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save budget. Please try again.'**
+  String get budgetErrorSaving;
+
+  /// No description provided for @budgetErrorDeleting.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete budget. Please try again.'**
+  String get budgetErrorDeleting;
+
+  /// No description provided for @budgetEffectiveFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From month'**
+  String get budgetEffectiveFrom;
+
+  /// No description provided for @budgetEffectiveTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To month (leave empty for open-ended)'**
+  String get budgetEffectiveTo;
+
+  /// No description provided for @budgetAmountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount is required'**
+  String get budgetAmountRequired;
+
+  /// No description provided for @budgetCategoryRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Category is required'**
+  String get budgetCategoryRequired;
+
+  /// No description provided for @budgetSettingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Setting'**
+  String get budgetSettingTitle;
+
+  /// No description provided for @budgetSettingTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'TOTAL'**
+  String get budgetSettingTotal;
+
+  /// No description provided for @budgetSettingNoBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'No budget set'**
+  String get budgetSettingNoBudget;
+
+  /// No description provided for @budgetSettingClearBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear budget'**
+  String get budgetSettingClearBudget;
+
+  /// No description provided for @budgetSettingOnlyThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Only this month'**
+  String get budgetSettingOnlyThisMonth;
+
+  /// No description provided for @budgetSettingAmountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'0.00'**
+  String get budgetSettingAmountHint;
+
+  /// No description provided for @budgetSettingAmountGreaterThanZero.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an amount greater than zero.'**
+  String get budgetSettingAmountGreaterThanZero;
+
+  /// No description provided for @budgetSettingAmountTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount is too large.'**
+  String get budgetSettingAmountTooLarge;
+
+  /// No description provided for @budgetSettingRemoveConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove budget?'**
+  String get budgetSettingRemoveConfirmTitle;
+
+  /// No description provided for @budgetSettingRemoveConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will affect all future months unless \'Only this month\' is checked.'**
+  String get budgetSettingRemoveConfirmMessage;
+
+  /// No description provided for @budgetSettingRemoveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get budgetSettingRemoveAction;
+
+  /// No description provided for @budgetSettingDiscardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard changes?'**
+  String get budgetSettingDiscardTitle;
+
+  /// No description provided for @budgetSettingDiscardMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your unsaved changes will be lost.'**
+  String get budgetSettingDiscardMessage;
+
+  /// No description provided for @budgetSettingDiscardAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get budgetSettingDiscardAction;
+
+  /// No description provided for @budgetSettingKeepEditing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get budgetSettingKeepEditing;
+
+  /// No description provided for @budgetViewRemainingMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining (Monthly)'**
+  String get budgetViewRemainingMonthly;
+
+  /// No description provided for @budgetViewNoBudgetsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No budgets set'**
+  String get budgetViewNoBudgetsTitle;
+
+  /// No description provided for @budgetViewNoBudgetsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \'Budget Setting\' to configure monthly limits per category.'**
+  String get budgetViewNoBudgetsSubtitle;
+
+  /// No description provided for @budgetViewSetUpBudgets.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Up Budgets'**
+  String get budgetViewSetUpBudgets;
+
+  /// No description provided for @budgetViewCouldNotLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load budget data'**
+  String get budgetViewCouldNotLoad;
+
+  /// No description provided for @budgetViewNoBudgetSet.
+  ///
+  /// In en, this message translates to:
+  /// **'No budget set'**
+  String get budgetViewNoBudgetSet;
+
+  /// No description provided for @budgetViewIncludesCarryOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Includes {amount} carry-over from last month'**
+  String budgetViewIncludesCarryOver(String amount);
+
+  /// No description provided for @budgetSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Setting'**
+  String get budgetSetting;
+
+  /// No description provided for @noteViewNoNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes'**
+  String get noteViewNoNotes;
+
+  /// No description provided for @noteViewNoNotesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions with notes will appear here.'**
+  String get noteViewNoNotesSubtitle;
+
+  /// No description provided for @noteViewNoNote.
+  ///
+  /// In en, this message translates to:
+  /// **'(no note)'**
+  String get noteViewNoNote;
+
+  /// No description provided for @noteViewSortAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get noteViewSortAmount;
+
+  /// No description provided for @noteViewSortCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Count'**
+  String get noteViewSortCount;
+
+  /// No description provided for @noteViewDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Transaction?'**
+  String get noteViewDeleteConfirmTitle;
+
+  /// No description provided for @noteViewDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This transaction will be permanently deleted.'**
+  String get noteViewDeleteConfirmMessage;
+
+  /// No description provided for @noteViewCouldNotLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load notes.'**
+  String get noteViewCouldNotLoad;
+
+  /// No description provided for @noteColumnLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get noteColumnLabel;
+
+  /// No description provided for @amountColumnLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amountColumnLabel;
 }
 
 class _AppLocalizationsDelegate

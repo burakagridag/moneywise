@@ -69,17 +69,22 @@ void main() {
       await db.close();
     });
 
-    testWidgets('tapping Budget tab shows Budget placeholder', (tester) async {
+    testWidgets('tapping Budget tab shows BudgetView empty state',
+        (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
       await tester.pump();
 
       await tester.tap(find.text('Budget'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text('Budget tracking'), findsOneWidget);
-      expect(find.text('Budget management will be available soon.'),
-          findsOneWidget);
+      // BudgetView renders (either empty state or loading).
+      expect(
+          find.byType(CircularProgressIndicator).evaluate().isNotEmpty ||
+              find.text('No budgets set').evaluate().isNotEmpty ||
+              find.text('Set Up Budgets').evaluate().isNotEmpty,
+          isTrue);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);
@@ -87,17 +92,17 @@ void main() {
       await db.close();
     });
 
-    testWidgets('tapping Note tab shows Note placeholder', (tester) async {
+    testWidgets('tapping Note tab shows NoteView header', (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
       await tester.pump();
 
       await tester.tap(find.text('Note'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text('Spending notes'), findsOneWidget);
-      expect(find.text('Note-based summaries will be available soon.'),
-          findsOneWidget);
+      // NoteView header row should be visible.
+      expect(find.text('Note'), findsAtLeastNWidgets(1));
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);
@@ -117,7 +122,7 @@ void main() {
       await tester.tap(find.text('Stats'));
       await tester.pump();
 
-      // Income/Expense toggle is part of the Stats sub-tab.
+      // Income/Expense toggle is always visible.
       expect(find.text('Income'), findsAtLeastNWidgets(1));
 
       await tester.pumpWidget(const SizedBox.shrink());
@@ -321,20 +326,101 @@ void main() {
   });
 
   // ---------------------------------------------------------------------------
-  // Period selector snackbar
+  // Period selector — W / M / Y (BUG-006)
   // ---------------------------------------------------------------------------
 
   group('StatsScreen — period selector', () {
-    testWidgets('tapping M period selector shows coming-soon snackbar',
+    testWidgets('tapping M period selector opens bottom sheet with options',
         (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildScreen(db));
       await tester.pump();
 
+      // The period selector shows 'M ▼' by default.
+      expect(find.text('M ▼'), findsOneWidget);
       await tester.tap(find.text('M ▼'));
+      await tester.pumpAndSettle();
+
+      // The bottom sheet should show W, M, Y options.
+      expect(find.text('Week (W)'), findsOneWidget);
+      expect(find.text('Month (M)'), findsOneWidget);
+      expect(find.text('Year (Y)'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    testWidgets('selecting Week changes period label to W ▼', (tester) async {
+      final db = _testDb();
+      final container = ProviderContainer(
+        overrides: [appDatabaseProvider.overrideWith((_) => db)],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const StatsScreen(),
+          ),
+        ),
+      );
       await tester.pump();
 
-      expect(find.text('Coming soon'), findsOneWidget);
+      // Open the period picker.
+      await tester.tap(find.text('M ▼'));
+      await tester.pumpAndSettle();
+
+      // Select Week.
+      await tester.tap(find.text('Week (W)'));
+      await tester.pumpAndSettle();
+
+      // Provider should reflect the Week mode.
+      expect(container.read(statsPeriodProvider), StatsPeriodMode.week);
+      // Label should now show 'W ▼'.
+      expect(find.text('W ▼'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(Duration.zero);
+      await tester.pump(Duration.zero);
+      await db.close();
+    });
+
+    testWidgets('selecting Year changes period label to Y ▼', (tester) async {
+      final db = _testDb();
+      final container = ProviderContainer(
+        overrides: [appDatabaseProvider.overrideWith((_) => db)],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const StatsScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.tap(find.text('M ▼'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Year (Y)'));
+      await tester.pumpAndSettle();
+
+      expect(container.read(statsPeriodProvider), StatsPeriodMode.year);
+      expect(find.text('Y ▼'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);

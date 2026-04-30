@@ -347,4 +347,164 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get today => 'Bugün';
+
+  @override
+  String get budgetOf => 'Bütçe';
+
+  @override
+  String get budgetSpent => 'Harcanan';
+
+  @override
+  String get budgetRemaining => 'Kalan';
+
+  @override
+  String get budgetOverBy => 'Aşım';
+
+  @override
+  String get budgetCarryOver => 'Devreden';
+
+  @override
+  String get budgetEffective => 'Efektif bütçe';
+
+  @override
+  String get budgetAddNew => 'Bütçe Ekle';
+
+  @override
+  String get budgetEditExisting => 'Bütçeyi Düzenle';
+
+  @override
+  String get budgetDeleteConfirm => 'Bu bütçe silinsin mi?';
+
+  @override
+  String get budgetDeleteAction => 'Bütçeyi Sil';
+
+  @override
+  String get budgetSavedSuccess => 'Bütçe kaydedildi';
+
+  @override
+  String get budgetDeletedSuccess => 'Bütçe silindi';
+
+  @override
+  String get budgetErrorSaving => 'Bütçe kaydedilemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get budgetErrorDeleting => 'Bütçe silinemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get budgetEffectiveFrom => 'Başlangıç ayı';
+
+  @override
+  String get budgetEffectiveTo => 'Bitiş ayı (boş bırakılırsa süresiz)';
+
+  @override
+  String get budgetAmountRequired => 'Tutar zorunludur';
+
+  @override
+  String get budgetCategoryRequired => 'Kategori zorunludur';
+
+  @override
+  String get budgetSettingTitle => 'Bütçe Ayarı';
+
+  @override
+  String get budgetSettingTotal => 'TOPLAM';
+
+  @override
+  String get budgetSettingNoBudget => 'Bütçe ayarlanmadı';
+
+  @override
+  String get budgetSettingClearBudget => 'Bütçeyi temizle';
+
+  @override
+  String get budgetSettingOnlyThisMonth => 'Yalnızca bu ay';
+
+  @override
+  String get budgetSettingAmountHint => '0,00';
+
+  @override
+  String get budgetSettingAmountGreaterThanZero =>
+      'Lütfen sıfırdan büyük bir tutar girin.';
+
+  @override
+  String get budgetSettingAmountTooLarge => 'Tutar çok büyük.';
+
+  @override
+  String get budgetSettingRemoveConfirmTitle => 'Bütçe kaldırılsın mı?';
+
+  @override
+  String get budgetSettingRemoveConfirmMessage =>
+      '\'Yalnızca bu ay\' seçili değilse tüm gelecek aylar etkilenir.';
+
+  @override
+  String get budgetSettingRemoveAction => 'Kaldır';
+
+  @override
+  String get budgetSettingDiscardTitle => 'Değişiklikler iptal edilsin mi?';
+
+  @override
+  String get budgetSettingDiscardMessage =>
+      'Kaydedilmemiş değişiklikler kaybolacak.';
+
+  @override
+  String get budgetSettingDiscardAction => 'İptal Et';
+
+  @override
+  String get budgetSettingKeepEditing => 'Düzenlemeye Devam Et';
+
+  @override
+  String get budgetViewRemainingMonthly => 'Kalan (Aylık)';
+
+  @override
+  String get budgetViewNoBudgetsTitle => 'Bütçe ayarlanmadı';
+
+  @override
+  String get budgetViewNoBudgetsSubtitle =>
+      '\'Bütçe Ayarı\'na tıklayarak aylık kategori limitleri belirleyin.';
+
+  @override
+  String get budgetViewSetUpBudgets => 'Bütçe Ayarla';
+
+  @override
+  String get budgetViewCouldNotLoad => 'Bütçe verileri yüklenemedi';
+
+  @override
+  String get budgetViewNoBudgetSet => 'Bütçe yok';
+
+  @override
+  String budgetViewIncludesCarryOver(String amount) {
+    return 'Geçen aydan $amount devir dahil';
+  }
+
+  @override
+  String get budgetSetting => 'Bütçe Ayarı';
+
+  @override
+  String get noteViewNoNotes => 'Not yok';
+
+  @override
+  String get noteViewNoNotesSubtitle => 'Notlu işlemler burada görünecek.';
+
+  @override
+  String get noteViewNoNote => '(not yok)';
+
+  @override
+  String get noteViewSortAmount => 'Tutar';
+
+  @override
+  String get noteViewSortCount => 'Sayı';
+
+  @override
+  String get noteViewDeleteConfirmTitle => 'İşlem Silinsin Mi?';
+
+  @override
+  String get noteViewDeleteConfirmMessage =>
+      'Bu işlem kalıcı olarak silinecek.';
+
+  @override
+  String get noteViewCouldNotLoad => 'Notlar yüklenemedi.';
+
+  @override
+  String get noteColumnLabel => 'Not';
+
+  @override
+  String get amountColumnLabel => 'Tutar';
 }
