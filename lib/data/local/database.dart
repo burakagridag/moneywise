@@ -23,8 +23,14 @@ import 'tables/transactions_table.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(
-    tables: [AccountGroups, Accounts, Categories, Transactions, Budgets, Bookmarks])
+@DriftDatabase(tables: [
+  AccountGroups,
+  Accounts,
+  Categories,
+  Transactions,
+  Budgets,
+  Bookmarks
+])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
