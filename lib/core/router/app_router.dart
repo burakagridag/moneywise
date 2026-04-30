@@ -118,31 +118,31 @@ class ScaffoldWithBottomNav extends StatelessWidget {
 
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: navigationShell.currentIndex,
-        onTap: (index) => navigationShell.goBranch(
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: navigationShell.currentIndex,
+        onDestinationSelected: (index) => navigationShell.goBranch(
           index,
           initialLocation: index == navigationShell.currentIndex,
         ),
-        items: [
-          BottomNavigationBarItem(
+        destinations: [
+          NavigationDestination(
             icon: const Icon(Icons.receipt_long_outlined),
-            activeIcon: const Icon(Icons.receipt_long),
+            selectedIcon: const Icon(Icons.receipt_long),
             label: l10n.tabTransactions,
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: const Icon(Icons.bar_chart_outlined),
-            activeIcon: const Icon(Icons.bar_chart),
+            selectedIcon: const Icon(Icons.bar_chart),
             label: l10n.tabStats,
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: const Icon(Icons.account_balance_wallet_outlined),
-            activeIcon: const Icon(Icons.account_balance_wallet),
+            selectedIcon: const Icon(Icons.account_balance_wallet),
             label: l10n.tabAccounts,
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.more_horiz),
-            activeIcon: const Icon(Icons.more_horiz),
+          NavigationDestination(
+            icon: const Icon(Icons.grid_view_outlined),
+            selectedIcon: const Icon(Icons.grid_view),
             label: l10n.tabMore,
           ),
         ],
