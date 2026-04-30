@@ -54,7 +54,7 @@ class IncomeSummaryBar extends StatelessWidget {
           ),
           const _VerticalDivider(),
           _SummaryColumn(
-            label: l10n.expenseLabel,
+            label: l10n.expense,
             value: CurrencyFormatter.format(expense, symbol: currencySymbol),
             valueColor: context.expenseColor,
             semanticsLabel: 'Total expense: '
@@ -66,7 +66,7 @@ class IncomeSummaryBar extends StatelessWidget {
             label: l10n.totalLabel,
             value:
                 CurrencyFormatter.formatSigned(_total, symbol: currencySymbol),
-            valueColor: _total >= 0 ? AppColors.income : context.expenseColor,
+            valueColor: context.textPrimary,
             semanticsLabel: 'Net balance: '
                 '${CurrencyFormatter.formatSigned(_total, symbol: currencySymbol)}',
             onTap: onTotalTap,

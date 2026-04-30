@@ -253,24 +253,48 @@ class _DayHeaderRow extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            // Expense amount — shown first (left)
+            // Expense — primary (moneySmall), shown left
             Opacity(
               opacity: expense > 0 ? 1.0 : 0.5,
-              child: Text(
-                CurrencyFormatter.format(expense),
-                style: AppTypography.moneyTiny.copyWith(
-                  color: context.expenseColor,
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '− ',
+                      style: AppTypography.caption1.copyWith(
+                        color: context.expenseColor,
+                      ),
+                    ),
+                    TextSpan(
+                      text: CurrencyFormatter.format(expense),
+                      style: AppTypography.moneySmall.copyWith(
+                        color: context.expenseColor,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
-            // Income amount — shown second (right)
+            // Income — secondary (moneyTiny), shown right
             Opacity(
               opacity: income > 0 ? 1.0 : 0.5,
-              child: Text(
-                CurrencyFormatter.format(income),
-                style: AppTypography.moneyTiny.copyWith(
-                  color: AppColors.income,
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '+ ',
+                      style: AppTypography.caption1.copyWith(
+                        color: AppColors.income,
+                      ),
+                    ),
+                    TextSpan(
+                      text: CurrencyFormatter.format(income),
+                      style: AppTypography.moneyTiny.copyWith(
+                        color: AppColors.income,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
