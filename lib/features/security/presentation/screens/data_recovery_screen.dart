@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../data/local/encryption/db_encryption_service.dart';
@@ -23,15 +24,15 @@ class _DataRecoveryScreenState extends State<DataRecoveryScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.bgSecondary,
+        backgroundColor: ctx.bgSecondary,
         title: Text(
           'Reset All Data?',
-          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headline.copyWith(color: ctx.textPrimary),
         ),
         content: Text(
           'This will permanently delete your encryption key and all local data. '
           'This action cannot be undone.',
-          style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+          style: AppTypography.body.copyWith(color: ctx.textSecondary),
         ),
         actions: [
           TextButton(
@@ -68,12 +69,12 @@ class _DataRecoveryScreenState extends State<DataRecoveryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgPrimary,
+      backgroundColor: context.bgPrimary,
       appBar: AppBar(
-        backgroundColor: AppColors.bgSecondary,
+        backgroundColor: context.bgSecondary,
         title: Text(
           'Data Recovery',
-          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headline.copyWith(color: context.textPrimary),
         ),
       ),
       body: SafeArea(
@@ -92,7 +93,7 @@ class _DataRecoveryScreenState extends State<DataRecoveryScreen> {
               Text(
                 'Database Unavailable',
                 style:
-                    AppTypography.title2.copyWith(color: AppColors.textPrimary),
+                    AppTypography.title2.copyWith(color: context.textPrimary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.md),
@@ -100,7 +101,7 @@ class _DataRecoveryScreenState extends State<DataRecoveryScreen> {
                 'Your data could not be decrypted. This may happen if the '
                 'encryption key was removed from the device keychain.',
                 style:
-                    AppTypography.body.copyWith(color: AppColors.textSecondary),
+                    AppTypography.body.copyWith(color: context.textSecondary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.xxxl),

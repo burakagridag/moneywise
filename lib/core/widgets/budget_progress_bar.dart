@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../constants/app_colors.dart';
+import '../constants/app_colors_ext.dart';
 import '../constants/app_spacing.dart';
 import '../constants/app_typography.dart';
 import '../i18n/arb/app_localizations.dart';
@@ -87,7 +88,7 @@ class BudgetProgressBar extends StatelessWidget {
                           Text(
                             l10n.today,
                             style: AppTypography.caption2.copyWith(
-                              color: AppColors.textSecondary,
+                              color: context.textSecondary,
                             ),
                           ),
                         ],
@@ -132,7 +133,7 @@ class _BarOnly extends StatelessWidget {
         height: height,
         child: LinearProgressIndicator(
           value: ratio,
-          backgroundColor: AppColors.bgTertiary,
+          backgroundColor: context.bgTertiary,
           valueColor: AlwaysStoppedAnimation<Color>(fillColor),
           minHeight: height,
         ),
@@ -171,7 +172,7 @@ class _BarWithTodayIndicator extends StatelessWidget {
                   height: height,
                   child: LinearProgressIndicator(
                     value: ratio,
-                    backgroundColor: AppColors.bgTertiary,
+                    backgroundColor: context.bgTertiary,
                     valueColor: AlwaysStoppedAnimation<Color>(fillColor),
                     minHeight: height,
                   ),
@@ -185,7 +186,7 @@ class _BarWithTodayIndicator extends StatelessWidget {
                   bottom: 0,
                   child: Container(
                     width: 2,
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
             ],

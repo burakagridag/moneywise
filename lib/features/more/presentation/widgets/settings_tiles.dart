@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/app_colors_ext.dart';
 import '../../../../../core/constants/app_spacing.dart';
 import '../../../../../core/constants/app_typography.dart';
 import '../../../../../core/i18n/arb/app_localizations.dart';
@@ -39,7 +40,7 @@ class ThemePickerTile extends ConsumerWidget {
       title: Text(l10n.appearance, style: AppTypography.body),
       trailing: Text(
         themeModeLabel(currentMode),
-        style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+        style: AppTypography.body.copyWith(color: context.textSecondary),
       ),
       onTap: () async {
         final picked = await showDialog<ThemeMode>(
@@ -99,7 +100,7 @@ class CurrencyPickerTile extends ConsumerWidget {
       title: Text(l10n.currency, style: AppTypography.body),
       trailing: Text(
         currentCode,
-        style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+        style: AppTypography.body.copyWith(color: context.textSecondary),
       ),
       onTap: () async {
         final picked = await showModalBottomSheet<String>(
@@ -129,9 +130,10 @@ class _CurrencyPickerSheet extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.bgSecondary,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+      decoration: BoxDecoration(
+        color: context.bgSecondary,
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
       child: SafeArea(
         child: Column(
@@ -147,7 +149,7 @@ class _CurrencyPickerSheet extends StatelessWidget {
               ),
               child: Text(l10n.currency, style: AppTypography.title3),
             ),
-            const Divider(color: AppColors.divider, height: 1),
+            Divider(color: context.dividerColor, height: 1),
             ..._kSupportedCurrencies.map(
               (code) => ListTile(
                 title: Text(code, style: AppTypography.body),
@@ -191,7 +193,7 @@ class LanguagePickerTile extends ConsumerWidget {
       title: Text(l10n.language, style: AppTypography.body),
       trailing: Text(
         currentLabel,
-        style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+        style: AppTypography.body.copyWith(color: context.textSecondary),
       ),
       onTap: () async {
         final picked = await showDialog<String>(

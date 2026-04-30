@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../domain/entities/transaction.dart';
@@ -43,7 +44,7 @@ class TransactionListItem extends StatelessWidget {
     TextDecoration amountDecoration;
 
     if (isExcluded) {
-      amountColor = AppColors.textTertiary;
+      amountColor = context.textTertiary;
       amountDecoration = TextDecoration.lineThrough;
       amountText = '$currencySymbol $amt';
     } else {
@@ -56,16 +57,15 @@ class TransactionListItem extends StatelessWidget {
           amountColor = AppColors.expense;
           amountText = '- $currencySymbol $amt';
         default:
-          amountColor = AppColors.textSecondary;
+          amountColor = context.textSecondary;
           amountText = '$currencySymbol $amt';
       }
     }
 
-    final circleColor = categoryColor ?? AppColors.bgTertiary;
-    final textColor =
-        isExcluded ? AppColors.textTertiary : AppColors.textPrimary;
+    final circleColor = categoryColor ?? context.bgTertiary;
+    final textColor = isExcluded ? context.textTertiary : context.textPrimary;
     final subtextColor =
-        isExcluded ? AppColors.textTertiary : AppColors.textSecondary;
+        isExcluded ? context.textTertiary : context.textSecondary;
 
     return Dismissible(
       key: ValueKey(transaction.id),
@@ -95,10 +95,10 @@ class TransactionListItem extends StatelessWidget {
                         categoryEmoji!,
                         style: const TextStyle(fontSize: 18),
                       )
-                    : const Icon(
+                    : Icon(
                         Icons.swap_horiz,
                         size: 20,
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -151,14 +151,14 @@ class TransactionListItem extends StatelessWidget {
     final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.bgSecondary,
+        backgroundColor: ctx.bgSecondary,
         title: Text(
           'Delete transaction?',
-          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headline.copyWith(color: ctx.textPrimary),
         ),
         content: Text(
           'This cannot be undone.',
-          style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+          style: AppTypography.body.copyWith(color: ctx.textSecondary),
         ),
         actions: [
           TextButton(

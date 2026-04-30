@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
@@ -148,20 +149,20 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.bgSecondary,
+        backgroundColor: ctx.bgSecondary,
         title: Text(
           l10n.budgetSettingRemoveConfirmTitle,
-          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headline.copyWith(color: ctx.textPrimary),
         ),
         content: Text(
           l10n.budgetSettingRemoveConfirmMessage,
-          style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+          style: AppTypography.body.copyWith(color: ctx.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.cancel,
-                style: const TextStyle(color: AppColors.textSecondary)),
+            child:
+                Text(l10n.cancel, style: TextStyle(color: ctx.textSecondary)),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -197,17 +198,16 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.bgSecondary,
+        backgroundColor: ctx.bgSecondary,
         title: Text(l10n.budgetSettingDiscardTitle,
-            style:
-                AppTypography.headline.copyWith(color: AppColors.textPrimary)),
+            style: AppTypography.headline.copyWith(color: ctx.textPrimary)),
         content: Text(l10n.budgetSettingDiscardMessage,
-            style: AppTypography.body.copyWith(color: AppColors.textSecondary)),
+            style: AppTypography.body.copyWith(color: ctx.textSecondary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
             child: Text(l10n.budgetSettingKeepEditing,
-                style: const TextStyle(color: AppColors.textSecondary)),
+                style: TextStyle(color: ctx.textSecondary)),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -238,9 +238,9 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
       },
       child: Container(
         padding: EdgeInsets.only(bottom: insets.bottom + AppSpacing.xl),
-        decoration: const BoxDecoration(
-          color: AppColors.bgSecondary,
-          borderRadius: BorderRadius.vertical(
+        decoration: BoxDecoration(
+          color: context.bgSecondary,
+          borderRadius: const BorderRadius.vertical(
             top: Radius.circular(AppRadius.xl),
           ),
         ),
@@ -276,13 +276,13 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
                       child: Text(
                         categoryName,
                         style: AppTypography.headline
-                            .copyWith(color: AppColors.textPrimary),
+                            .copyWith(color: context.textPrimary),
                       ),
                     ),
                     Text(
                       l10n.budgetOf,
                       style: AppTypography.subhead
-                          .copyWith(color: AppColors.textSecondary),
+                          .copyWith(color: context.textSecondary),
                     ),
                   ],
                 ),
@@ -300,7 +300,7 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                     decoration: BoxDecoration(
-                      color: AppColors.bgTertiary,
+                      color: context.bgTertiary,
                       borderRadius: BorderRadius.circular(AppRadius.md),
                       border: _amountError != null
                           ? Border.all(color: AppColors.error, width: 2)
@@ -311,7 +311,7 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
                         Text(
                           AppConstants.defaultCurrencySymbol,
                           style: AppTypography.moneyMedium
-                              .copyWith(color: AppColors.textSecondary),
+                              .copyWith(color: context.textSecondary),
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
@@ -325,11 +325,11 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
                               ),
                             ],
                             style: AppTypography.moneyMedium
-                                .copyWith(color: AppColors.textPrimary),
+                                .copyWith(color: context.textPrimary),
                             decoration: InputDecoration(
                               hintText: l10n.budgetSettingAmountHint,
                               hintStyle: AppTypography.moneyMedium
-                                  .copyWith(color: AppColors.textTertiary),
+                                  .copyWith(color: context.textTertiary),
                               border: InputBorder.none,
                             ),
                             onChanged: (_) {
@@ -366,13 +366,13 @@ class _BudgetEditModalState extends ConsumerState<BudgetEditModal> {
                     Text(
                       l10n.budgetSettingOnlyThisMonth,
                       style: AppTypography.body
-                          .copyWith(color: AppColors.textPrimary),
+                          .copyWith(color: context.textPrimary),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       '($monthLabel)',
                       style: AppTypography.footnote
-                          .copyWith(color: AppColors.textTertiary),
+                          .copyWith(color: context.textTertiary),
                     ),
                   ],
                 ),

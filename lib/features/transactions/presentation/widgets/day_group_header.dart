@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 
@@ -34,12 +35,12 @@ class DayGroupHeader extends StatelessWidget {
     } else if (isSaturday) {
       badgeColor = AppColors.income;
     } else {
-      badgeColor = AppColors.bgTertiary;
+      badgeColor = context.bgTertiary;
     }
 
     return Container(
       height: 48,
-      color: AppColors.bgSecondary,
+      color: context.bgSecondary,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Row(
         children: [
@@ -59,12 +60,12 @@ class DayGroupHeader extends StatelessWidget {
                   Text(
                     dayFmt.format(date),
                     style: AppTypography.bodyMedium
-                        .copyWith(color: AppColors.textPrimary),
+                        .copyWith(color: context.textPrimary),
                   ),
                   Text(
                     weekdayFmt.format(date),
                     style: AppTypography.caption2
-                        .copyWith(color: AppColors.textSecondary),
+                        .copyWith(color: context.textSecondary),
                   ),
                 ],
               ),
@@ -73,8 +74,8 @@ class DayGroupHeader extends StatelessWidget {
           const Spacer(),
           Text(
             '$currencySymbol ${amtFmt.format(dailyTotal)}',
-            style: AppTypography.moneySmall
-                .copyWith(color: AppColors.textSecondary),
+            style:
+                AppTypography.moneySmall.copyWith(color: context.textSecondary),
           ),
         ],
       ),
