@@ -113,29 +113,52 @@ class _DayGroup extends ConsumerWidget {
     final income = incomeCents / 100.0;
     final expense = expenseCents / 100.0;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _DayHeaderRow(day: day, income: income, expense: expense),
-        ...transactions.map(
-          (item) => TransactionRow(
-            transaction: item.transaction,
-            categoryName: item.categoryName,
-            categoryEmoji: item.categoryEmoji,
-            categoryColor: item.categoryColorHex,
-            accountName: item.accountName,
-            toAccountName: item.toAccountName,
-            currencySymbol: AppConstants.defaultCurrencySymbol,
-            onTap: () => context.push(
-              Routes.transactionAddEdit,
-              extra: item.transaction,
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: context.bgSecondary,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: context.borderColor, width: 0.5),
+        boxShadow: context.isDark
+            ? null
+            : [
+                const BoxShadow(
+                  color: Color(0x0A000000),
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
+                ),
+              ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _DayHeaderRow(day: day, income: income, expense: expense),
+            ...transactions.map(
+              (item) => TransactionRow(
+                transaction: item.transaction,
+                categoryName: item.categoryName,
+                categoryEmoji: item.categoryEmoji,
+                categoryColor: item.categoryColorHex,
+                accountName: item.accountName,
+                toAccountName: item.toAccountName,
+                currencySymbol: AppConstants.defaultCurrencySymbol,
+                onTap: () => context.push(
+                  Routes.transactionAddEdit,
+                  extra: item.transaction,
+                ),
+                onDelete: () => ref
+                    .read(transactionWriteNotifierProvider.notifier)
+                    .deleteTransaction(item.transaction.id),
+              ),
             ),
-            onDelete: () => ref
-                .read(transactionWriteNotifierProvider.notifier)
-                .deleteTransaction(item.transaction.id),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -160,21 +183,18 @@ class _DayHeaderRow extends StatelessWidget {
     return day.year == now.year && day.month == now.month && day.day == now.day;
   }
 
-  /// Returns badge bg color based on weekday (Mon=1, Sun=7 in ISO).
-  Color _badgeBgColor(int weekday, BuildContext context) {
+  /// Returns badge bg color based on weekday — tonal, context-aware.
+  Color _badgeBgColor(BuildContext context, int weekday) {
     if (weekday == DateTime.saturday) {
-      return AppColors.income.withAlpha(38);
+      return context.isDark ? const Color(0xFF2A2E3A) : const Color(0xFFEEF0F5);
     } else if (weekday == DateTime.sunday) {
-      return AppColors.expense.withAlpha(38);
+      return context.isDark ? const Color(0xFF2E2A35) : const Color(0xFFF5EEF5);
     }
     return context.bgTertiary;
   }
 
-  Color _badgeTextColor(int weekday, BuildContext context) {
-    if (weekday == DateTime.saturday) return AppColors.income;
-    if (weekday == DateTime.sunday) return AppColors.expense;
-    return context.textSecondary;
-  }
+  Color _badgeTextColor(BuildContext context, int weekday) =>
+      context.textSecondary;
 
   @override
   Widget build(BuildContext context) {
@@ -228,13 +248,13 @@ class _DayHeaderRow extends StatelessWidget {
                 vertical: 2,
               ),
               decoration: BoxDecoration(
-                color: _badgeBgColor(weekday, context),
+                color: _badgeBgColor(context, weekday),
                 borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
               child: Text(
                 dayLabel,
                 style: AppTypography.caption1.copyWith(
-                  color: _badgeTextColor(weekday, context),
+                  color: _badgeTextColor(context, weekday),
                 ),
               ),
             ),
@@ -251,7 +271,8 @@ class _DayHeaderRow extends StatelessWidget {
             Text(
               CurrencyFormatter.format(expense),
               style: AppTypography.moneySmall.copyWith(
-                color: expense > 0 ? AppColors.expense : context.textTertiary,
+                color:
+                    expense > 0 ? context.expenseColor : context.textTertiary,
               ),
             ),
           ],

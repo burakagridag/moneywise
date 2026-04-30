@@ -12,8 +12,9 @@ import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../providers/transactions_provider.dart';
 
-// Coral highlight for current-week row (BUG-007).
-const Color _currentWeekBg = Color(0x14FF6B5C); // expense.withOpacity(0.08)
+// Muted highlight for current-week row — uses brand primary at low opacity (BUG-007).
+const Color _currentWeekBg =
+    Color(0x143D5A99); // brandPrimary.withOpacity(0.08)
 
 /// Shows 12 month accordion cards for the selected year.
 class MonthlyView extends ConsumerWidget {
@@ -223,7 +224,7 @@ class _MonthCard extends ConsumerWidget {
                     Text(
                       _dateRangeLabel,
                       style: AppTypography.caption1.copyWith(
-                        color: context.textTertiary,
+                        color: context.textSecondary,
                       ),
                     ),
                     const Spacer(),
@@ -274,7 +275,7 @@ class _NoTransactionsRow extends StatelessWidget {
         child: Text(
           AppLocalizations.of(context)!.monthlyNoTransactions,
           style: AppTypography.caption1.copyWith(
-            color: context.textTertiary,
+            color: context.textSecondary,
           ),
         ),
       ),
@@ -381,8 +382,9 @@ class _TotalsGroup extends StatelessWidget {
           child: Text(
             CurrencyFormatter.format(totals.expense),
             style: AppTypography.moneySmall.copyWith(
-              color:
-                  totals.expense > 0 ? AppColors.expense : context.textTertiary,
+              color: totals.expense > 0
+                  ? context.expenseColor
+                  : context.textTertiary,
             ),
             textAlign: TextAlign.right,
             maxLines: 1,
@@ -395,7 +397,7 @@ class _TotalsGroup extends StatelessWidget {
           child: Text(
             CurrencyFormatter.formatSigned(totals.net),
             style: AppTypography.moneySmall.copyWith(
-              color: totals.net >= 0 ? AppColors.income : AppColors.expense,
+              color: totals.net >= 0 ? AppColors.income : context.expenseColor,
             ),
             textAlign: TextAlign.right,
             maxLines: 1,

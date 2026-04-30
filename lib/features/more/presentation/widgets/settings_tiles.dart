@@ -134,6 +134,15 @@ class _CurrencyPickerSheet extends StatelessWidget {
         color: context.bgSecondary,
         borderRadius:
             const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+        boxShadow: context.isDark
+            ? null
+            : [
+                const BoxShadow(
+                  color: Color(0x14000000),
+                  blurRadius: 16,
+                  offset: Offset(0, -4),
+                ),
+              ],
       ),
       child: SafeArea(
         child: Column(

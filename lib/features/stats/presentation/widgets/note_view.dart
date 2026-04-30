@@ -161,8 +161,9 @@ class _NoteGroupListState extends State<_NoteGroupList> {
       itemBuilder: (context, i) {
         final group = widget.groups[i];
         final isCollapsed = _collapsedGroups.contains(i);
-        final amountColor =
-            widget.statsType == 'income' ? AppColors.income : AppColors.expense;
+        final amountColor = widget.statsType == 'income'
+            ? AppColors.income
+            : context.expenseColor;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -409,7 +410,7 @@ class _NoteTransactionRow extends ConsumerWidget {
                     Text(
                       fmt.format(transaction.date),
                       style: AppTypography.caption1
-                          .copyWith(color: context.textTertiary),
+                          .copyWith(color: context.textSecondary),
                     ),
                   ],
                 ),

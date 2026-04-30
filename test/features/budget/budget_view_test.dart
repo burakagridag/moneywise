@@ -57,7 +57,7 @@ void main() {
     test('returns brandPrimary for ratio < 0.7', () {
       expect(
         BudgetProgressBar.colorForRatio(0.5),
-        const Color(0xFFFF6B5C), // AppColors.brandPrimary
+        const Color(0xFF3D5A99), // AppColors.brandPrimary (sprint-7 refresh)
       );
     });
 

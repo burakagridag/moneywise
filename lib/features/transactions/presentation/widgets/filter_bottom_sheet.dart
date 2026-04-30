@@ -101,6 +101,15 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet> {
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppRadius.lg),
             ),
+            boxShadow: context.isDark
+                ? null
+                : [
+                    const BoxShadow(
+                      color: Color(0x14000000),
+                      blurRadius: 16,
+                      offset: Offset(0, -4),
+                    ),
+                  ],
           ),
           child: Column(
             children: [
@@ -152,7 +161,7 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet> {
                           label: l10n.expense,
                           value: 'expense',
                           selected: _types.contains('expense'),
-                          color: AppColors.expense,
+                          color: context.expenseColor,
                           onTap: () => _toggleType('expense'),
                         ),
                         _TypeChip(

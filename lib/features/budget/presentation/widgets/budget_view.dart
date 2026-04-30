@@ -216,7 +216,7 @@ class _BudgetSummaryCard extends StatelessWidget {
                   CurrencyFormatter.format(carryOver),
                 ),
                 style: AppTypography.caption1
-                    .copyWith(color: context.textTertiary),
+                    .copyWith(color: context.textSecondary),
               ),
             ],
             const SizedBox(height: AppSpacing.md),
@@ -242,7 +242,7 @@ class _BudgetSummaryCard extends StatelessWidget {
                     Text(
                       CurrencyFormatter.format(spent),
                       style: AppTypography.moneySmall
-                          .copyWith(color: AppColors.expense),
+                          .copyWith(color: context.expenseColor),
                     ),
                   ],
                 ),
@@ -353,7 +353,7 @@ class _CategoryBudgetRow extends StatelessWidget {
                             Text(
                               ' / ',
                               style: AppTypography.caption1
-                                  .copyWith(color: context.textTertiary),
+                                  .copyWith(color: context.textSecondary),
                             ),
                             Text(
                               CurrencyFormatter.format(bws.effective),
@@ -366,7 +366,7 @@ class _CategoryBudgetRow extends StatelessWidget {
                         Text(
                           l10n.budgetViewNoBudgetSet,
                           style: AppTypography.caption1
-                              .copyWith(color: context.textTertiary),
+                              .copyWith(color: context.textSecondary),
                         ),
                     ],
                   ),

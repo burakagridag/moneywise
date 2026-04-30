@@ -31,7 +31,7 @@ class DayGroupHeader extends StatelessWidget {
 
     Color badgeColor;
     if (isSunday) {
-      badgeColor = AppColors.expense;
+      badgeColor = context.expenseColor;
     } else if (isSaturday) {
       badgeColor = AppColors.income;
     } else {

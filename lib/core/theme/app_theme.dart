@@ -47,6 +47,12 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
         ),
+        inputDecorationTheme: InputDecorationTheme(
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: AppColors.borderFocus),
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
+        ),
       );
 
   static ThemeData get light => ThemeData(
@@ -84,6 +90,12 @@ class AppTheme {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.lg),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: AppColors.borderFocusLight),
+            borderRadius: BorderRadius.circular(AppRadius.md),
           ),
         ),
       );

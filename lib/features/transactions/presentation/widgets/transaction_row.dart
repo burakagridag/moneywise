@@ -36,7 +36,7 @@ class TransactionRow extends StatelessWidget {
   final String? categoryName;
   final String? categoryEmoji;
 
-  /// Hex color string for the category icon background, e.g. "#FF6B5C".
+  /// Hex color string for the category icon background, e.g. "#3D5A99".
   final String? categoryColor;
   final String? accountName;
   final String? toAccountName;
@@ -51,7 +51,7 @@ class TransactionRow extends StatelessWidget {
       case TransactionType.income:
         return AppColors.income;
       case TransactionType.expense:
-        return AppColors.expense;
+        return context.expenseColor;
       case TransactionType.transfer:
         return context.textPrimary;
     }
@@ -62,7 +62,7 @@ class TransactionRow extends StatelessWidget {
       case TransactionType.income:
         return AppColors.income.withAlpha(38);
       case TransactionType.expense:
-        return AppColors.expense.withAlpha(38);
+        return context.expenseColor.withAlpha(38);
       case TransactionType.transfer:
         return context.bgTertiary;
     }
@@ -129,7 +129,7 @@ class TransactionRow extends StatelessWidget {
                       Text(
                         _subtitle,
                         style: AppTypography.caption1.copyWith(
-                          color: context.textTertiary,
+                          color: context.textSecondary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

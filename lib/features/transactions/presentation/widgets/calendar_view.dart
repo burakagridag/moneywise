@@ -85,7 +85,7 @@ class _WeekDayHeader extends StatelessWidget {
           final color = isSat
               ? AppColors.income
               : isSun
-                  ? AppColors.expense
+                  ? context.expenseColor
                   : AppColors.textSecondary;
           return Expanded(
             child: Semantics(
@@ -267,15 +267,15 @@ class _CalendarDayCell extends StatelessWidget {
       bgColor = AppColors.brandPrimary.withValues(alpha: 0.12);
     }
 
-    // BUG-005: future dates use textTertiary; today uses textOnBrand-contrast
-    // via the circle; past/current use textPrimary; off-month uses textTertiary.
+    // BUG-005: future dates use textSecondary; today uses textOnBrand-contrast
+    // via the circle; past/current use textPrimary; off-month uses textSecondary.
     Color dayNumColor;
     if (!isCurrentMonth) {
-      dayNumColor = context.textTertiary;
+      dayNumColor = context.textSecondary;
     } else if (isToday) {
       dayNumColor = AppColors.textOnBrand;
     } else if (isFuture) {
-      dayNumColor = context.textTertiary;
+      dayNumColor = context.textSecondary;
     } else {
       dayNumColor = context.textPrimary;
     }
@@ -340,7 +340,7 @@ class _CalendarDayCell extends StatelessWidget {
                 Text(
                   CurrencyFormatter.formatCompact(expense!),
                   style: AppTypography.caption2.copyWith(
-                    color: AppColors.expense,
+                    color: context.expenseColor,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

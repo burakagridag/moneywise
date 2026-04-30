@@ -31,6 +31,9 @@ extension AppColorsX on BuildContext {
   Color get bgTertiary =>
       isDark ? AppColors.bgTertiary : AppColors.bgTertiaryLight;
 
+  Color get bgElevated =>
+      isDark ? AppColors.bgElevated : AppColors.bgElevatedLight;
+
   // ---------------------------------------------------------------------------
   // Text
   // ---------------------------------------------------------------------------
@@ -48,9 +51,15 @@ extension AppColorsX on BuildContext {
   // Derived / composite
   // ---------------------------------------------------------------------------
 
-  Color get dividerColor =>
-      isDark ? AppColors.divider : AppColors.bgTertiaryLight;
+  Color get dividerColor => isDark ? AppColors.divider : AppColors.dividerLight;
 
   Color get cardColor =>
       isDark ? AppColors.bgSecondary : AppColors.bgSecondaryLight;
+
+  Color get expenseColor => isDark ? AppColors.expenseDark : AppColors.expense;
+
+  Color get borderColor => isDark ? AppColors.border : AppColors.borderLight;
+
+  Color get borderFocusColor =>
+      isDark ? AppColors.borderFocus : AppColors.borderFocusLight;
 }

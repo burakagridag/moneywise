@@ -114,8 +114,6 @@ class ScaffoldWithBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final dateLabel = '${now.day}.${now.month}';
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -128,9 +126,9 @@ class ScaffoldWithBottomNav extends StatelessWidget {
         ),
         items: [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.book_outlined),
-            activeIcon: const Icon(Icons.book),
-            label: dateLabel,
+            icon: const Icon(Icons.receipt_long_outlined),
+            activeIcon: const Icon(Icons.receipt_long),
+            label: l10n.tabTransactions,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.bar_chart_outlined),

@@ -36,6 +36,14 @@ class MoneyWiseApp extends ConsumerWidget {
         Locale('tr'),
       ],
       debugShowCheckedModeBanner: false,
+      builder: (context, child) {
+        final mq = MediaQuery.of(context);
+        final scale = mq.textScaler.scale(1.0).clamp(0.85, 1.3);
+        return MediaQuery(
+          data: mq.copyWith(textScaler: TextScaler.linear(scale)),
+          child: child!,
+        );
+      },
     );
   }
 }
