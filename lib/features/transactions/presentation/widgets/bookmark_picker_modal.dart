@@ -75,10 +75,27 @@ class BookmarkPickerModal extends ConsumerWidget {
                     ),
                   ),
                   error: (e, __) => Center(
-                    child: Text(
-                      e.toString(),
-                      style:
-                          AppTypography.body.copyWith(color: AppColors.error),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.error_outline,
+                            size: 40, color: AppColors.error),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          AppLocalizations.of(context)!.errorLoadTitle,
+                          style: AppTypography.body
+                              .copyWith(color: AppColors.textPrimary),
+                        ),
+                        TextButton(
+                          onPressed: () =>
+                              ref.invalidate(bookmarksStreamProvider),
+                          child: Text(
+                            AppLocalizations.of(context)!.retryButton,
+                            style: AppTypography.subhead
+                                .copyWith(color: AppColors.brandPrimary),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   data: (bookmarks) {

@@ -65,15 +65,13 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet> {
   }
 
   void _apply() {
-    final notifier = ref.read(transactionFilterNotifierProvider.notifier);
-    notifier.reset();
-
-    for (final t in _types) {
-      notifier.toggleType(t);
-    }
-    notifier.setCategoryId(_categoryId);
-    notifier.setDateRange(_dateRange);
-
+    ref.read(transactionFilterNotifierProvider.notifier).apply(
+          TransactionFilter(
+            types: _types,
+            categoryId: _categoryId,
+            dateRange: _dateRange,
+          ),
+        );
     Navigator.of(context).pop();
   }
 

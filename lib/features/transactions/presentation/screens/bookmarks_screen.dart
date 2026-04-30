@@ -38,9 +38,28 @@ class BookmarksScreen extends ConsumerWidget {
           child: CircularProgressIndicator(color: AppColors.brandPrimary),
         ),
         error: (e, __) => Center(
-          child: Text(
-            e.toString(),
-            style: AppTypography.body.copyWith(color: AppColors.error),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                l10n.errorLoadTitle,
+                style: AppTypography.headline.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              TextButton(
+                onPressed: () => ref.invalidate(bookmarksStreamProvider),
+                child: Text(
+                  l10n.retryButton,
+                  style: AppTypography.subhead.copyWith(
+                    color: AppColors.brandPrimary,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         data: (bookmarks) {

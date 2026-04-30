@@ -5,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/constants/app_typography.dart';
 import '../../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../../core/router/routes.dart';
+import '../widgets/settings_tiles.dart';
 
-/// Settings screen. Currently exposes the Categories sub-screen;
-/// additional settings (theme, currency, security) will be added in
-/// later sprints.
+/// Settings screen. Exposes theme, currency, language pickers and the
+/// Categories sub-screen.
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -23,6 +23,12 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          const ThemePickerTile(),
+          const Divider(height: 1),
+          const CurrencyPickerTile(),
+          const Divider(height: 1),
+          const LanguagePickerTile(),
+          const Divider(height: 1),
           ListTile(
             leading: const Icon(Icons.category_outlined),
             title: Text(l10n.categories, style: AppTypography.body),

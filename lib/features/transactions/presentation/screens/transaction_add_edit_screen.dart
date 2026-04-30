@@ -10,6 +10,7 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../domain/entities/account.dart';
+import '../../../../domain/entities/bookmark.dart';
 import '../../../../domain/entities/category.dart';
 import '../providers/transactions_provider.dart';
 import '../widgets/account_picker_sheet.dart';
@@ -19,10 +20,18 @@ const _uuid = Uuid();
 
 /// Fullscreen form for adding a new transaction or editing an existing one.
 /// Pass [transaction] = null for add mode; non-null for edit mode.
+/// Pass [prefillBookmark] to pre-populate the form from a saved bookmark template.
 class TransactionAddEditScreen extends ConsumerStatefulWidget {
-  const TransactionAddEditScreen({super.key, this.transaction});
+  const TransactionAddEditScreen({
+    super.key,
+    this.transaction,
+    this.prefillBookmark,
+  });
 
   final Transaction? transaction;
+
+  /// When set, the form is pre-populated with this bookmark's fields (add mode).
+  final Bookmark? prefillBookmark;
 
   @override
   ConsumerState<TransactionAddEditScreen> createState() =>
@@ -50,11 +59,21 @@ class _TransactionAddEditScreenState
   void initState() {
     super.initState();
     final tx = widget.transaction;
+    final bm = widget.prefillBookmark;
     if (tx != null) {
       _type = tx.type;
       _amountController.text = tx.amount.toStringAsFixed(2);
       _noteController.text = tx.description ?? '';
       _selectedDate = tx.date;
+    } else if (bm != null) {
+      // Pre-fill from bookmark template (add mode).
+      _type = bm.type;
+      if (bm.amount != null) {
+        _amountController.text = bm.amount!.toStringAsFixed(2);
+      }
+      _noteController.text = bm.note ?? '';
+      _selectedDate = DateTime.now();
+      // accountId / categoryId / toAccountId resolved in _tryInitPickers.
     } else {
       _type = 'expense';
       _selectedDate = DateTime.now();
@@ -66,30 +85,48 @@ class _TransactionAddEditScreenState
   /// Pre-populates [_selectedCategory] and [_selectedAccount] from the lists
   /// provided by the repository-backed providers. Called after the first frame
   /// so that [ref] is available and providers have had a chance to emit.
+  /// Handles both edit mode (from [widget.transaction]) and bookmark pre-fill
+  /// mode (from [widget.prefillBookmark]).
   void _tryInitPickers() {
-    if (_pickersInitialized || !_isEditMode) return;
-    final tx = widget.transaction!;
+    if (_pickersInitialized) return;
+
+    final tx = widget.transaction;
+    final bm = widget.prefillBookmark;
+
+    // Only attempt picker init for edit mode or bookmark pre-fill.
+    if (tx == null && bm == null) {
+      _pickersInitialized = true;
+      return;
+    }
 
     final accounts =
         ref.read(transactionAccountListProvider).asData?.value ?? [];
     final categories =
         ref.read(transactionCategoryListProvider).asData?.value ?? [];
 
-    final account = accounts.where((a) => a.id == tx.accountId).firstOrNull;
-    final toAccount = tx.toAccountId != null
-        ? accounts.where((a) => a.id == tx.toAccountId).firstOrNull
-        : null;
-    final category = tx.categoryId != null
-        ? categories.where((c) => c.id == tx.categoryId).firstOrNull
-        : null;
+    if (accounts.isEmpty) return; // retry next rebuild
 
-    // Only mark initialized once we get at least the account (it is required).
-    // If providers haven't loaded yet this will be retried next rebuild.
-    if (accounts.isNotEmpty) {
-      _pickersInitialized = true;
-      _selectedAccount = account;
-      _selectedToAccount = toAccount;
-      _selectedCategory = category;
+    _pickersInitialized = true;
+
+    if (tx != null) {
+      _selectedAccount =
+          accounts.where((a) => a.id == tx.accountId).firstOrNull;
+      _selectedToAccount = tx.toAccountId != null
+          ? accounts.where((a) => a.id == tx.toAccountId).firstOrNull
+          : null;
+      _selectedCategory = tx.categoryId != null
+          ? categories.where((c) => c.id == tx.categoryId).firstOrNull
+          : null;
+    } else if (bm != null) {
+      _selectedAccount = bm.accountId != null
+          ? accounts.where((a) => a.id == bm.accountId).firstOrNull
+          : null;
+      _selectedToAccount = bm.toAccountId != null
+          ? accounts.where((a) => a.id == bm.toAccountId).firstOrNull
+          : null;
+      _selectedCategory = bm.categoryId != null
+          ? categories.where((c) => c.id == bm.categoryId).firstOrNull
+          : null;
     }
   }
 
@@ -259,10 +296,12 @@ class _TransactionAddEditScreenState
 
   @override
   Widget build(BuildContext context) {
-    // In edit mode, watch the account/category lists so this widget rebuilds
-    // when they emit data. _tryInitPickers() then reads them synchronously to
-    // set the picker state before the rest of the widget tree is built.
-    if (_isEditMode && !_pickersInitialized) {
+    // In edit mode or bookmark pre-fill mode, watch the account/category lists
+    // so this widget rebuilds when they emit data. _tryInitPickers() then reads
+    // them synchronously to set the picker state before the rest of the widget
+    // tree is built.
+    if ((_isEditMode || widget.prefillBookmark != null) &&
+        !_pickersInitialized) {
       ref.watch(transactionAccountListProvider);
       ref.watch(transactionCategoryListProvider);
     }

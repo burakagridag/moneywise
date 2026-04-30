@@ -99,6 +99,10 @@ class TransactionFilterNotifier extends _$TransactionFilterNotifier {
         : state.copyWith(dateRange: range);
   }
 
+  /// Replaces the entire filter state at once. Used by the filter modal's
+  /// "Apply" button to atomically commit all selections in a single rebuild.
+  void apply(TransactionFilter filter) => state = filter;
+
   void reset() => state = const TransactionFilter();
 }
 

@@ -13,12 +13,17 @@ class MoneyWiseApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prefs = ref.watch(appPreferencesNotifierProvider);
-    final themeMode = prefs.whenOrNull(data: (p) => p.themeMode) ?? ThemeMode.system;
+    final themeMode =
+        prefs.whenOrNull(data: (p) => p.themeMode) ?? ThemeMode.system;
+    final locale = prefs.whenOrNull(
+      data: (p) => p.languageCode.isNotEmpty ? Locale(p.languageCode) : null,
+    );
     return MaterialApp.router(
       title: 'MoneyWise',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
+      locale: locale,
       routerConfig: appRouter,
       localizationsDelegates: const [
         AppLocalizations.delegate,

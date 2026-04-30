@@ -12,6 +12,7 @@ import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/utils/currency_formatter.dart';
+import '../providers/search_filter_provider.dart';
 import '../providers/transactions_provider.dart';
 import 'transaction_row.dart';
 
@@ -23,15 +24,14 @@ class DailyView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncTxs = ref.watch(monthlyTransactionsWithDetailsProvider);
+    final asyncTxs = ref.watch(filteredTransactionsProvider);
 
     return asyncTxs.when(
       loading: () => const Center(
         child: CircularProgressIndicator(color: AppColors.brandPrimary),
       ),
       error: (e, __) => _ErrorState(
-          onRetry: () =>
-              ref.invalidate(monthlyTransactionsWithDetailsProvider)),
+          onRetry: () => ref.invalidate(filteredTransactionsProvider)),
       data: (txs) {
         if (txs.isEmpty) return const _EmptyState();
         return _TransactionList(transactions: txs);

@@ -82,19 +82,26 @@ String _themeModeToString(ThemeMode mode) {
 class AppPreferencesNotifier extends _$AppPreferencesNotifier {
   SharedPreferences? _prefs;
 
+  /// Safe accessor — throws [StateError] if accessed before [build] completes.
+  SharedPreferences get _safePrefs {
+    assert(
+        _prefs != null, 'SharedPreferences accessed before build() completed');
+    return _prefs!;
+  }
+
   @override
   Future<AppPreferences> build() async {
     _prefs = await SharedPreferences.getInstance();
     return AppPreferences(
-      themeMode: _themeModeFromString(_prefs!.getString(_kThemeMode)),
-      currencyCode: _prefs!.getString(_kCurrencyCode) ?? 'EUR',
-      languageCode: _prefs!.getString(_kLanguageCode) ?? 'en',
+      themeMode: _themeModeFromString(_safePrefs.getString(_kThemeMode)),
+      currencyCode: _safePrefs.getString(_kCurrencyCode) ?? 'EUR',
+      languageCode: _safePrefs.getString(_kLanguageCode) ?? 'en',
     );
   }
 
   /// Persists and applies a new [ThemeMode].
   Future<void> setThemeMode(ThemeMode mode) async {
-    await _prefs!.setString(_kThemeMode, _themeModeToString(mode));
+    await _safePrefs.setString(_kThemeMode, _themeModeToString(mode));
     state = AsyncData(
       state.requireValue.copyWith(themeMode: mode),
     );
@@ -102,13 +109,13 @@ class AppPreferencesNotifier extends _$AppPreferencesNotifier {
 
   /// Persists and applies a new currency [code] (ISO 4217).
   Future<void> setCurrencyCode(String code) async {
-    await _prefs!.setString(_kCurrencyCode, code);
+    await _safePrefs.setString(_kCurrencyCode, code);
     state = AsyncData(state.requireValue.copyWith(currencyCode: code));
   }
 
   /// Persists and applies a new language [code] (BCP-47).
   Future<void> setLanguageCode(String code) async {
-    await _prefs!.setString(_kLanguageCode, code);
+    await _safePrefs.setString(_kLanguageCode, code);
     state = AsyncData(state.requireValue.copyWith(languageCode: code));
   }
 }
