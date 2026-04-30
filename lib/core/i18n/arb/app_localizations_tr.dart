@@ -507,4 +507,97 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get amountColumnLabel => 'Tutar';
+
+  @override
+  String get appearance => 'Görünüm';
+
+  @override
+  String get themeSystem => 'Sistem';
+
+  @override
+  String get language => 'Dil';
+
+  @override
+  String get searchHint => 'İşlem ara...';
+
+  @override
+  String get clearSearch => 'Aramayı temizle';
+
+  @override
+  String get searchNoResults => 'İşlem bulunamadı';
+
+  @override
+  String get bookmarks => 'Yer İşaretleri';
+
+  @override
+  String get addBookmark => 'Yer İşareti Ekle';
+
+  @override
+  String get editBookmark => 'Yer İşareti Düzenle';
+
+  @override
+  String get bookmarkDeleteAction => 'Yer İşaretini Sil';
+
+  @override
+  String get bookmarkDeleteConfirm => 'Bu yer işareti silinsin mi?';
+
+  @override
+  String get bookmarkEmptyTitle => 'Henüz yer işareti yok';
+
+  @override
+  String get bookmarkEmptySubtitle =>
+      'Sık kullandığın işlemleri yer işareti olarak kaydet.';
+
+  @override
+  String get bookmarkName => 'Yer İşareti Adı';
+
+  @override
+  String get bookmarkNameHint => 'ör. Sabah Kahvesi';
+
+  @override
+  String get bookmarkNameRequired => 'Ad zorunludur';
+
+  @override
+  String get bookmarkPickerTitle => 'Yer İşareti Seç';
+
+  @override
+  String get bookmarkPickerEmpty => 'Henüz yer işareti yok';
+
+  @override
+  String get bookmarkPickerGoToBookmarks => 'Yer İşaretlerini Yönet';
+
+  @override
+  String get errorSavingBookmark =>
+      'Yer işareti kaydedilemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get errorDeletingBookmark =>
+      'Yer işareti silinemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get bookmarkSavedSuccess => 'Yer işareti kaydedildi';
+
+  @override
+  String get bookmarkDeletedSuccess => 'Yer işareti silindi';
+
+  @override
+  String get filterTitle => 'Filtrele';
+
+  @override
+  String get filterTypes => 'Tür';
+
+  @override
+  String get filterCategory => 'Kategori';
+
+  @override
+  String get filterNoCategory => 'Tüm kategoriler';
+
+  @override
+  String get filterDateRange => 'Tarih Aralığı';
+
+  @override
+  String get filterReset => 'Sıfırla';
+
+  @override
+  String get filterApply => 'Uygula';
 }

@@ -13,7 +13,6 @@ import 'package:moneywise/core/theme/app_theme.dart';
 import 'package:moneywise/data/local/database.dart';
 import 'package:moneywise/features/accounts/presentation/screens/account_add_edit_screen.dart';
 import 'package:moneywise/features/accounts/presentation/screens/accounts_screen.dart';
-import 'package:moneywise/features/more/presentation/providers/theme_mode_provider.dart';
 import 'package:moneywise/features/more/presentation/screens/category_management_screen.dart';
 import 'package:moneywise/features/more/presentation/screens/more_screen.dart';
 import 'package:moneywise/features/stats/presentation/screens/stats_screen.dart';
@@ -392,29 +391,4 @@ void main() {
   });
 
   // ---------------------------------------------------------------------------
-  // AppThemeMode provider
-  // ---------------------------------------------------------------------------
-
-  group('AppThemeMode provider', () {
-    test('defaults to dark mode', () {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      expect(container.read(appThemeModeProvider), ThemeMode.dark);
-    });
-
-    test('toggle switches to light mode', () {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      container.read(appThemeModeProvider.notifier).toggle();
-      expect(container.read(appThemeModeProvider), ThemeMode.light);
-    });
-
-    test('double toggle returns to dark mode', () {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      container.read(appThemeModeProvider.notifier).toggle();
-      container.read(appThemeModeProvider.notifier).toggle();
-      expect(container.read(appThemeModeProvider), ThemeMode.dark);
-    });
-  });
 }

@@ -21,4 +21,7 @@ class Routes {
 
   // Sprint 5 routes
   static const String budgetSetting = '/more/budget-setting';
+
+  // Sprint 6 routes
+  static const String bookmarks = '/more/bookmarks';
 }
