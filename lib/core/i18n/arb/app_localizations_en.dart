@@ -404,77 +404,108 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get budgetSettingTitle => 'Budget Setting';
+
   @override
   String get budgetSettingTotal => 'TOTAL';
+
   @override
   String get budgetSettingNoBudget => 'No budget set';
+
   @override
   String get budgetSettingClearBudget => 'Clear budget';
+
   @override
   String get budgetSettingOnlyThisMonth => 'Only this month';
+
   @override
   String get budgetSettingAmountHint => '0.00';
+
   @override
   String get budgetSettingAmountGreaterThanZero =>
       'Please enter an amount greater than zero.';
+
   @override
   String get budgetSettingAmountTooLarge => 'Amount is too large.';
+
   @override
   String get budgetSettingRemoveConfirmTitle => 'Remove budget?';
+
   @override
   String get budgetSettingRemoveConfirmMessage =>
-      "This will affect all future months unless 'Only this month' is checked.";
+      'This will affect all future months unless \'Only this month\' is checked.';
+
   @override
   String get budgetSettingRemoveAction => 'Remove';
+
   @override
   String get budgetSettingDiscardTitle => 'Discard changes?';
+
   @override
   String get budgetSettingDiscardMessage =>
       'Your unsaved changes will be lost.';
+
   @override
   String get budgetSettingDiscardAction => 'Discard';
+
   @override
   String get budgetSettingKeepEditing => 'Keep editing';
 
   @override
   String get budgetViewRemainingMonthly => 'Remaining (Monthly)';
+
   @override
   String get budgetViewNoBudgetsTitle => 'No budgets set';
+
   @override
   String get budgetViewNoBudgetsSubtitle =>
-      "Tap 'Budget Setting' to configure monthly limits per category.";
+      'Tap \'Budget Setting\' to configure monthly limits per category.';
+
   @override
   String get budgetViewSetUpBudgets => 'Set Up Budgets';
+
   @override
   String get budgetViewCouldNotLoad => 'Could not load budget data';
+
   @override
   String get budgetViewNoBudgetSet => 'No budget set';
+
   @override
-  String budgetViewIncludesCarryOver(String amount) =>
-      'Includes $amount carry-over from last month';
+  String budgetViewIncludesCarryOver(String amount) {
+    return 'Includes $amount carry-over from last month';
+  }
+
   @override
   String get budgetSetting => 'Budget Setting';
 
   @override
   String get noteViewNoNotes => 'No notes';
+
   @override
   String get noteViewNoNotesSubtitle =>
       'Transactions with notes will appear here.';
+
   @override
   String get noteViewNoNote => '(no note)';
+
   @override
   String get noteViewSortAmount => 'Amount';
+
   @override
   String get noteViewSortCount => 'Count';
+
   @override
   String get noteViewDeleteConfirmTitle => 'Delete Transaction?';
+
   @override
   String get noteViewDeleteConfirmMessage =>
       'This transaction will be permanently deleted.';
+
   @override
   String get noteViewCouldNotLoad => 'Could not load notes.';
+
   @override
   String get noteColumnLabel => 'Note';
+
   @override
   String get amountColumnLabel => 'Amount';
 }

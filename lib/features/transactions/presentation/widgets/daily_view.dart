@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import 'package:go_router/go_router.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../providers/transactions_provider.dart';
 import 'transaction_row.dart';
@@ -85,14 +88,14 @@ class _TransactionList extends StatelessWidget {
   }
 }
 
-class _DayGroup extends StatelessWidget {
+class _DayGroup extends ConsumerWidget {
   const _DayGroup({required this.day, required this.transactions});
 
   final DateTime day;
   final List<TransactionWithDetails> transactions;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // Use integer cent accumulation to avoid float drift.
     int incomeCents = 0;
     int expenseCents = 0;
@@ -122,6 +125,13 @@ class _DayGroup extends StatelessWidget {
             accountName: item.accountName,
             toAccountName: item.toAccountName,
             currencySymbol: AppConstants.defaultCurrencySymbol,
+            onTap: () => context.push(
+              Routes.transactionAddEdit,
+              extra: item.transaction,
+            ),
+            onDelete: () => ref
+                .read(transactionWriteNotifierProvider.notifier)
+                .deleteTransaction(item.transaction.id),
           ),
         ),
       ],
@@ -181,11 +191,11 @@ class _DayHeaderRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         child: Row(
           children: [
-            // Day number (with today highlight)
+            // Day number (with today highlight) — 40px wide to fit two-digit dates.
             if (_isToday)
               Container(
-                width: 32,
-                height: 32,
+                width: 40,
+                height: 40,
                 decoration: const BoxDecoration(
                   color: AppColors.bgTertiary,
                   shape: BoxShape.circle,
@@ -193,7 +203,7 @@ class _DayHeaderRow extends StatelessWidget {
                 child: Center(
                   child: Text(
                     '${day.day}',
-                    style: AppTypography.title1.copyWith(
+                    style: AppTypography.title2.copyWith(
                       color: AppColors.textPrimary,
                     ),
                   ),
@@ -201,7 +211,7 @@ class _DayHeaderRow extends StatelessWidget {
               )
             else
               SizedBox(
-                width: 36,
+                width: 40,
                 child: Text(
                   '${day.day}',
                   style: AppTypography.title1.copyWith(
@@ -213,7 +223,7 @@ class _DayHeaderRow extends StatelessWidget {
             // Day-of-week badge
             Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.xs,
+                horizontal: AppSpacing.sm,
                 vertical: 2,
               ),
               decoration: BoxDecoration(
@@ -222,7 +232,7 @@ class _DayHeaderRow extends StatelessWidget {
               ),
               child: Text(
                 dayLabel,
-                style: AppTypography.caption2.copyWith(
+                style: AppTypography.caption1.copyWith(
                   color: _badgeTextColor(weekday),
                 ),
               ),

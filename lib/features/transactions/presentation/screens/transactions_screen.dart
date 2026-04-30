@@ -177,6 +177,8 @@ class _PeriodTabBar extends StatelessWidget {
       ),
       child: TabBar(
         controller: controller,
+        isScrollable: true,
+        tabAlignment: TabAlignment.start,
         labelStyle: AppTypography.subhead.copyWith(
           fontWeight: FontWeight.w600,
         ),
@@ -265,7 +267,7 @@ class _Fabs extends StatelessWidget {
             button: true,
             child: FloatingActionButton(
               heroTag: 'add_transaction_fab',
-              onPressed: () => context.push(Routes.addTransaction),
+              onPressed: () => context.push(Routes.transactionAddEdit),
               backgroundColor: AppColors.brandPrimary,
               child: const Icon(
                 Icons.add,

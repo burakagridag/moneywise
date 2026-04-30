@@ -19,13 +19,6 @@ import 'routes.dart';
 final appRouter = GoRouter(
   initialLocation: Routes.transactions,
   routes: [
-    // Sprint 3 stub — full AddTransactionScreen implemented in Sprint 3.
-    GoRoute(
-      path: Routes.addTransaction,
-      builder: (context, state) => const Scaffold(
-        body: Center(child: Text('Add Transaction — Sprint 3')),
-      ),
-    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return ScaffoldWithBottomNav(navigationShell: navigationShell);

@@ -60,7 +60,10 @@ class AppDatabase extends _$AppDatabase {
               'CREATE INDEX IF NOT EXISTS idx_tx_type ON transactions (type)',
             );
           }
-          if (from < 4) {
+          if (from == 3) {
+            // Only add these columns when upgrading specifically from v3.
+            // Upgrading from <3 creates the transactions table fresh (with all
+            // current columns already), so adding them again would duplicate.
             await m.addColumn(transactions, transactions.isDeleted);
             await m.addColumn(transactions, transactions.updatedAt);
           }

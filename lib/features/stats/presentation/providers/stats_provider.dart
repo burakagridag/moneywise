@@ -108,19 +108,21 @@ class StatsCategoryFilter extends _$StatsCategoryFilter {
   switch (mode) {
     case StatsPeriodMode.week:
       final today = DateTime(now.year, now.month, now.day);
-      // Week starts on Monday (weekday == 1).
+      // Week starts on Monday (weekday == 1). to is exclusive (start of next day).
       final weekStart = today.subtract(Duration(days: today.weekday - 1));
-      final weekEnd = weekStart.add(const Duration(days: 6));
+      final weekEnd = weekStart.add(const Duration(days: 7));
       return (from: weekStart, to: weekEnd);
     case StatsPeriodMode.month:
+      // to is exclusive: start of next month, matching watchTransactionsByMonth.
       final from = DateTime(selectedMonth.year, selectedMonth.month);
       final to = selectedMonth.month == 12
-          ? DateTime(selectedMonth.year + 1, 1, 0)
-          : DateTime(selectedMonth.year, selectedMonth.month + 1, 0);
+          ? DateTime(selectedMonth.year + 1, 1)
+          : DateTime(selectedMonth.year, selectedMonth.month + 1);
       return (from: from, to: to);
     case StatsPeriodMode.year:
+      // to is exclusive: start of next year.
       final from = DateTime(selectedMonth.year);
-      final to = DateTime(selectedMonth.year, 12, 31);
+      final to = DateTime(selectedMonth.year + 1);
       return (from: from, to: to);
   }
 }
