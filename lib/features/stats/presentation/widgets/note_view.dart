@@ -486,7 +486,7 @@ class _ErrorState extends StatelessWidget {
             style: AppTypography.headline.copyWith(color: context.textPrimary),
           ),
           const SizedBox(height: AppSpacing.sm),
-          TextButton(
+          OutlinedButton(
             onPressed: onRetry,
             child: Text(
               l10n.retryButton,

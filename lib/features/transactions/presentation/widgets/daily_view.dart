@@ -253,20 +253,25 @@ class _DayHeaderRow extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            // Income amount
-            Text(
-              CurrencyFormatter.format(income),
-              style: AppTypography.moneySmall.copyWith(
-                color: income > 0 ? AppColors.income : context.textTertiary,
+            // Expense amount — shown first (left)
+            Opacity(
+              opacity: expense > 0 ? 1.0 : 0.5,
+              child: Text(
+                CurrencyFormatter.format(expense),
+                style: AppTypography.moneyTiny.copyWith(
+                  color: context.expenseColor,
+                ),
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
-            // Expense amount
-            Text(
-              CurrencyFormatter.format(expense),
-              style: AppTypography.moneySmall.copyWith(
-                color:
-                    expense > 0 ? context.expenseColor : context.textTertiary,
+            // Income amount — shown second (right)
+            Opacity(
+              opacity: income > 0 ? 1.0 : 0.5,
+              child: Text(
+                CurrencyFormatter.format(income),
+                style: AppTypography.moneyTiny.copyWith(
+                  color: AppColors.income,
+                ),
               ),
             ),
           ],
@@ -341,7 +346,7 @@ class _ErrorState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          TextButton(
+          OutlinedButton(
             onPressed: onRetry,
             child: Text(
               l10n.retryButton,
