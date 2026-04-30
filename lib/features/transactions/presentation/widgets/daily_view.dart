@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
@@ -160,19 +161,19 @@ class _DayHeaderRow extends StatelessWidget {
   }
 
   /// Returns badge bg color based on weekday (Mon=1, Sun=7 in ISO).
-  Color _badgeBgColor(int weekday) {
+  Color _badgeBgColor(int weekday, BuildContext context) {
     if (weekday == DateTime.saturday) {
       return AppColors.income.withAlpha(38);
     } else if (weekday == DateTime.sunday) {
       return AppColors.expense.withAlpha(38);
     }
-    return AppColors.bgTertiary;
+    return context.bgTertiary;
   }
 
-  Color _badgeTextColor(int weekday) {
+  Color _badgeTextColor(int weekday, BuildContext context) {
     if (weekday == DateTime.saturday) return AppColors.income;
     if (weekday == DateTime.sunday) return AppColors.expense;
-    return AppColors.textSecondary;
+    return context.textSecondary;
   }
 
   @override
@@ -187,7 +188,7 @@ class _DayHeaderRow extends StatelessWidget {
       label: semanticsLabel,
       child: Container(
         height: AppHeights.listItem,
-        color: AppColors.bgPrimary,
+        color: context.bgPrimary,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         child: Row(
           children: [
@@ -196,15 +197,15 @@ class _DayHeaderRow extends StatelessWidget {
               Container(
                 width: 40,
                 height: 40,
-                decoration: const BoxDecoration(
-                  color: AppColors.bgTertiary,
+                decoration: BoxDecoration(
+                  color: context.bgTertiary,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
                   child: Text(
                     '${day.day}',
                     style: AppTypography.title2.copyWith(
-                      color: AppColors.textPrimary,
+                      color: context.textPrimary,
                     ),
                   ),
                 ),
@@ -215,7 +216,7 @@ class _DayHeaderRow extends StatelessWidget {
                 child: Text(
                   '${day.day}',
                   style: AppTypography.title1.copyWith(
-                    color: AppColors.textPrimary,
+                    color: context.textPrimary,
                   ),
                 ),
               ),
@@ -227,13 +228,13 @@ class _DayHeaderRow extends StatelessWidget {
                 vertical: 2,
               ),
               decoration: BoxDecoration(
-                color: _badgeBgColor(weekday),
+                color: _badgeBgColor(weekday, context),
                 borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
               child: Text(
                 dayLabel,
                 style: AppTypography.caption1.copyWith(
-                  color: _badgeTextColor(weekday),
+                  color: _badgeTextColor(weekday, context),
                 ),
               ),
             ),
@@ -242,7 +243,7 @@ class _DayHeaderRow extends StatelessWidget {
             Text(
               CurrencyFormatter.format(income),
               style: AppTypography.moneySmall.copyWith(
-                color: income > 0 ? AppColors.income : AppColors.textTertiary,
+                color: income > 0 ? AppColors.income : context.textTertiary,
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -250,7 +251,7 @@ class _DayHeaderRow extends StatelessWidget {
             Text(
               CurrencyFormatter.format(expense),
               style: AppTypography.moneySmall.copyWith(
-                color: expense > 0 ? AppColors.expense : AppColors.textTertiary,
+                color: expense > 0 ? AppColors.expense : context.textTertiary,
               ),
             ),
           ],
@@ -276,16 +277,16 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.receipt_long_outlined,
               size: 80,
-              color: AppColors.textTertiary,
+              color: context.textTertiary,
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               l10n.dailyEmptyTitle,
               style: AppTypography.title3.copyWith(
-                color: AppColors.textPrimary,
+                color: context.textPrimary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -293,7 +294,7 @@ class _EmptyState extends StatelessWidget {
             Text(
               l10n.dailyEmptySubtitle,
               style: AppTypography.subhead.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -321,7 +322,7 @@ class _ErrorState extends StatelessWidget {
           Text(
             l10n.errorLoadTitle,
             style: AppTypography.headline.copyWith(
-              color: AppColors.textPrimary,
+              color: context.textPrimary,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -105,21 +106,21 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen>
           );
 
     return Scaffold(
-      backgroundColor: AppColors.bgPrimary,
+      backgroundColor: context.bgPrimary,
       appBar: AppBar(
-        backgroundColor: AppColors.bgPrimary,
+        backgroundColor: context.bgPrimary,
         elevation: 0,
         leading: Semantics(
           label: 'Search transactions',
           button: true,
           child: IconButton(
-            icon: const Icon(Icons.search, color: AppColors.textSecondary),
+            icon: Icon(Icons.search, color: context.textSecondary),
             onPressed: _toggleSearchBar,
           ),
         ),
         title: Text(
           l10n.transactionsTitle,
-          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headline.copyWith(color: context.textPrimary),
         ),
         centerTitle: true,
         actions: [
@@ -127,9 +128,9 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen>
             label: 'Open bookmarks',
             button: true,
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.bookmark_outline,
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
               onPressed: () => _showBookmarkPicker(context),
             ),
@@ -138,9 +139,9 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen>
             label: 'Filter transactions',
             button: true,
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.tune,
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
               onPressed: () => _showFilterSheet(context),
             ),
@@ -191,10 +192,10 @@ class _PeriodTabBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Container(
       height: AppHeights.tabBar,
-      decoration: const BoxDecoration(
-        color: AppColors.bgPrimary,
+      decoration: BoxDecoration(
+        color: context.bgPrimary,
         border: Border(
-          bottom: BorderSide(color: AppColors.divider, width: 1),
+          bottom: BorderSide(color: context.dividerColor, width: 1),
         ),
       ),
       child: TabBar(
@@ -205,8 +206,8 @@ class _PeriodTabBar extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
         unselectedLabelStyle: AppTypography.subhead,
-        labelColor: AppColors.textPrimary,
-        unselectedLabelColor: AppColors.textSecondary,
+        labelColor: context.textPrimary,
+        unselectedLabelColor: context.textSecondary,
         indicatorColor: AppColors.brandPrimary,
         indicatorWeight: 2,
         indicatorSize: TabBarIndicatorSize.tab,
@@ -277,12 +278,12 @@ class _Fabs extends StatelessWidget {
                     builder: (_) => const BookmarkPickerModal(),
                   );
                 },
-                backgroundColor: AppColors.bgSecondary,
+                backgroundColor: context.bgSecondary,
                 elevation: 2,
                 mini: true,
-                child: const Icon(
+                child: Icon(
                   Icons.bookmark_outline,
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                   size: 20,
                 ),
               ),

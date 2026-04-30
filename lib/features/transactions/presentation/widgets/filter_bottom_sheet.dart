@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -95,9 +96,9 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet> {
       expand: false,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.bgSecondary,
-            borderRadius: BorderRadius.vertical(
+          decoration: BoxDecoration(
+            color: context.bgSecondary,
+            borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppRadius.lg),
             ),
           ),
@@ -110,7 +111,7 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.divider,
+                    color: context.dividerColor,
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                   ),
                 ),
@@ -128,7 +129,7 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet> {
                   ],
                 ),
               ),
-              const Divider(color: AppColors.divider, height: 1),
+              Divider(color: context.dividerColor, height: 1),
               Expanded(
                 child: ListView(
                   controller: scrollController,
@@ -189,14 +190,14 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet> {
                       child: Container(
                         padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
-                          color: AppColors.bgTertiary,
+                          color: context.bgTertiary,
                           borderRadius: BorderRadius.circular(AppRadius.md),
                         ),
                         child: Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.date_range_outlined,
-                              color: AppColors.textSecondary,
+                              color: context.textSecondary,
                             ),
                             const SizedBox(width: AppSpacing.sm),
                             Text(
@@ -205,16 +206,16 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet> {
                                   : '${_formatDate(_dateRange!.start)} – ${_formatDate(_dateRange!.end)}',
                               style: AppTypography.body.copyWith(
                                 color: _dateRange == null
-                                    ? AppColors.textTertiary
-                                    : AppColors.textPrimary,
+                                    ? context.textTertiary
+                                    : context.textPrimary,
                               ),
                             ),
                             const Spacer(),
                             if (_dateRange != null)
                               IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.clear,
-                                  color: AppColors.textSecondary,
+                                  color: context.textSecondary,
                                   size: 18,
                                 ),
                                 onPressed: () =>
@@ -285,7 +286,7 @@ class _TypeChip extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: selected ? color.withAlpha(51) : AppColors.bgTertiary,
+          color: selected ? color.withAlpha(51) : context.bgTertiary,
           borderRadius: BorderRadius.circular(AppRadius.pill),
           border: Border.all(
             color: selected ? color : Colors.transparent,
@@ -294,7 +295,7 @@ class _TypeChip extends StatelessWidget {
         child: Text(
           label,
           style: AppTypography.body.copyWith(
-            color: selected ? color : AppColors.textSecondary,
+            color: selected ? color : context.textSecondary,
             fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
@@ -323,7 +324,7 @@ class _CategoryDropdown extends StatelessWidget {
       value: selectedId,
       decoration: InputDecoration(
         filled: true,
-        fillColor: AppColors.bgTertiary,
+        fillColor: context.bgTertiary,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: BorderSide.none,

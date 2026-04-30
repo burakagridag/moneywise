@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -83,7 +83,7 @@ class _TransactionSearchBarState extends ConsumerState<TransactionSearchBar>
       sizeFactor: _heightAnimation,
       axisAlignment: -1,
       child: Container(
-        color: AppColors.bgSecondary,
+        color: context.bgSecondary,
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.sm,
@@ -92,20 +92,19 @@ class _TransactionSearchBarState extends ConsumerState<TransactionSearchBar>
           controller: _controller,
           autofocus: true,
           onChanged: _onChanged,
-          style: AppTypography.body.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.body.copyWith(color: context.textPrimary),
           decoration: InputDecoration(
             hintText: l10n.searchHint,
             hintStyle: AppTypography.body.copyWith(
-              color: AppColors.textTertiary,
+              color: context.textTertiary,
             ),
-            prefixIcon:
-                const Icon(Icons.search, color: AppColors.textSecondary),
+            prefixIcon: Icon(Icons.search, color: context.textSecondary),
             suffixIcon: ValueListenableBuilder<TextEditingValue>(
               valueListenable: _controller,
               builder: (_, value, __) {
                 if (value.text.isEmpty) return const SizedBox.shrink();
                 return IconButton(
-                  icon: const Icon(Icons.clear, color: AppColors.textSecondary),
+                  icon: Icon(Icons.clear, color: context.textSecondary),
                   onPressed: _clearSearch,
                 );
               },
@@ -115,7 +114,7 @@ class _TransactionSearchBarState extends ConsumerState<TransactionSearchBar>
               borderSide: BorderSide.none,
             ),
             filled: true,
-            fillColor: AppColors.bgTertiary,
+            fillColor: context.bgTertiary,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
             ),

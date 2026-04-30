@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -30,9 +31,9 @@ class BookmarkPickerModal extends ConsumerWidget {
       expand: false,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.bgSecondary,
-            borderRadius: BorderRadius.vertical(
+          decoration: BoxDecoration(
+            color: context.bgSecondary,
+            borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppRadius.lg),
             ),
           ),
@@ -45,7 +46,7 @@ class BookmarkPickerModal extends ConsumerWidget {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.divider,
+                    color: context.dividerColor,
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                   ),
                 ),
@@ -66,7 +67,7 @@ class BookmarkPickerModal extends ConsumerWidget {
                   ],
                 ),
               ),
-              const Divider(color: AppColors.divider, height: 1),
+              Divider(color: context.dividerColor, height: 1),
               Expanded(
                 child: asyncBookmarks.when(
                   loading: () => const Center(
@@ -84,7 +85,7 @@ class BookmarkPickerModal extends ConsumerWidget {
                         Text(
                           AppLocalizations.of(context)!.errorLoadTitle,
                           style: AppTypography.body
-                              .copyWith(color: AppColors.textPrimary),
+                              .copyWith(color: context.textPrimary),
                         ),
                         TextButton(
                           onPressed: () =>
@@ -154,16 +155,16 @@ class _EmptyPickerState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.bookmark_outline,
               size: 64,
-              color: AppColors.textTertiary,
+              color: context.textTertiary,
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               l10n.bookmarkPickerEmpty,
               style: AppTypography.body.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),

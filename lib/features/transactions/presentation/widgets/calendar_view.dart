@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
@@ -72,9 +73,10 @@ class _WeekDayHeader extends StatelessWidget {
     final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return Container(
       height: 32,
-      decoration: const BoxDecoration(
-        color: AppColors.bgPrimary,
-        border: Border(bottom: BorderSide(color: AppColors.divider, width: 1)),
+      decoration: BoxDecoration(
+        color: context.bgPrimary,
+        border:
+            Border(bottom: BorderSide(color: context.dividerColor, width: 1)),
       ),
       child: Row(
         children: days.map((d) {
@@ -269,13 +271,13 @@ class _CalendarDayCell extends StatelessWidget {
     // via the circle; past/current use textPrimary; off-month uses textTertiary.
     Color dayNumColor;
     if (!isCurrentMonth) {
-      dayNumColor = AppColors.textTertiary;
+      dayNumColor = context.textTertiary;
     } else if (isToday) {
       dayNumColor = AppColors.textOnBrand;
     } else if (isFuture) {
-      dayNumColor = AppColors.textTertiary;
+      dayNumColor = context.textTertiary;
     } else {
-      dayNumColor = AppColors.textPrimary;
+      dayNumColor = context.textPrimary;
     }
 
     final semanticsLabel = isToday
@@ -290,9 +292,9 @@ class _CalendarDayCell extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: bgColor,
-            border: const Border(
-              bottom: BorderSide(color: AppColors.divider, width: 1),
-              right: BorderSide(color: AppColors.divider, width: 0.5),
+            border: Border(
+              bottom: BorderSide(color: context.dividerColor, width: 1),
+              right: BorderSide(color: context.dividerColor, width: 0.5),
             ),
           ),
           padding: const EdgeInsets.all(2),
@@ -370,9 +372,10 @@ class _DayDetailSheet extends ConsumerWidget {
 
     return Container(
       constraints: BoxConstraints(maxHeight: maxHeight),
-      decoration: const BoxDecoration(
-        color: AppColors.bgSecondary,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+      decoration: BoxDecoration(
+        color: context.bgSecondary,
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,7 +388,7 @@ class _DayDetailSheet extends ConsumerWidget {
               height: 4,
               margin: const EdgeInsets.only(top: AppSpacing.sm),
               decoration: BoxDecoration(
-                color: AppColors.divider,
+                color: context.dividerColor,
                 borderRadius: BorderRadius.circular(AppRadius.pill),
               ),
             ),
@@ -401,12 +404,12 @@ class _DayDetailSheet extends ConsumerWidget {
               child: Text(
                 title,
                 style: AppTypography.headline.copyWith(
-                  color: AppColors.textPrimary,
+                  color: context.textPrimary,
                 ),
               ),
             ),
           ),
-          const Divider(height: 1, color: AppColors.divider),
+          Divider(height: 1, color: context.dividerColor),
           // Transaction list
           Flexible(
             child: asyncTxs.when(
@@ -423,7 +426,7 @@ class _DayDetailSheet extends ConsumerWidget {
                 child: Text(
                   AppLocalizations.of(context)!.errorLoadTitle,
                   style: AppTypography.subhead.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
               ),
@@ -436,7 +439,7 @@ class _DayDetailSheet extends ConsumerWidget {
                         AppLocalizations.of(context)!
                             .calendarDayPanelNoTransactions,
                         style: AppTypography.subhead.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                         textAlign: TextAlign.center,
                       ),

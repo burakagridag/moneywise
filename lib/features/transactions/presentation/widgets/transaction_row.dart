@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
@@ -44,26 +45,26 @@ class TransactionRow extends StatelessWidget {
   final VoidCallback? onDelete;
   final VoidCallback? onEdit;
 
-  Color get _amountColor {
-    if (transaction.isExcluded) return AppColors.textTertiary;
+  Color _amountColor(BuildContext context) {
+    if (transaction.isExcluded) return context.textTertiary;
     switch (transaction.transactionType) {
       case TransactionType.income:
         return AppColors.income;
       case TransactionType.expense:
         return AppColors.expense;
       case TransactionType.transfer:
-        return AppColors.textPrimary;
+        return context.textPrimary;
     }
   }
 
-  Color get _iconBgColor {
+  Color _iconBgColor(BuildContext context) {
     switch (transaction.transactionType) {
       case TransactionType.income:
         return AppColors.income.withAlpha(38);
       case TransactionType.expense:
         return AppColors.expense.withAlpha(38);
       case TransactionType.transfer:
-        return AppColors.bgTertiary;
+        return context.bgTertiary;
     }
   }
 
@@ -101,7 +102,7 @@ class TransactionRow extends StatelessWidget {
           onTap: onTap,
           child: Container(
             height: AppHeights.listItem,
-            color: AppColors.bgPrimary,
+            color: context.bgPrimary,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Row(
               children: [
@@ -109,7 +110,7 @@ class TransactionRow extends StatelessWidget {
                   emoji: categoryEmoji,
                   isTransfer:
                       transaction.transactionType == TransactionType.transfer,
-                  bgColor: _iconBgColor,
+                  bgColor: _iconBgColor(context),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
@@ -120,7 +121,7 @@ class TransactionRow extends StatelessWidget {
                       Text(
                         categoryName ?? _iconLabel,
                         style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.textPrimary,
+                          color: context.textPrimary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -128,7 +129,7 @@ class TransactionRow extends StatelessWidget {
                       Text(
                         _subtitle,
                         style: AppTypography.caption1.copyWith(
-                          color: AppColors.textTertiary,
+                          color: context.textTertiary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -140,7 +141,7 @@ class TransactionRow extends StatelessWidget {
                 Text(
                   amountText,
                   style: AppTypography.moneySmall.copyWith(
-                    color: _amountColor,
+                    color: _amountColor(context),
                     decoration: transaction.isExcluded
                         ? TextDecoration.lineThrough
                         : null,
@@ -179,17 +180,17 @@ class TransactionRow extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.bgSecondary,
+        backgroundColor: ctx.bgSecondary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
         title: Text(
           l10n.deleteTransactionTitle,
-          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headline.copyWith(color: ctx.textPrimary),
         ),
         content: Text(
           l10n.deleteTransactionMessage,
-          style: AppTypography.subhead.copyWith(color: AppColors.textSecondary),
+          style: AppTypography.subhead.copyWith(color: ctx.textSecondary),
         ),
         actions: [
           TextButton(
@@ -197,7 +198,7 @@ class TransactionRow extends StatelessWidget {
             child: Text(
               l10n.cancel,
               style: AppTypography.subhead.copyWith(
-                color: AppColors.textSecondary,
+                color: ctx.textSecondary,
               ),
             ),
           ),
@@ -238,9 +239,9 @@ class _CategoryIcon extends StatelessWidget {
       decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
       child: Center(
         child: isTransfer
-            ? const Icon(
+            ? Icon(
                 Icons.swap_horiz,
-                color: AppColors.textPrimary,
+                color: context.textPrimary,
                 size: 20,
               )
             : Text(

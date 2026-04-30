@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
@@ -27,18 +28,18 @@ class BudgetSettingScreen extends ConsumerWidget {
     final selectedMonth = ref.watch(selectedStatsMonthProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgPrimary,
+      backgroundColor: context.bgPrimary,
       appBar: AppBar(
-        backgroundColor: AppColors.bgPrimary,
+        backgroundColor: context.bgPrimary,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textSecondary),
+          icon: Icon(Icons.arrow_back, color: context.textSecondary),
           onPressed: () => context.pop(),
           tooltip: 'Back',
         ),
         title: Text(
           l10n.budgetSettingTitle,
-          style: AppTypography.headline.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headline.copyWith(color: context.textPrimary),
         ),
         centerTitle: true,
       ),
@@ -133,12 +134,12 @@ class _BudgetList extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(top: AppSpacing.md),
-      color: AppColors.bgSecondary,
+      color: context.bgSecondary,
       child: ListView.separated(
         itemCount: categories.length + 1, // +1 for TOTAL row
-        separatorBuilder: (_, __) => const Divider(
+        separatorBuilder: (_, __) => Divider(
           height: 1,
-          color: AppColors.divider,
+          color: context.dividerColor,
         ),
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -194,13 +195,13 @@ class _TotalRow extends StatelessWidget {
                 child: Text(
                   l10n.budgetSettingTotal,
                   style: AppTypography.headline
-                      .copyWith(color: AppColors.textPrimary),
+                      .copyWith(color: context.textPrimary),
                 ),
               ),
               Text(
                 CurrencyFormatter.format(totalBudget),
                 style: AppTypography.moneySmall
-                    .copyWith(color: AppColors.textPrimary),
+                    .copyWith(color: context.textPrimary),
               ),
             ],
           ),
@@ -261,8 +262,8 @@ class _CategorySettingRow extends StatelessWidget {
                 Expanded(
                   child: Text(
                     category.name,
-                    style: AppTypography.body
-                        .copyWith(color: AppColors.textPrimary),
+                    style:
+                        AppTypography.body.copyWith(color: context.textPrimary),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -270,16 +271,15 @@ class _CategorySettingRow extends StatelessWidget {
                 Text(
                   amountText,
                   style: AppTypography.moneySmall.copyWith(
-                    color: hasBudget
-                        ? AppColors.textPrimary
-                        : AppColors.textTertiary,
+                    color:
+                        hasBudget ? context.textPrimary : context.textTertiary,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                const Icon(
+                Icon(
                   Icons.chevron_right,
                   size: 16,
-                  color: AppColors.textTertiary,
+                  color: context.textTertiary,
                 ),
               ],
             ),
@@ -310,8 +310,7 @@ class _ErrorState extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             l10n.errorLoadTitle,
-            style:
-                AppTypography.headline.copyWith(color: AppColors.textPrimary),
+            style: AppTypography.headline.copyWith(color: context.textPrimary),
           ),
           const SizedBox(height: AppSpacing.sm),
           TextButton(
