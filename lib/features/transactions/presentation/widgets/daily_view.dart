@@ -253,58 +253,35 @@ class _DayHeaderRow extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            // Expense — primary (moneySmall), shown left
-            Flexible(
-              child: Opacity(
-                opacity: expense > 0 ? 1.0 : 0.5,
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '− ',
-                        style: AppTypography.caption1.copyWith(
-                          color: context.expenseColor,
-                        ),
-                      ),
-                      TextSpan(
-                        text: CurrencyFormatter.format(expense),
-                        style: AppTypography.moneySmall.copyWith(
-                          color: context.expenseColor,
-                        ),
-                      ),
-                    ],
+            // Amounts column — expense on top (primary), income below (secondary).
+            // Natural width so no truncation from equal-split Flexible widgets.
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Expense — primary, moneySmall
+                Opacity(
+                  opacity: expense > 0 ? 1.0 : 0.5,
+                  child: Text(
+                    '− ${CurrencyFormatter.format(expense)}',
+                    style: AppTypography.moneySmall
+                        .copyWith(color: context.expenseColor),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            // Income — secondary (moneyTiny), shown right
-            Flexible(
-              child: Opacity(
-                opacity: income > 0 ? 1.0 : 0.5,
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '+ ',
-                        style: AppTypography.caption1.copyWith(
-                          color: AppColors.income,
-                        ),
-                      ),
-                      TextSpan(
-                        text: CurrencyFormatter.format(income),
-                        style: AppTypography.moneyTiny.copyWith(
-                          color: AppColors.income,
-                        ),
-                      ),
-                    ],
+                // Income — secondary, moneyTiny
+                Opacity(
+                  opacity: income > 0 ? 1.0 : 0.5,
+                  child: Text(
+                    '+ ${CurrencyFormatter.format(income)}',
+                    style: AppTypography.moneyTiny
+                        .copyWith(color: AppColors.income),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
+              ],
             ),
           ],
         ),

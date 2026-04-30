@@ -218,10 +218,10 @@ class _PeriodTabBar extends StatelessWidget {
         controller: controller,
         isScrollable: true,
         tabAlignment: TabAlignment.start,
-        labelStyle: AppTypography.subhead.copyWith(
+        labelStyle: AppTypography.caption1.copyWith(
           fontWeight: FontWeight.w600,
         ),
-        unselectedLabelStyle: AppTypography.subhead,
+        unselectedLabelStyle: AppTypography.caption1,
         labelColor: context.textPrimary,
         unselectedLabelColor: context.textSecondary,
         indicatorColor: AppColors.brandPrimary,
