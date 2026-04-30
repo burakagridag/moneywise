@@ -336,6 +336,13 @@ class _DescriptionView extends StatelessWidget {
   const _DescriptionView();
 
   @override
-  Widget build(BuildContext context) =>
-      const Center(child: Text('Coming soon'));
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Text(
+        l10n.comingSoon,
+        style: AppTypography.subhead.copyWith(color: context.textSecondary),
+      ),
+    );
+  }
 }

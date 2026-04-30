@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @tabTransactions.
   ///
   /// In en, this message translates to:
-  /// **'Trans.'**
+  /// **'Transactions'**
   String get tabTransactions;
 
   /// No description provided for @tabStats.

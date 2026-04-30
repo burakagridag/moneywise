@@ -69,8 +69,8 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
 class _WeekDayHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Week starts Monday per SPEC
-    final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    // Week starts Monday per SPEC. Indices align: Mon=0..Fri=4, Sat=5, Sun=6.
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return Container(
       height: 32,
       decoration: BoxDecoration(
@@ -79,14 +79,11 @@ class _WeekDayHeader extends StatelessWidget {
             Border(bottom: BorderSide(color: context.dividerColor, width: 1)),
       ),
       child: Row(
-        children: days.map((d) {
-          final isSat = d == 'Sat';
-          final isSun = d == 'Sun';
-          final color = isSat
-              ? AppColors.income
-              : isSun
-                  ? context.expenseColor
-                  : AppColors.textSecondary;
+        children: List.generate(days.length, (index) {
+          final d = days[index];
+          // index 5 = Saturday, index 6 = Sunday — neutral tonal colours,
+          // not income/expense green/red (matches daily_view.dart approach).
+          final color = _weekdayColor(context, index);
           return Expanded(
             child: Semantics(
               label: _fullDayName(d),
@@ -98,9 +95,26 @@ class _WeekDayHeader extends StatelessWidget {
               ),
             ),
           );
-        }).toList(),
+        }),
       ),
     );
+  }
+
+  /// Returns a neutral tonal colour for weekend headers; textSecondary for
+  /// weekdays. Uses index (0=Mon … 6=Sun) for locale-independent matching.
+  Color _weekdayColor(BuildContext context, int index) {
+    if (index == 5) {
+      // Saturday — cool blue tonal
+      return context.isDark
+          ? const Color(0xFF4A7A9B)
+          : const Color(0xFF5B8FC4);
+    } else if (index == 6) {
+      // Sunday — warm rose tonal
+      return context.isDark
+          ? const Color(0xFF9B6B7A)
+          : const Color(0xFFB07080);
+    }
+    return context.textSecondary;
   }
 
   String _fullDayName(String abbr) {

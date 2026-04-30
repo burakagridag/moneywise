@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
   "appName": "MoneyWise",
-  "tabTransactions": "Trans.",
+  "tabTransactions": "Transactions",
   "tabStats": "Stats",
   "tabAccounts": "Accounts",
   "tabMore": "More",

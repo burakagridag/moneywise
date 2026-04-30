@@ -35,7 +35,7 @@ class IncomeSummaryBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Container(
-      height: 60,
+      height: AppHeights.listItem,
       decoration: BoxDecoration(
         color: context.bgPrimary,
         border: Border(

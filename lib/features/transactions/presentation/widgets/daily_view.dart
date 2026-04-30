@@ -115,13 +115,13 @@ class _DayGroup extends ConsumerWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.xs,
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
         color: context.bgSecondary,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: context.borderColor, width: 0.5),
+        border: Border.all(color: context.borderColor, width: 1.0),
         boxShadow: context.isDark
             ? null
             : [
@@ -212,21 +212,15 @@ class _DayHeaderRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         child: Row(
           children: [
-            // Day number (with today highlight) — 40px wide to fit two-digit dates.
+            // Day number — today uses brandPrimary bold text; no circle decoration.
             if (_isToday)
-              Container(
+              SizedBox(
                 width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: context.bgTertiary,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    '${day.day}',
-                    style: AppTypography.title2.copyWith(
-                      color: context.textPrimary,
-                    ),
+                child: Text(
+                  '${day.day}',
+                  style: AppTypography.title2.copyWith(
+                    color: AppColors.brandPrimary,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               )
