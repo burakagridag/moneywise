@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_colors_ext.dart';
@@ -88,12 +87,6 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen>
     );
   }
 
-  String _todaySubtitle(BuildContext context, AppLocalizations l10n) {
-    final locale = Localizations.localeOf(context).languageCode;
-    final formatted = DateFormat('d MMMM', locale).format(DateTime.now());
-    return '${l10n.today}, $formatted';
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -125,19 +118,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen>
             onPressed: _toggleSearchBar,
           ),
         ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(l10n.tabTransactions, style: AppTypography.title2),
-            Text(
-              _todaySubtitle(context, l10n),
-              style: AppTypography.caption1.copyWith(
-                color: context.textSecondary,
-              ),
-            ),
-          ],
-        ),
+        title: Text(l10n.tabTransactions, style: AppTypography.title2),
         centerTitle: false,
         actions: [
           Semantics(
