@@ -171,7 +171,7 @@ class TransactionRow extends StatelessWidget {
       color: AppColors.error,
       alignment: Alignment.centerRight,
       padding: const EdgeInsets.only(right: AppSpacing.lg),
-      child: const Icon(Icons.delete_outline, color: AppColors.textPrimary),
+      child: const Icon(Icons.delete_outline, color: AppColors.textOnBrand),
     );
   }
 

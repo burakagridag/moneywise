@@ -41,10 +41,8 @@ extension AppColorsX on BuildContext {
   Color get textSecondary =>
       isDark ? AppColors.textSecondary : AppColors.textSecondaryLight;
 
-  /// Light-mode fallback reuses textSecondaryLight (0xFF6B6E76) because there
-  /// is no dedicated textTertiaryLight token in the design system yet.
   Color get textTertiary =>
-      isDark ? AppColors.textTertiary : AppColors.textSecondaryLight;
+      isDark ? AppColors.textTertiary : AppColors.textTertiaryLight;
 
   // ---------------------------------------------------------------------------
   // Derived / composite

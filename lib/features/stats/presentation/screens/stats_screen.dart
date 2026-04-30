@@ -208,7 +208,7 @@ class _PeriodSelector extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
-      builder: (_) => SafeArea(
+      builder: (sheetCtx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -218,7 +218,7 @@ class _PeriodSelector extends StatelessWidget {
                 width: 36,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: sheetCtx.dividerColor,
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
               ),
