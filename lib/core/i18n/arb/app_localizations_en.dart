@@ -607,4 +607,72 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filterApply => 'Apply';
+
+  @override
+  String get homeGreetingMorning => 'Good morning';
+
+  @override
+  String get homeGreetingAfternoon => 'Good afternoon';
+
+  @override
+  String get homeGreetingEvening => 'Good evening';
+
+  @override
+  String get homeBudgetPulseTitle => 'Budget pulse';
+
+  @override
+  String get homeBudgetPulseViewLink => 'View';
+
+  @override
+  String get homeBudgetPulseSetCta => 'Set a monthly budget';
+
+  @override
+  String get homeBudgetPulseSetCtaSubtitle => 'Stay on top of your spending';
+
+  @override
+  String get homeBudgetPulseSetBudgetButton => 'Set budget';
+
+  @override
+  String get homeBudgetPulseOverBudget => 'Over budget';
+
+  @override
+  String homeBudgetPulseLeftOf(String budget) {
+    return 'left of $budget budget';
+  }
+
+  @override
+  String get homeBudgetPulseDailyPace => 'Daily pace: ';
+
+  @override
+  String get homeBudgetPulseCanSpend => '  ·  You can spend ';
+
+  @override
+  String get homeBudgetPulsePerDay => '/day';
+
+  @override
+  String get homeBudgetPulseOverBudgetSuffix => '  ·  Over budget';
+
+  @override
+  String get homeBudgetPulseUnavailable => 'Budget data unavailable';
+
+  @override
+  String get homeBudgetPulseViewSemanticLabel => 'View budget details';
+
+  @override
+  String get homeRecentTitle => 'Recent';
+
+  @override
+  String get homeRecentAll => 'All';
+
+  @override
+  String get homeRecentCouldNotLoad => 'Could not load transactions';
+
+  @override
+  String get homeTotalBalanceLabel => 'Total Balance';
+
+  @override
+  String get homeTrendSinceLastMonth => 'since last month';
+
+  @override
+  String get homeThisWeekTitle => 'This week';
 }

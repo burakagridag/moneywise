@@ -606,4 +606,72 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get filterApply => 'Uygula';
+
+  @override
+  String get homeGreetingMorning => 'Günaydın';
+
+  @override
+  String get homeGreetingAfternoon => 'İyi günler';
+
+  @override
+  String get homeGreetingEvening => 'İyi akşamlar';
+
+  @override
+  String get homeBudgetPulseTitle => 'Bütçe nabzı';
+
+  @override
+  String get homeBudgetPulseViewLink => 'Görüntüle';
+
+  @override
+  String get homeBudgetPulseSetCta => 'Aylık bütçe belirle';
+
+  @override
+  String get homeBudgetPulseSetCtaSubtitle => 'Harcamalarınızın üstünde kalın';
+
+  @override
+  String get homeBudgetPulseSetBudgetButton => 'Bütçe belirle';
+
+  @override
+  String get homeBudgetPulseOverBudget => 'Bütçe aşıldı';
+
+  @override
+  String homeBudgetPulseLeftOf(String budget) {
+    return '$budget bütçesinin kalan';
+  }
+
+  @override
+  String get homeBudgetPulseDailyPace => 'Günlük harcama: ';
+
+  @override
+  String get homeBudgetPulseCanSpend => '  ·  Harcayabilirsiniz ';
+
+  @override
+  String get homeBudgetPulsePerDay => '/gün';
+
+  @override
+  String get homeBudgetPulseOverBudgetSuffix => '  ·  Bütçe aşıldı';
+
+  @override
+  String get homeBudgetPulseUnavailable => 'Bütçe verisi kullanılamıyor';
+
+  @override
+  String get homeBudgetPulseViewSemanticLabel => 'Bütçe detaylarını görüntüle';
+
+  @override
+  String get homeRecentTitle => 'Son İşlemler';
+
+  @override
+  String get homeRecentAll => 'Tümü';
+
+  @override
+  String get homeRecentCouldNotLoad => 'İşlemler yüklenemedi';
+
+  @override
+  String get homeTotalBalanceLabel => 'Toplam Bakiye';
+
+  @override
+  String get homeTrendSinceLastMonth => 'geçen aydan bu yana';
+
+  @override
+  String get homeThisWeekTitle => 'Bu hafta';
 }

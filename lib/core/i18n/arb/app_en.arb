@@ -201,5 +201,37 @@
   "filterNoCategory": "All categories",
   "filterDateRange": "Date Range",
   "filterReset": "Reset",
-  "filterApply": "Apply"
+  "filterApply": "Apply",
+
+  "homeGreetingMorning": "Good morning",
+  "homeGreetingAfternoon": "Good afternoon",
+  "homeGreetingEvening": "Good evening",
+
+  "homeBudgetPulseTitle": "Budget pulse",
+  "homeBudgetPulseViewLink": "View",
+  "homeBudgetPulseSetCta": "Set a monthly budget",
+  "homeBudgetPulseSetCtaSubtitle": "Stay on top of your spending",
+  "homeBudgetPulseSetBudgetButton": "Set budget",
+  "homeBudgetPulseOverBudget": "Over budget",
+  "homeBudgetPulseLeftOf": "left of {budget} budget",
+  "@homeBudgetPulseLeftOf": {
+    "placeholders": {
+      "budget": {"type": "String"}
+    }
+  },
+  "homeBudgetPulseDailyPace": "Daily pace: ",
+  "homeBudgetPulseCanSpend": "  ·  You can spend ",
+  "homeBudgetPulsePerDay": "/day",
+  "homeBudgetPulseOverBudgetSuffix": "  ·  Over budget",
+  "homeBudgetPulseUnavailable": "Budget data unavailable",
+  "homeBudgetPulseViewSemanticLabel": "View budget details",
+
+  "homeRecentTitle": "Recent",
+  "homeRecentAll": "All",
+  "homeRecentCouldNotLoad": "Could not load transactions",
+
+  "homeTotalBalanceLabel": "Total Balance",
+  "homeTrendSinceLastMonth": "since last month",
+
+  "homeThisWeekTitle": "This week"
 }

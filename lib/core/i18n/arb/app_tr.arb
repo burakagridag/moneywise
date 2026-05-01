@@ -201,5 +201,37 @@
   "filterNoCategory": "Tüm kategoriler",
   "filterDateRange": "Tarih Aralığı",
   "filterReset": "Sıfırla",
-  "filterApply": "Uygula"
+  "filterApply": "Uygula",
+
+  "homeGreetingMorning": "Günaydın",
+  "homeGreetingAfternoon": "İyi günler",
+  "homeGreetingEvening": "İyi akşamlar",
+
+  "homeBudgetPulseTitle": "Bütçe nabzı",
+  "homeBudgetPulseViewLink": "Görüntüle",
+  "homeBudgetPulseSetCta": "Aylık bütçe belirle",
+  "homeBudgetPulseSetCtaSubtitle": "Harcamalarınızın üstünde kalın",
+  "homeBudgetPulseSetBudgetButton": "Bütçe belirle",
+  "homeBudgetPulseOverBudget": "Bütçe aşıldı",
+  "homeBudgetPulseLeftOf": "{budget} bütçesinin kalan",
+  "@homeBudgetPulseLeftOf": {
+    "placeholders": {
+      "budget": {"type": "String"}
+    }
+  },
+  "homeBudgetPulseDailyPace": "Günlük harcama: ",
+  "homeBudgetPulseCanSpend": "  ·  Harcayabilirsiniz ",
+  "homeBudgetPulsePerDay": "/gün",
+  "homeBudgetPulseOverBudgetSuffix": "  ·  Bütçe aşıldı",
+  "homeBudgetPulseUnavailable": "Bütçe verisi kullanılamıyor",
+  "homeBudgetPulseViewSemanticLabel": "Bütçe detaylarını görüntüle",
+
+  "homeRecentTitle": "Son İşlemler",
+  "homeRecentAll": "Tümü",
+  "homeRecentCouldNotLoad": "İşlemler yüklenemedi",
+
+  "homeTotalBalanceLabel": "Toplam Bakiye",
+  "homeTrendSinceLastMonth": "geçen aydan bu yana",
+
+  "homeThisWeekTitle": "Bu hafta"
 }
