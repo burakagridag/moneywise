@@ -13,6 +13,7 @@ import 'daos/bookmark_dao.dart';
 import 'daos/budget_dao.dart';
 import 'daos/category_dao.dart';
 import 'daos/transaction_dao.dart';
+import 'daos/user_settings_dao.dart';
 import 'seed_data.dart';
 import 'tables/account_groups_table.dart';
 import 'tables/accounts_table.dart';
@@ -20,6 +21,7 @@ import 'tables/bookmarks_table.dart';
 import 'tables/budgets_table.dart';
 import 'tables/categories_table.dart';
 import 'tables/transactions_table.dart';
+import 'tables/user_settings_table.dart';
 
 part 'database.g.dart';
 
@@ -29,7 +31,8 @@ part 'database.g.dart';
   Categories,
   Transactions,
   Budgets,
-  Bookmarks
+  Bookmarks,
+  UserSettings,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -38,13 +41,16 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async {
           await m.createAll();
           await _seedDefaultData();
+          // Seed the singleton user settings row so fresh installs always have
+          // the row with id = 1 present (all financial settings columns nullable).
+          await _seedUserSettings();
         },
         onUpgrade: (m, from, to) async {
           if (from < 2) {
@@ -81,6 +87,13 @@ class AppDatabase extends _$AppDatabase {
           if (from < 6) {
             await m.createTable(bookmarks);
           }
+          if (from < 7) {
+            // Create the user_settings table and seed the mandatory singleton
+            // row. INSERT OR IGNORE ensures idempotency for any edge case where
+            // the migration runs more than once.
+            await m.createTable(userSettings);
+            await _seedUserSettings();
+          }
         },
       );
 
@@ -93,6 +106,7 @@ class AppDatabase extends _$AppDatabase {
   late final budgetDao = BudgetDao(this);
   late final categoryDao = CategoryDao(this);
   late final transactionDao = TransactionDao(this);
+  late final userSettingsDao = UserSettingsDao(this);
 
   // ---------------------------------------------------------------------------
   // Seed helpers
@@ -101,6 +115,16 @@ class AppDatabase extends _$AppDatabase {
   Future<void> _seedDefaultData() async {
     await _seedAccountGroups();
     await _seedCategories();
+  }
+
+  /// Seeds the mandatory singleton row in [userSettings] (id = 1).
+  ///
+  /// Uses INSERT OR IGNORE so the statement is safe to call from both
+  /// [onCreate] and the `from < 7` upgrade branch without risk of duplication.
+  Future<void> _seedUserSettings() async {
+    await customStatement(
+      'INSERT OR IGNORE INTO user_settings (id) VALUES (1)',
+    );
   }
 
   Future<void> _seedAccountGroups() async {
