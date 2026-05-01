@@ -174,10 +174,27 @@ class _RecentContent extends StatelessWidget {
   String _rowSemanticLabel(Transaction tx) {
     final typeName = tx.transactionType.name;
     final amountStr = _semanticAmount(tx);
-    final name = tx.description?.isNotEmpty == true
-        ? tx.description!
-        : typeName[0].toUpperCase() + typeName.substring(1);
+    final name = _resolveDisplayName(tx);
     return '$name. $amountStr. $typeName. Tap for details.';
+  }
+
+  /// Returns the display name for [tx]: description when set, otherwise the
+  /// capitalised transaction type name (Income / Expense / Transfer).
+  /// Category name is not resolved here (no JOIN available at this layer).
+  /// TODO(EPIC8B): resolve category name via categoryId when a category
+  /// lookup provider is available.
+  static String _resolveDisplayName(Transaction tx) {
+    if (tx.description?.isNotEmpty == true) {
+      return tx.description!;
+    }
+    switch (tx.transactionType) {
+      case TransactionType.income:
+        return 'Income';
+      case TransactionType.expense:
+        return 'Expense';
+      case TransactionType.transfer:
+        return 'Transfer';
+    }
   }
 
   String _semanticAmount(Transaction tx) {
@@ -263,19 +280,12 @@ class _RecentTransactionRow extends StatelessWidget {
     );
   }
 
-  String get _displayName {
-    if (transaction.description?.isNotEmpty == true) {
-      return transaction.description!;
-    }
-    switch (transaction.transactionType) {
-      case TransactionType.income:
-        return 'Income';
-      case TransactionType.expense:
-        return 'Expense';
-      case TransactionType.transfer:
-        return 'Transfer';
-    }
-  }
+  // Displays description when set; falls back to the transaction type name
+  // (Income / Expense / Transfer) when description is null or empty.
+  // Category name is not resolved here (no JOIN available at this layer).
+  // TODO(EPIC8B): resolve category name via categoryId when a category
+  // lookup provider is available.
+  String get _displayName => _RecentContent._resolveDisplayName(transaction);
 
   String get _formattedAmount {
     final formatted = CurrencyFormatter.format(transaction.amount.abs());
@@ -312,27 +322,18 @@ class _RecentTransactionRow extends StatelessWidget {
     }
   }
 
+  // No category emoji available at this layer without JOIN — use type icon.
+  // Income = money coming IN → upward arrow.
+  // Expense = money going OUT → downward arrow.
+  // Transfer = swap horizontal.
   Widget _buildIcon(BuildContext context) {
-    if (transaction.transactionType == TransactionType.transfer) {
-      return Icon(
-        Icons.swap_horiz,
-        size: 16,
-        color: context.textSecondary,
-      );
-    }
-    // No category emoji available at this layer without JOIN — use type icon.
-    // Income = money coming IN → upward arrow.
-    // Expense = money going OUT → downward arrow.
     switch (transaction.transactionType) {
       case TransactionType.income:
         return const Icon(Icons.arrow_upward,
             size: 16, color: AppColors.income);
       case TransactionType.expense:
-        return Icon(
-          Icons.arrow_downward,
-          size: 16,
-          color: context.expenseColor,
-        );
+        return Icon(Icons.arrow_downward,
+            size: 16, color: context.expenseColor);
       case TransactionType.transfer:
         return Icon(Icons.swap_horiz, size: 16, color: context.textSecondary);
     }
@@ -405,13 +406,12 @@ class _TransactionDetailPreview extends StatelessWidget {
           Text(
             CurrencyFormatter.format(transaction.amount.abs()),
             style: AppTypography.moneyLarge.copyWith(
-              color: isDark
-                  ? (transaction.transactionType == TransactionType.expense
-                      ? AppColors.expenseDark
-                      : AppColors.income)
-                  : (transaction.transactionType == TransactionType.expense
-                      ? AppColors.expense
-                      : AppColors.income),
+              color: switch (transaction.transactionType) {
+                TransactionType.income => AppColors.income,
+                TransactionType.expense =>
+                  isDark ? AppColors.expenseDark : AppColors.expense,
+                TransactionType.transfer => context.textSecondary,
+              },
             ),
           ),
           if (transaction.description?.isNotEmpty == true) ...[

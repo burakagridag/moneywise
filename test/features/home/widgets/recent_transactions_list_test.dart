@@ -382,6 +382,36 @@ void main() {
       );
     });
 
+    testWidgets('transfer row uses swap_horiz icon', (tester) async {
+      final tx = _makeTx(id: 'tx1', type: 'transfer', amount: 250.0);
+      final stream = Stream.value([tx]);
+
+      await tester.pumpWidget(_buildWidget(stream: stream));
+      await tester.pump();
+
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is Icon && w.icon == Icons.swap_horiz,
+        ),
+        findsOneWidget,
+        reason: 'Transfer must render Icons.swap_horiz',
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is Icon && w.icon == Icons.arrow_upward,
+        ),
+        findsNothing,
+        reason: 'Transfer must NOT render Icons.arrow_upward',
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is Icon && w.icon == Icons.arrow_downward,
+        ),
+        findsNothing,
+        reason: 'Transfer must NOT render Icons.arrow_downward',
+      );
+    });
+
     // -----------------------------------------------------------------------
     // Amount sign prefix
     // -----------------------------------------------------------------------
