@@ -12,6 +12,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appName => 'MoneyWise';
 
   @override
+  String get tabHome => 'Ana Sayfa';
+
+  @override
   String get tabTransactions => 'İşlemler';
 
   @override
@@ -19,6 +22,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tabAccounts => 'Hesaplar';
+
+  @override
+  String get tabBudget => 'Bütçe';
 
   @override
   String get tabMore => 'Daha Fazla';
@@ -600,4 +606,123 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get filterApply => 'Uygula';
+
+  @override
+  String get homeGreetingMorning => 'Günaydın';
+
+  @override
+  String get homeGreetingAfternoon => 'İyi günler';
+
+  @override
+  String get homeGreetingEvening => 'İyi akşamlar';
+
+  @override
+  String get homeBudgetPulseTitle => 'Bütçe nabzı';
+
+  @override
+  String get homeBudgetPulseViewLink => 'Görüntüle';
+
+  @override
+  String get homeBudgetPulseSetCta => 'Aylık bütçe belirle';
+
+  @override
+  String get homeBudgetPulseSetCtaSubtitle => 'Harcamalarınızın üstünde kalın';
+
+  @override
+  String get homeBudgetPulseSetBudgetButton => 'Bütçe belirle';
+
+  @override
+  String get homeBudgetPulseOverBudget => 'Bütçe aşıldı';
+
+  @override
+  String homeBudgetPulseLeftOf(String budget) {
+    return '$budget bütçesinin kalan';
+  }
+
+  @override
+  String get homeBudgetPulseDailyPace => 'Günlük harcama: ';
+
+  @override
+  String get homeBudgetPulseCanSpend => '  ·  Harcayabilirsiniz ';
+
+  @override
+  String get homeBudgetPulsePerDay => '/gün';
+
+  @override
+  String get homeBudgetPulseOverBudgetSuffix => '  ·  Bütçe aşıldı';
+
+  @override
+  String get homeBudgetPulseOnBudget => '  ·  Bütçede';
+
+  @override
+  String get homeBudgetPulseOnBudgetLabel => 'Bütçede';
+
+  @override
+  String get homeBudgetPulseUnavailable => 'Bütçe verisi kullanılamıyor';
+
+  @override
+  String get homeBudgetPulseViewSemanticLabel => 'Bütçe detaylarını görüntüle';
+
+  @override
+  String get homeRecentTitle => 'Son İşlemler';
+
+  @override
+  String get homeRecentAll => 'Tümü';
+
+  @override
+  String get homeRecentCouldNotLoad => 'İşlemler yüklenemedi';
+
+  @override
+  String get homeTotalBalanceLabel => 'Toplam Bakiye';
+
+  @override
+  String get homeTrendSinceLastMonth => 'geçen aydan bu yana';
+
+  @override
+  String get homeThisWeekTitle => 'Bu hafta';
+
+  @override
+  String get homeInsightsUnavailable => 'İçgörüler kullanılamıyor';
+
+  @override
+  String semanticAmountPositive(String amount) {
+    return '+$amount';
+  }
+
+  @override
+  String semanticAmountNegative(String amount) {
+    return '-$amount';
+  }
+
+  @override
+  String homeRecentSemanticContainerLabel(int count) {
+    return 'Son işlemler. $count gösteriliyor.';
+  }
+
+  @override
+  String get homeRecentSeeAllSemanticLabel => 'Tüm işlemleri görüntüle';
+
+  @override
+  String get semanticTransactionRowHint => 'Detaylar için dokunun.';
+
+  @override
+  String get homeEmptyStateAddTransactionTitle => 'İlk işleminizi ekleyin';
+
+  @override
+  String get homeEmptyStateAddTransactionSubtitle =>
+      'Gelir, gider ve transferleri takip edin';
+
+  @override
+  String get homeEmptyStateManageAccountsTitle => 'Hesaplarınızı yönetin';
+
+  @override
+  String get homeEmptyStateManageAccountsSubtitle =>
+      'Nakit, banka veya kart hesabı ekleyin';
+
+  @override
+  String get homeEmptyStateSetBudgetTitle => 'Aylık bütçe belirleyin';
+
+  @override
+  String get homeEmptyStateSetBudgetSubtitle =>
+      'Harcamalarınızın üstünde kalın';
 }

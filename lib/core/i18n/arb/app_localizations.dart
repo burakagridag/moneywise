@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'MoneyWise'**
   String get appName;
 
+  /// No description provided for @tabHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get tabHome;
+
   /// No description provided for @tabTransactions.
   ///
   /// In en, this message translates to:
@@ -121,6 +127,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Accounts'**
   String get tabAccounts;
+
+  /// No description provided for @tabBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get tabBudget;
 
   /// No description provided for @tabMore.
   ///
@@ -1231,6 +1243,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Apply'**
   String get filterApply;
+
+  /// No description provided for @homeGreetingMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get homeGreetingMorning;
+
+  /// No description provided for @homeGreetingAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get homeGreetingAfternoon;
+
+  /// No description provided for @homeGreetingEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get homeGreetingEvening;
+
+  /// No description provided for @homeBudgetPulseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget pulse'**
+  String get homeBudgetPulseTitle;
+
+  /// No description provided for @homeBudgetPulseViewLink.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get homeBudgetPulseViewLink;
+
+  /// No description provided for @homeBudgetPulseSetCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a monthly budget'**
+  String get homeBudgetPulseSetCta;
+
+  /// No description provided for @homeBudgetPulseSetCtaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay on top of your spending'**
+  String get homeBudgetPulseSetCtaSubtitle;
+
+  /// No description provided for @homeBudgetPulseSetBudgetButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Set budget'**
+  String get homeBudgetPulseSetBudgetButton;
+
+  /// No description provided for @homeBudgetPulseOverBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Over budget'**
+  String get homeBudgetPulseOverBudget;
+
+  /// No description provided for @homeBudgetPulseLeftOf.
+  ///
+  /// In en, this message translates to:
+  /// **'left of {budget} budget'**
+  String homeBudgetPulseLeftOf(String budget);
+
+  /// No description provided for @homeBudgetPulseDailyPace.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily pace: '**
+  String get homeBudgetPulseDailyPace;
+
+  /// No description provided for @homeBudgetPulseCanSpend.
+  ///
+  /// In en, this message translates to:
+  /// **'  ·  You can spend '**
+  String get homeBudgetPulseCanSpend;
+
+  /// No description provided for @homeBudgetPulsePerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'/day'**
+  String get homeBudgetPulsePerDay;
+
+  /// No description provided for @homeBudgetPulseOverBudgetSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'  ·  Over budget'**
+  String get homeBudgetPulseOverBudgetSuffix;
+
+  /// No description provided for @homeBudgetPulseOnBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'  ·  On budget'**
+  String get homeBudgetPulseOnBudget;
+
+  /// No description provided for @homeBudgetPulseOnBudgetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'On budget'**
+  String get homeBudgetPulseOnBudgetLabel;
+
+  /// No description provided for @homeBudgetPulseUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget data unavailable'**
+  String get homeBudgetPulseUnavailable;
+
+  /// No description provided for @homeBudgetPulseViewSemanticLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'View budget details'**
+  String get homeBudgetPulseViewSemanticLabel;
+
+  /// No description provided for @homeRecentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get homeRecentTitle;
+
+  /// No description provided for @homeRecentAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get homeRecentAll;
+
+  /// No description provided for @homeRecentCouldNotLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load transactions'**
+  String get homeRecentCouldNotLoad;
+
+  /// No description provided for @homeTotalBalanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Balance'**
+  String get homeTotalBalanceLabel;
+
+  /// No description provided for @homeTrendSinceLastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'since last month'**
+  String get homeTrendSinceLastMonth;
+
+  /// No description provided for @homeThisWeekTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get homeThisWeekTitle;
+
+  /// No description provided for @homeInsightsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights unavailable'**
+  String get homeInsightsUnavailable;
+
+  /// No description provided for @semanticAmountPositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Plus {amount}'**
+  String semanticAmountPositive(String amount);
+
+  /// No description provided for @semanticAmountNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Minus {amount}'**
+  String semanticAmountNegative(String amount);
+
+  /// No description provided for @homeRecentSemanticContainerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent transactions. {count} shown.'**
+  String homeRecentSemanticContainerLabel(int count);
+
+  /// No description provided for @homeRecentSeeAllSemanticLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'View all transactions'**
+  String get homeRecentSeeAllSemanticLabel;
+
+  /// No description provided for @semanticTransactionRowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap for details.'**
+  String get semanticTransactionRowHint;
+
+  /// No description provided for @homeEmptyStateAddTransactionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first transaction'**
+  String get homeEmptyStateAddTransactionTitle;
+
+  /// No description provided for @homeEmptyStateAddTransactionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track income, expenses and transfers'**
+  String get homeEmptyStateAddTransactionSubtitle;
+
+  /// No description provided for @homeEmptyStateManageAccountsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your accounts'**
+  String get homeEmptyStateManageAccountsTitle;
+
+  /// No description provided for @homeEmptyStateManageAccountsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add cash, bank or card accounts'**
+  String get homeEmptyStateManageAccountsSubtitle;
+
+  /// No description provided for @homeEmptyStateSetBudgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a monthly budget'**
+  String get homeEmptyStateSetBudgetTitle;
+
+  /// No description provided for @homeEmptyStateSetBudgetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay on top of your spending'**
+  String get homeEmptyStateSetBudgetSubtitle;
 }
 
 class _AppLocalizationsDelegate

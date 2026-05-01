@@ -10,6 +10,7 @@ import '../../../../domain/entities/category.dart';
 import '../../../../domain/entities/transaction.dart' as domain;
 import '../../../../domain/entities/transaction_with_details.dart';
 import '../../../stats/presentation/providers/stats_provider.dart';
+import 'transaction_mutation_signal_provider.dart';
 
 export '../../../../data/repositories/transaction_repository.dart'
     show DayTotals, MonthTotals, TransactionWithNames;
@@ -282,6 +283,7 @@ class TransactionWriteNotifier extends _$TransactionWriteNotifier {
   Future<void> addTransaction(domain.Transaction transaction) async {
     await ref.read(transactionRepositoryProvider).addTransaction(transaction);
     ref.invalidate(statsTxnsProvider);
+    ref.read(transactionMutationSignalProvider.notifier).increment();
   }
 
   /// Updates an existing [transaction] via the repository.
@@ -290,11 +292,13 @@ class TransactionWriteNotifier extends _$TransactionWriteNotifier {
         .read(transactionRepositoryProvider)
         .updateTransaction(transaction);
     ref.invalidate(statsTxnsProvider);
+    ref.read(transactionMutationSignalProvider.notifier).increment();
   }
 
   /// Soft-deletes the transaction with the given [id] via the repository.
   Future<void> deleteTransaction(String id) async {
     await ref.read(transactionRepositoryProvider).deleteTransaction(id);
     ref.invalidate(statsTxnsProvider);
+    ref.read(transactionMutationSignalProvider.notifier).increment();
   }
 }

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Pulse Card — Dark Mode</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  background: #1A1A1A;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+.page { max-width: 420px; margin: 0 auto; }
+.meta {
+  background: #181C27;
+  border: 1px solid #2E3453;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 11px;
+  color: #8A90A8;
+  line-height: 1.6;
+}
+.meta strong { color: #818CF8; }
+.phone {
+  background: #0F1117;
+  border-radius: 32px;
+  padding: 20px 0;
+  border: 1px solid #2E3453;
+}
+.variant-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #4E5470;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 16px 6px;
+}
+.divider { height: 1px; background: #1E2235; margin: 8px 16px; }
+.tab-num { font-variant-numeric: tabular-nums; }
+
+/* Budget Pulse Card — dark */
+.budget-card {
+  background: #181C27;
+  border: 1px solid #2E3453;
+  border-radius: 14px;
+  padding: 14px;
+  margin: 0 16px 12px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #F0F2F8;
+}
+.card-link {
+  font-size: 12px;
+  font-weight: 400;
+  color: #3D5A99;
+  cursor: pointer;
+  padding: 16px 0 16px 16px;
+  margin: -16px 0 -16px -16px;
+}
+.remaining-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.remaining-value {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+  color: #F0F2F8;
+}
+.remaining-value.over-budget { color: #E55A4E; }
+.remaining-subtext {
+  font-size: 12px;
+  font-weight: 400;
+  color: #8A90A8;
+}
+.progress-wrap {
+  position: relative;
+  height: 6px;
+  margin-bottom: 10px;
+}
+.progress-bg {
+  position: absolute;
+  inset: 0;
+  background: #222637;
+  border-radius: 3px;
+}
+.progress-fill {
+  position: absolute;
+  left: 0; top: 0;
+  height: 100%;
+  background: #3D5A99;
+  border-radius: 3px;
+}
+.progress-fill.over-budget { background: #E55A4E; }
+.today-marker {
+  position: absolute;
+  top: -3px;
+  width: 1.5px;
+  height: 12px;
+  background: #4E5470;
+}
+.pace-line {
+  font-size: 11px;
+  font-weight: 400;
+  color: #8A90A8;
+  line-height: 1.5;
+}
+.pace-number { color: #F0F2F8; font-weight: 500; }
+.pace-safe { color: #4CAF50; font-weight: 600; }
+.pace-over { color: #E55A4E; font-weight: 600; }
+.pace-warning { color: #FFA726; font-weight: 500; }
+
+/* CTA variant */
+.cta-title { font-size: 16px; font-weight: 500; color: #F0F2F8; margin-bottom: 4px; }
+.cta-sub { font-size: 12px; color: #8A90A8; margin-bottom: 12px; }
+.cta-btn { font-size: 16px; font-weight: 500; color: #3D5A99; cursor: pointer; display: inline-block; }
+
+/* Shimmer */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.shimmer {
+  border-radius: 4px;
+  background: linear-gradient(90deg, #1E2235 25%, #222637 50%, #1E2235 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="meta">
+  <strong>Budget Pulse Card — Dark Mode</strong><br>
+  Card: #181C27 bg / #2E3453 border / 14dp radius / 14dp padding / no shadow<br>
+  Title: bodyMedium (16pt/500/#F0F2F8) · Link: caption1 (12pt/#3D5A99)<br>
+  Remaining: moneyMedium (20pt/600) · Progress: #3D5A99 fill / #222637 bg<br>
+  Today marker: 1.5dp wide, 12dp tall, #4E5470
+</div>
+
+<div class="phone">
+
+  <!-- STATE 1: Default — within budget -->
+  <p class="variant-label">State 1 — Default (within budget)</p>
+  <div class="budget-card">
+    <div class="card-header">
+      <span class="card-title">Budget pulse</span>
+      <span class="card-link">View →</span>
+    </div>
+    <div class="remaining-row">
+      <span class="remaining-value tab-num">462,60 €</span>
+      <span class="remaining-subtext">left of 550 € budget</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bg"></div>
+      <div class="progress-fill" style="width: 16%;"></div>
+      <div class="today-marker" style="left: calc(100% - 0.75px);"></div>
+    </div>
+    <div class="pace-line">
+      Daily pace: <span class="pace-number tab-num">2,91 €</span>
+      &nbsp;·&nbsp; You can spend
+      <span class="pace-safe tab-num">462,60 €/day</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- STATE 2: Over budget -->
+  <p class="variant-label">State 2 — Over budget</p>
+  <div class="budget-card">
+    <div class="card-header">
+      <span class="card-title">Budget pulse</span>
+      <span class="card-link">View →</span>
+    </div>
+    <div class="remaining-row">
+      <span class="remaining-value over-budget tab-num">−87,40 €</span>
+      <span class="remaining-subtext">over 550 € budget</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bg"></div>
+      <div class="progress-fill over-budget" style="width: 100%;"></div>
+      <div class="today-marker" style="left: calc(100% - 0.75px);"></div>
+    </div>
+    <div class="pace-line">
+      Daily pace: <span class="pace-number tab-num">21,24 €</span>
+      &nbsp;·&nbsp; <span class="pace-over">Over budget</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- STATE 3: Warning — fast pace -->
+  <p class="variant-label">State 3 — Warning (fast pace, day 10/30)</p>
+  <div class="budget-card">
+    <div class="card-header">
+      <span class="card-title">Budget pulse</span>
+      <span class="card-link">View →</span>
+    </div>
+    <div class="remaining-row">
+      <span class="remaining-value tab-num">280,00 €</span>
+      <span class="remaining-subtext">left of 550 € budget</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bg"></div>
+      <div class="progress-fill" style="width: 49%;"></div>
+      <div class="today-marker" style="left: 33.3%;"></div>
+    </div>
+    <div class="pace-line">
+      Daily pace: <span class="pace-warning tab-num">27,00 €</span>
+      &nbsp;·&nbsp; You can spend
+      <span class="pace-safe tab-num">13,33 €/day</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- STATE 4: No budget (CTA) -->
+  <p class="variant-label">State 4 — No budget (CTA)</p>
+  <div class="budget-card">
+    <div class="card-header">
+      <span class="card-title">Budget pulse</span>
+    </div>
+    <div>
+      <div class="cta-title">Set a monthly budget</div>
+      <div class="cta-sub">Stay on top of your spending</div>
+      <span class="cta-btn">Set budget →</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- STATE 5: Loading shimmer -->
+  <p class="variant-label">State 5 — Loading (shimmer)</p>
+  <div class="budget-card">
+    <div class="card-header" style="margin-bottom:14px;">
+      <div class="shimmer" style="width:80px; height:14px;"></div>
+      <div class="shimmer" style="width:36px; height:12px;"></div>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+      <div class="shimmer" style="width:110px; height:18px;"></div>
+      <div class="shimmer" style="width:90px; height:12px;"></div>
+    </div>
+    <div class="shimmer" style="width:100%; height:6px; margin-bottom:12px; border-radius:3px;"></div>
+    <div class="shimmer" style="width:200px; height:10px;"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- STATE 6: Error -->
+  <p class="variant-label">State 6 — Error</p>
+  <div class="budget-card">
+    <div class="card-header">
+      <span class="card-title">Budget pulse</span>
+    </div>
+    <div style="text-align:center; padding: 16px 0; font-size:12px; color:#4E5470;">
+      Budget data unavailable
+    </div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

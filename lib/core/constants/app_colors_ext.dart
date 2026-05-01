@@ -62,4 +62,9 @@ extension AppColorsX on BuildContext {
 
   Color get borderFocusColor =>
       isDark ? AppColors.borderFocus : AppColors.borderFocusLight;
+
+  /// Brand icon well background — adapts to theme.
+  /// Dark: [AppColors.brandSurface] (dark navy). Light: [AppColors.brandPrimaryGlow] (soft tinted blue).
+  Color get brandSurfaceAdaptive =>
+      isDark ? AppColors.brandSurface : AppColors.brandPrimaryGlow;
 }

@@ -1,9 +1,11 @@
 {
   "@@locale": "tr",
   "appName": "MoneyWise",
+  "tabHome": "Ana Sayfa",
   "tabTransactions": "İşlemler",
   "tabStats": "İstatistik",
   "tabAccounts": "Hesaplar",
+  "tabBudget": "Bütçe",
   "tabMore": "Daha Fazla",
   "themeDark": "Koyu Tema",
   "themeLight": "Açık Tema",
@@ -199,5 +201,69 @@
   "filterNoCategory": "Tüm kategoriler",
   "filterDateRange": "Tarih Aralığı",
   "filterReset": "Sıfırla",
-  "filterApply": "Uygula"
+  "filterApply": "Uygula",
+
+  "homeGreetingMorning": "Günaydın",
+  "homeGreetingAfternoon": "İyi günler",
+  "homeGreetingEvening": "İyi akşamlar",
+
+  "homeBudgetPulseTitle": "Bütçe nabzı",
+  "homeBudgetPulseViewLink": "Görüntüle",
+  "homeBudgetPulseSetCta": "Aylık bütçe belirle",
+  "homeBudgetPulseSetCtaSubtitle": "Harcamalarınızın üstünde kalın",
+  "homeBudgetPulseSetBudgetButton": "Bütçe belirle",
+  "homeBudgetPulseOverBudget": "Bütçe aşıldı",
+  "homeBudgetPulseLeftOf": "{budget} bütçesinin kalan",
+  "@homeBudgetPulseLeftOf": {
+    "placeholders": {
+      "budget": {"type": "String"}
+    }
+  },
+  "homeBudgetPulseDailyPace": "Günlük harcama: ",
+  "homeBudgetPulseCanSpend": "  ·  Harcayabilirsiniz ",
+  "homeBudgetPulsePerDay": "/gün",
+  "homeBudgetPulseOverBudgetSuffix": "  ·  Bütçe aşıldı",
+  "homeBudgetPulseOnBudget": "  ·  Bütçede",
+  "homeBudgetPulseOnBudgetLabel": "Bütçede",
+  "homeBudgetPulseUnavailable": "Bütçe verisi kullanılamıyor",
+  "homeBudgetPulseViewSemanticLabel": "Bütçe detaylarını görüntüle",
+
+  "homeRecentTitle": "Son İşlemler",
+  "homeRecentAll": "Tümü",
+  "homeRecentCouldNotLoad": "İşlemler yüklenemedi",
+
+  "homeTotalBalanceLabel": "Toplam Bakiye",
+  "homeTrendSinceLastMonth": "geçen aydan bu yana",
+
+  "homeThisWeekTitle": "Bu hafta",
+  "homeInsightsUnavailable": "İçgörüler kullanılamıyor",
+
+  "semanticAmountPositive": "+{amount}",
+  "@semanticAmountPositive": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "semanticAmountNegative": "-{amount}",
+  "@semanticAmountNegative": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+
+  "homeRecentSemanticContainerLabel": "Son işlemler. {count} gösteriliyor.",
+  "@homeRecentSemanticContainerLabel": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "homeRecentSeeAllSemanticLabel": "Tüm işlemleri görüntüle",
+  "@homeRecentSeeAllSemanticLabel": {},
+  "semanticTransactionRowHint": "Detaylar için dokunun.",
+  "@semanticTransactionRowHint": {},
+
+  "homeEmptyStateAddTransactionTitle": "İlk işleminizi ekleyin",
+  "homeEmptyStateAddTransactionSubtitle": "Gelir, gider ve transferleri takip edin",
+  "homeEmptyStateManageAccountsTitle": "Hesaplarınızı yönetin",
+  "homeEmptyStateManageAccountsSubtitle": "Nakit, banka veya kart hesabı ekleyin",
+  "homeEmptyStateSetBudgetTitle": "Aylık bütçe belirleyin",
+  "homeEmptyStateSetBudgetSubtitle": "Harcamalarınızın üstünde kalın"
 }

@@ -1,4 +1,6 @@
-// go_router configuration with 4-tab StatefulShellRoute and Sprint 2 sub-routes.
+// go_router configuration with 4-tab StatefulShellRoute — Epic 8A IA refactor.
+// Tab order: Home | Transactions | Budget | More
+// Accounts is accessible as a nested route under /more/accounts.
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,11 +9,12 @@ import '../../domain/entities/bookmark.dart';
 import '../../domain/entities/transaction.dart';
 import '../../features/accounts/presentation/screens/account_add_edit_screen.dart';
 import '../../features/accounts/presentation/screens/accounts_screen.dart';
+import '../../features/budget/presentation/screens/budget_screen.dart';
+import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/more/presentation/screens/budget_setting_screen.dart';
 import '../../features/more/presentation/screens/category_management_screen.dart';
 import '../../features/more/presentation/screens/more_screen.dart';
 import '../../features/more/presentation/screens/settings_screen.dart';
-import '../../features/stats/presentation/screens/stats_screen.dart';
 import '../../features/transactions/presentation/screens/bookmarks_screen.dart';
 import '../../features/transactions/presentation/screens/transaction_add_edit_screen.dart';
 import '../../features/transactions/presentation/screens/transactions_screen.dart';
@@ -19,13 +22,23 @@ import '../i18n/arb/app_localizations.dart';
 import 'routes.dart';
 
 final appRouter = GoRouter(
-  initialLocation: Routes.transactions,
+  initialLocation: Routes.home,
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return ScaffoldWithBottomNav(navigationShell: navigationShell);
       },
       branches: [
+        // Branch 0 — Home tab
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.home,
+              builder: (context, state) => const HomeScreen(),
+            ),
+          ],
+        ),
+        // Branch 1 — Transactions tab
         StatefulShellBranch(
           routes: [
             GoRoute(
@@ -48,30 +61,16 @@ final appRouter = GoRouter(
             ),
           ],
         ),
+        // Branch 2 — Budget tab (promoted from Stats sub-tab, EPIC8A-01)
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: Routes.stats,
-              builder: (context, state) => const StatsScreen(),
+              path: Routes.budget,
+              builder: (context, state) => const BudgetScreen(),
             ),
           ],
         ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: Routes.accounts,
-              builder: (context, state) => const AccountsScreen(),
-              routes: [
-                GoRoute(
-                  path: 'add',
-                  builder: (context, state) => AccountAddEditScreen(
-                    account: state.extra as Account?,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+        // Branch 3 — More tab (Accounts relocated here, EPIC8A-01)
         StatefulShellBranch(
           routes: [
             GoRoute(
@@ -96,6 +95,19 @@ final appRouter = GoRouter(
                 GoRoute(
                   path: 'bookmarks',
                   builder: (context, state) => const BookmarksScreen(),
+                ),
+                // Accounts relocated from top-level tab to More sub-page (EPIC8A-01)
+                GoRoute(
+                  path: 'accounts',
+                  builder: (context, state) => const AccountsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'add',
+                      builder: (context, state) => AccountAddEditScreen(
+                        account: state.extra as Account?,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -126,19 +138,19 @@ class ScaffoldWithBottomNav extends StatelessWidget {
         ),
         destinations: [
           NavigationDestination(
+            icon: const Icon(Icons.home_outlined),
+            selectedIcon: const Icon(Icons.home),
+            label: l10n.tabHome,
+          ),
+          NavigationDestination(
             icon: const Icon(Icons.receipt_long_outlined),
             selectedIcon: const Icon(Icons.receipt_long),
             label: l10n.tabTransactions,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.bar_chart_outlined),
-            selectedIcon: const Icon(Icons.bar_chart),
-            label: l10n.tabStats,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.account_balance_wallet_outlined),
-            selectedIcon: const Icon(Icons.account_balance_wallet),
-            label: l10n.tabAccounts,
+            icon: const Icon(Icons.savings_outlined),
+            selectedIcon: const Icon(Icons.savings),
+            label: l10n.tabBudget,
           ),
           NavigationDestination(
             icon: const Icon(Icons.grid_view_outlined),

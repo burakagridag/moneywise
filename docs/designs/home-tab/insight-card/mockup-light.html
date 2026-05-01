@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insight Card — Light Mode</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  background: #E8E6E1;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+.page { max-width: 420px; margin: 0 auto; }
+.meta {
+  background: #FFF;
+  border: 1px solid #C8C4BC;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 11px;
+  color: #5C5E6B;
+  line-height: 1.6;
+}
+.meta strong { color: #3D5A99; }
+.phone {
+  background: #F7F6F3;
+  border-radius: 32px;
+  padding: 20px 0;
+  border: 1px solid #C8C4BC;
+}
+.variant-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #9395A3;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 16px 4px;
+}
+.divider { height: 1px; background: #E3E1DD; margin: 8px 16px; }
+
+/* Section header */
+.section-header {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #5C5E6B;
+  padding: 18px 16px 10px;
+}
+
+/* Insight Card */
+.insight-card {
+  background: #FFFFFF;
+  border: 1px solid #C8C4BC;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 0 16px 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  cursor: default;
+}
+.insight-card.tappable { cursor: pointer; }
+.insight-card.tappable:hover { background: #FAFAFA; }
+.icon-container {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.text-col { flex: 1; min-width: 0; }
+.insight-title {
+  /* bodyMedium: 16pt/500 */
+  font-size: 16px;
+  font-weight: 500;
+  color: #1A1C24;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.insight-subtitle {
+  /* caption1: 12pt/400 */
+  font-size: 12px;
+  font-weight: 400;
+  color: #5C5E6B;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Shimmer */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.shimmer {
+  border-radius: 4px;
+  background: linear-gradient(90deg, #E3E1DD 25%, #EEECEA 50%, #E3E1DD 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="meta">
+  <strong>Insight Card — Light Mode</strong><br>
+  Card: white / #C8C4BC border / 14dp radius / 12×14dp padding / subtle shadow<br>
+  Icon container: 36×36dp / 10dp radius · Icon: 18×18dp<br>
+  Title: bodyMedium (16pt/500/#1A1C24) · Subtitle: caption1 (12pt/400/#5C5E6B)<br>
+  Section header: caption2 (11pt/400) UPPERCASE / #5C5E6B
+</div>
+
+<div class="phone">
+
+  <!-- SECTION HEADER -->
+  <div class="section-header">This week</div>
+
+  <!-- CARD 1: Warning — Concentration rule (tappable) -->
+  <p class="variant-label">Warning severity — tappable</p>
+  <div class="insight-card tappable">
+    <div class="icon-container" style="background: rgba(255,167,38,0.15);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+        <polyline points="16 7 22 7 22 13"/>
+      </svg>
+    </div>
+    <div class="text-col">
+      <div class="insight-title">Rent took 85% of your spending</div>
+      <div class="insight-subtitle">A single 500 € transaction · expected on 1st</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CARD 2: Success — Savings goal rule (non-tappable) -->
+  <p class="variant-label">Success severity — non-tappable</p>
+  <div class="insight-card">
+    <div class="icon-container" style="background: #DCFCE7;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="20" x2="12" y2="10"/>
+        <line x1="18" y1="20" x2="18" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="16"/>
+      </svg>
+    </div>
+    <div class="text-col">
+      <div class="insight-title">Savings rate: 41,3% this month</div>
+      <div class="insight-subtitle">Above your 30% goal · keep it up</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CARD 3: Warning — Daily overpacing (tappable) -->
+  <p class="variant-label">Warning — Daily overpacing (tappable)</p>
+  <div class="insight-card tappable">
+    <div class="icon-container" style="background: rgba(255,167,38,0.15);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+    </div>
+    <div class="text-col">
+      <div class="insight-title">Pacing fast on this month's budget</div>
+      <div class="insight-subtitle">Spending 62% above your daily target</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CARD 4: Warning — Big transaction (tappable) -->
+  <p class="variant-label">Warning — Big transaction (tappable)</p>
+  <div class="insight-card tappable">
+    <div class="icon-container" style="background: rgba(255,167,38,0.15);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C2410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+    </div>
+    <div class="text-col">
+      <div class="insight-title">Large Housing expense</div>
+      <div class="insight-subtitle">500,00 € on 30 Apr · review if expected</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CARD 5: Info severity -->
+  <p class="variant-label">Info severity — non-tappable</p>
+  <div class="insight-card">
+    <div class="icon-container" style="background: #D6DCF0;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3D5A99" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12.01" y2="8"/>
+      </svg>
+    </div>
+    <div class="text-col">
+      <div class="insight-title">No budget set for this month</div>
+      <div class="insight-subtitle">Set a budget to track your daily pace</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- LOADING STATE -->
+  <p class="variant-label">Loading state (shimmer)</p>
+  <div class="section-header" style="padding-top:0;">
+    <div class="shimmer" style="width:60px; height:10px; display:inline-block;"></div>
+  </div>
+  <div class="insight-card" style="cursor:default;">
+    <div class="shimmer" style="width:36px; height:36px; border-radius:10px; flex-shrink:0;"></div>
+    <div class="text-col">
+      <div class="shimmer" style="width:160px; height:14px; margin-bottom:6px;"></div>
+      <div class="shimmer" style="width:120px; height:10px;"></div>
+    </div>
+  </div>
+  <div class="insight-card" style="cursor:default;">
+    <div class="shimmer" style="width:36px; height:36px; border-radius:10px; flex-shrink:0;"></div>
+    <div class="text-col">
+      <div class="shimmer" style="width:140px; height:14px; margin-bottom:6px;"></div>
+      <div class="shimmer" style="width:100px; height:10px;"></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ERROR STATE -->
+  <p class="variant-label">Error state</p>
+  <div class="section-header" style="padding-top:0;">This week</div>
+  <div class="insight-card" style="justify-content:center; cursor:default;">
+    <span style="font-size:12px; color:#9395A3;">Insights unavailable</span>
+  </div>
+
+  <div style="height:12px;"></div>
+</div>
+</div>
+</body>
+</html>

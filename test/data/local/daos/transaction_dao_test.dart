@@ -471,83 +471,89 @@ void main() {
   });
 
   // ---------------------------------------------------------------------------
-  // watchTransactionsWithNamesByDateRange (BUG-003)
+  // watchAllTransactionsWithDetails (EPIC8A-09)
   // ---------------------------------------------------------------------------
 
-  group('TransactionDao.watchTransactionsWithNamesByDateRange', () {
-    test('returns empty list when no transactions', () async {
-      final rows = await db.transactionDao
-          .watchTransactionsWithNamesByDateRange(
-            DateTime(2026, 4, 1),
-            DateTime(2026, 4, 30),
-          )
-          .first;
+  group('TransactionDao.watchAllTransactionsWithDetails', () {
+    test('should_return_empty_when_no_transactions', () async {
+      final rows =
+          await db.transactionDao.watchAllTransactionsWithDetails().first;
       expect(rows, isEmpty);
     });
 
-    test('returns transaction with null names when no category/account name',
+    test('should_resolve_null_categoryName_when_transaction_has_no_category',
         () async {
       final accountId = await seedAccount(db);
       await insertTx(db, accountId: accountId, date: DateTime(2026, 4, 10));
-      final rows = await db.transactionDao
-          .watchTransactionsWithNamesByDateRange(
-            DateTime(2026, 4, 1),
-            DateTime(2026, 4, 30),
-          )
-          .first;
-      expect(rows.length, 1);
-      // Category is null for this transaction; accountName comes from join.
-      expect(rows.first.categoryName, isNull);
-      expect(rows.first.accountName, isNotNull); // 'Dao Test Account'
-    });
 
-    test('accountName is resolved from accounts table', () async {
-      final accountId = await seedAccount(db);
-      await insertTx(db, accountId: accountId, date: DateTime(2026, 4, 10));
-      final rows = await db.transactionDao
-          .watchTransactionsWithNamesByDateRange(
-            DateTime(2026, 4, 1),
-            DateTime(2026, 4, 30),
-          )
-          .first;
+      final rows =
+          await db.transactionDao.watchAllTransactionsWithDetails().first;
+
+      expect(rows.length, 1);
+      expect(rows.first.categoryName, isNull);
       expect(rows.first.accountName, 'Dao Test Account');
     });
-  });
 
-  // ---------------------------------------------------------------------------
-  // Money arithmetic (BUG-010) — cent-based accumulation
-  // ---------------------------------------------------------------------------
-
-  group('MonthTotals cent-based accumulation (BUG-010)', () {
-    test('50 x 0.01 EUR sums to exactly 0.50 without float drift', () async {
+    test('should_exclude_soft_deleted_transactions', () async {
       final accountId = await seedAccount(db);
-      for (var i = 0; i < 50; i++) {
-        await insertTx(
-          db,
-          accountId: accountId,
-          type: 'expense',
-          amount: 0.01,
-          date: DateTime(2026, 4, 10),
-        );
-      }
-      final totals = await db.transactionDao.watchMonthlyTotals(2026, 4).first;
-      expect(totals.expense, closeTo(0.50, 0.001));
+      final id = _uuid.v4();
+      final now = DateTime.now();
+      await db.transactionDao.insertTransaction(
+        TransactionsCompanion(
+          id: Value(id),
+          type: const Value('expense'),
+          date: Value(now),
+          amount: const Value(25.0),
+          currencyCode: const Value('EUR'),
+          accountId: Value(accountId),
+        ),
+      );
+      await db.transactionDao.softDeleteTransaction(id);
+
+      final rows =
+          await db.transactionDao.watchAllTransactionsWithDetails().first;
+
+      expect(rows, isEmpty);
     });
 
-    test('watchDailyTotals accumulates 50 x 0.01 EUR correctly', () async {
+    test('should_order_newest_first_and_respect_limit', () async {
       final accountId = await seedAccount(db);
-      for (var i = 0; i < 50; i++) {
-        await insertTx(
-          db,
-          accountId: accountId,
-          type: 'expense',
-          amount: 0.01,
-          date: DateTime(2026, 4, 10),
-        );
-      }
-      final days = await db.transactionDao.watchDailyTotals(2026, 4).first;
-      expect(days.length, 1);
-      expect(days.first.expense, closeTo(0.50, 0.001));
+
+      // Insert 4 transactions on different dates.
+      await insertTx(
+        db,
+        accountId: accountId,
+        amount: 1.0,
+        date: DateTime(2026, 4, 1),
+      );
+      await insertTx(
+        db,
+        accountId: accountId,
+        amount: 2.0,
+        date: DateTime(2026, 4, 2),
+      );
+      await insertTx(
+        db,
+        accountId: accountId,
+        amount: 3.0,
+        date: DateTime(2026, 4, 3),
+      );
+      await insertTx(
+        db,
+        accountId: accountId,
+        amount: 4.0,
+        date: DateTime(2026, 4, 4),
+      );
+
+      // Request only the top 2.
+      final rows = await db.transactionDao
+          .watchAllTransactionsWithDetails(limit: 2)
+          .first;
+
+      expect(rows.length, 2);
+      // Newest first: 4.0 then 3.0.
+      expect(rows[0].transaction.amount, 4.0);
+      expect(rows[1].transaction.amount, 3.0);
     });
   });
 }

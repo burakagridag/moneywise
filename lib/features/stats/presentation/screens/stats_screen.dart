@@ -1,4 +1,7 @@
 // Statistics screen showing spending breakdown by category — stats feature.
+// NOTE: StatsScreen is NOT mounted in the navigation shell (EPIC8A-01/02).
+// It is preserved here for EPIC8A-08 which will embed the donut chart on HomeScreen.
+// TODO(EPIC8A-08): migrate PieChartWidget + CategoryLegendRow to home feature.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -13,7 +16,6 @@ import '../../../../core/widgets/month_navigator.dart';
 import '../../../budget/presentation/widgets/budget_view.dart';
 import '../providers/stats_provider.dart';
 import '../widgets/category_legend_row.dart';
-import '../widgets/note_view.dart';
 import '../widgets/pie_chart_widget.dart';
 
 /// The Stats tab. Shows a donut pie chart + ranked category list for the
@@ -26,7 +28,7 @@ class StatsScreen extends ConsumerStatefulWidget {
 }
 
 class _StatsScreenState extends ConsumerState<StatsScreen> {
-  int _selectedSubTab = 0; // 0=Stats, 1=Budget, 2=Note
+  int _selectedSubTab = 0; // 0=Stats, 1=Budget
 
   @override
   Widget build(BuildContext context) {
@@ -70,10 +72,8 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               const Expanded(
                 child: _StatsContent(palette: AppColors.chartPalette),
               )
-            else if (_selectedSubTab == 1)
-              const Expanded(child: BudgetView())
             else
-              const Expanded(child: NoteView()),
+              const Expanded(child: BudgetView()),
           ],
         ),
       ),
@@ -108,10 +108,10 @@ class _SubTabBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    // Note sub-tab removed — EPIC8A-02 (Sponsor decision: NoteView retired).
     final tabs = [
       l10n.statsSubTabStats,
       l10n.statsSubTabBudget,
-      l10n.statsSubTabNote,
     ];
     return Container(
       height: 44,

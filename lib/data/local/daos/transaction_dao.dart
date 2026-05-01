@@ -22,6 +22,17 @@ class DayTotals {
   final double expense;
 }
 
+/// Aggregated daily net amount (income − expense) for sparkline rendering.
+class DailyNet {
+  const DailyNet({required this.date, required this.netAmount});
+
+  /// Calendar date with time zeroed (local midnight).
+  final DateTime date;
+
+  /// income - expense for this day, in base currency. May be negative.
+  final double netAmount;
+}
+
 /// Aggregated monthly income and expense totals.
 class MonthTotals {
   const MonthTotals({
@@ -86,6 +97,64 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         ..where((t) => t.isDeleted.equals(false))
         ..orderBy([(t) => OrderingTerm.desc(t.date)]))
       .watch();
+
+  /// Reactive stream of all non-deleted transactions enriched with category and
+  /// account names via LEFT OUTER JOINs, ordered newest-first.
+  /// Used by [recentTransactionsProvider] to enable the 3-step display-name
+  /// fallback (description → category name → type string).
+  ///
+  /// [limit] is pushed into SQL so only the requested number of rows are
+  /// transferred from the DB — avoids fetching the entire table to discard
+  /// all but a handful of rows in Dart.
+  Stream<List<TransactionWithNames>> watchAllTransactionsWithDetails({
+    int limit = 5,
+  }) {
+    final toAcc = alias(accounts, 'to_acc');
+
+    final query = select(transactions).join([
+      leftOuterJoin(
+        categories,
+        categories.id.equalsExp(transactions.categoryId),
+      ),
+      leftOuterJoin(
+        accounts,
+        accounts.id.equalsExp(transactions.accountId),
+      ),
+      leftOuterJoin(
+        toAcc,
+        toAcc.id.equalsExp(transactions.toAccountId),
+      ),
+    ])
+      ..where(transactions.isDeleted.equals(false))
+      ..orderBy([
+        OrderingTerm(
+          expression: transactions.date,
+          mode: OrderingMode.desc,
+        ),
+        OrderingTerm(
+          expression: transactions.createdAt,
+          mode: OrderingMode.desc,
+        ),
+      ])
+      ..limit(limit);
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        final tx = row.readTable(transactions);
+        final cat = row.readTableOrNull(categories);
+        final acc = row.readTableOrNull(accounts);
+        final toAccRow = row.readTableOrNull(toAcc);
+        return TransactionWithNames(
+          transaction: tx,
+          categoryName: cat?.name,
+          categoryEmoji: cat?.iconEmoji,
+          categoryColorHex: cat?.colorHex,
+          accountName: acc?.name,
+          toAccountName: toAccRow?.name,
+        );
+      }).toList();
+    });
+  }
 
   /// One-shot fetch of non-deleted transactions for [year]/[month].
   Future<List<Transaction>> getTransactionsByMonth(int year, int month) {
@@ -323,6 +392,79 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       }).toList();
     });
   }
+
+  // ---------------------------------------------------------------------------
+  // Sparkline — Sprint 8 (EPIC8A-06)
+  // ---------------------------------------------------------------------------
+
+  /// Emits a fixed-length list of [DailyNet] for the last [days] calendar days
+  /// (default 30), ending on [referenceDate] (default today).
+  ///
+  /// Always emits exactly [days] entries; days with no qualifying transactions
+  /// have [DailyNet.netAmount] == 0.0.
+  ///
+  /// Transfer transactions are excluded. [excludedAccountIds] allows the caller
+  /// to omit accounts whose [includeInTotals] flag is false — keeping the DAO
+  /// testable without account repository involvement.
+  ///
+  /// Integer cent accumulation avoids IEEE 754 drift (BUG-010).
+  Stream<List<DailyNet>> watchDailyNetAmounts({
+    DateTime? referenceDate,
+    int days = 30,
+    Set<String> excludedAccountIds = const {},
+  }) {
+    final today = referenceDate ?? DateTime.now();
+    final windowStart = DateTime(
+      today.year,
+      today.month,
+      today.day,
+    ).subtract(Duration(days: days - 1));
+    final windowEnd =
+        DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
+
+    // Generate the full 30-day window (oldest first).
+    final window = List.generate(days, (i) {
+      final d = windowStart.add(Duration(days: i));
+      return DateTime(d.year, d.month, d.day);
+    });
+
+    return watchTransactionsByDateRange(windowStart, windowEnd).map((txList) {
+      // Accumulate per-day net in integer cents to avoid float drift.
+      final Map<String, int> centsByDay = {};
+
+      for (final tx in txList) {
+        if (tx.isExcluded) continue;
+        if (tx.type == 'transfer') continue;
+        if (excludedAccountIds.contains(tx.accountId)) continue;
+
+        final key = '${tx.date.year}-${tx.date.month}-${tx.date.day}';
+        final delta = tx.type == 'income'
+            ? (tx.amount * tx.exchangeRate * 100).round()
+            : -(tx.amount * tx.exchangeRate * 100).round();
+        centsByDay[key] = (centsByDay[key] ?? 0) + delta;
+      }
+
+      return window.map((d) {
+        final key = '${d.year}-${d.month}-${d.day}';
+        return DailyNet(date: d, netAmount: (centsByDay[key] ?? 0) / 100.0);
+      }).toList();
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Count queries — EPIC8A-10
+  // ---------------------------------------------------------------------------
+
+  /// Reactive stream of the total number of non-deleted transactions.
+  ///
+  /// Uses a SQL COUNT aggregate so only a single integer is transferred from
+  /// the database — avoids joining three tables and fetching full rows just to
+  /// derive a count for onboarding card visibility.
+  Stream<int> watchTransactionCount() => (selectOnly(transactions)
+        ..addColumns([transactions.id.count()])
+        ..where(transactions.isDeleted.equals(false)))
+      .watchSingle()
+      .map((row) => row.read(transactions.id.count()) ?? 0);
 
   // ---------------------------------------------------------------------------
   // Write paths
