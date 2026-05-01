@@ -33,7 +33,10 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: context.bgPrimary,
-      body: RefreshIndicator(
+      body: SafeArea(
+        top: true,
+        bottom: false,
+        child: RefreshIndicator(
         color: AppColors.brandPrimary,
         onRefresh: () async {
           // TODO(EPIC8A-11): invalidate home data providers on pull-to-refresh.
@@ -81,6 +84,7 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

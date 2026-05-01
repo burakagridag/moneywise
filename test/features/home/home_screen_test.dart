@@ -183,5 +183,31 @@ void main() {
       // HomeScreen rendered when router lands on /home.
       expect(find.byType(HomeScreen), findsOneWidget);
     });
+
+    testWidgets('SafeArea wraps body so content does not overlap status bar',
+        (tester) async {
+      // Simulate a device with a 44pt status bar (iPhone with notch).
+      tester.view.physicalSize = const Size(375 * 3, 812 * 3);
+      tester.view.devicePixelRatio = 3;
+      tester.view.padding = const FakeViewPadding(top: 44 * 3);
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(_buildHomeScreen());
+      await tester.pump();
+
+      // SafeArea must be present as the direct body child.
+      expect(find.byType(SafeArea), findsOneWidget);
+
+      // HomeHeader placeholder must start below the status bar inset.
+      // getTopLeft returns logical pixels; FakeViewPadding top=132 at dpr=3 → 44 logical pts.
+      final headerTop =
+          tester.getTopLeft(find.textContaining('HomeHeader')).dy;
+      const statusBarLogicalPts = 44.0; // 132 physical px / 3 dpr
+      expect(
+        headerTop,
+        greaterThan(statusBarLogicalPts),
+        reason: 'HomeHeader must not overlap the status bar',
+      );
+    });
   });
 }
