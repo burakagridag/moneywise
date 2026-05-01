@@ -222,6 +222,7 @@ class _ErrorContent extends StatelessWidget {
           'TOTAL BALANCE',
           style: AppTypography.caption2.copyWith(
             color: Colors.white.withValues(alpha: 0.70),
+            letterSpacing: 0.5,
           ),
         ),
         const SizedBox(height: 6),
@@ -229,6 +230,8 @@ class _ErrorContent extends StatelessWidget {
           '— €',
           style: AppTypography.moneyLarge.copyWith(
             color: AppColors.textOnBrand,
+            fontSize: 30,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
@@ -265,6 +268,7 @@ class _CardContent extends StatelessWidget {
           l10n.homeTotalBalanceLabel.toUpperCase(),
           style: AppTypography.caption2.copyWith(
             color: Colors.white.withValues(alpha: 0.70),
+            letterSpacing: 0.5,
           ),
         ),
         const SizedBox(height: 6),
@@ -274,6 +278,8 @@ class _CardContent extends StatelessWidget {
           CurrencyFormatter.format(balance),
           style: AppTypography.moneyLarge.copyWith(
             color: AppColors.textOnBrand,
+            fontSize: 30,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 8),
@@ -454,7 +460,9 @@ class _SparklineState extends State<_Sparkline>
               LineChartBarData(
                 spots: spots,
                 isCurved: true,
-                color: Colors.white.withValues(alpha: 0.50),
+                color: _isFlat
+                    ? Colors.white.withValues(alpha: 0.25)
+                    : Colors.white.withValues(alpha: 0.50),
                 barWidth: 1.5,
                 dotData: const FlDotData(show: false),
                 belowBarData: BarAreaData(
@@ -462,10 +470,15 @@ class _SparklineState extends State<_Sparkline>
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.white.withValues(alpha: 0.10),
-                      Colors.white.withValues(alpha: 0.00),
-                    ],
+                    colors: _isFlat
+                        ? [
+                            Colors.white.withValues(alpha: 0.06),
+                            Colors.white.withValues(alpha: 0.00),
+                          ]
+                        : [
+                            Colors.white.withValues(alpha: 0.15),
+                            Colors.white.withValues(alpha: 0.00),
+                          ],
                   ),
                 ),
               ),

@@ -29,7 +29,6 @@ const double _kProgressBarHeight = 6.0;
 const double _kProgressBarRadius = 3.0;
 const double _kTodayMarkerWidth = 1.5;
 const double _kTodayMarkerHeight = 12.0;
-const double _kTodayMarkerTopOffset = -3.0;
 const double _kCtaBodyGap = 4.0;
 const double _kCtaButtonGap = 12.0;
 
@@ -607,10 +606,12 @@ class _BudgetProgressBar extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Today marker
+                // Today marker — top: 0 places the 12dp marker at the top of the
+                // 12dp stack. The 6dp progress bar starts at top=3 (centered),
+                // so the marker bleeds 3dp above and below the bar exactly.
                 Positioned(
                   left: markerLeft,
-                  top: _kTodayMarkerTopOffset,
+                  top: 0,
                   child: Container(
                     width: _kTodayMarkerWidth,
                     height: _kTodayMarkerHeight,

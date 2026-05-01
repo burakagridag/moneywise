@@ -144,7 +144,11 @@ class InsightCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: AppTypography.bodyMedium.copyWith(color: titleColor),
+                  style: AppTypography.bodyMedium.copyWith(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: titleColor,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
