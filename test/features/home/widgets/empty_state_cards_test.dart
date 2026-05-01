@@ -196,5 +196,15 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.text('Add your first transaction'), findsOneWidget);
     });
+
+    testWidgets('renders without errors in light theme', (tester) async {
+      await tester.pumpWidget(
+        _buildWidget(stream: Stream.value([]), theme: AppTheme.light),
+      );
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Add your first transaction'), findsOneWidget);
+    });
   });
 }

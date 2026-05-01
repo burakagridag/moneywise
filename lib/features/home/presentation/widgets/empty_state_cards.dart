@@ -113,7 +113,7 @@ class _OnboardingCard extends StatelessWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppColors.brandSurface,
+                    color: context.brandSurfaceAdaptive,
                     borderRadius: BorderRadius.circular(AppRadius.lg),
                   ),
                   child: Icon(
