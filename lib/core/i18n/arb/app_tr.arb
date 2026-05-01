@@ -1,9 +1,11 @@
 {
   "@@locale": "tr",
   "appName": "MoneyWise",
+  "tabHome": "Ana Sayfa",
   "tabTransactions": "İşlemler",
   "tabStats": "İstatistik",
   "tabAccounts": "Hesaplar",
+  "tabBudget": "Bütçe",
   "tabMore": "Daha Fazla",
   "themeDark": "Koyu Tema",
   "themeLight": "Açık Tema",

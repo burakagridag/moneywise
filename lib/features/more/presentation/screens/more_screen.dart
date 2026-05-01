@@ -1,4 +1,5 @@
 // More screen with settings and navigation to sub-screens — more feature.
+// Accounts entry added here after IA refactor (EPIC8A-01).
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,7 +8,7 @@ import '../../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../../core/router/routes.dart';
 
 /// Entry point for app settings and management screens.
-/// Categories and other config options live under the Settings sub-screen.
+/// Accounts, Categories, and other config options live under sub-screens.
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
 
@@ -22,6 +23,14 @@ class MoreScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          // Accounts — relocated from top-level tab (EPIC8A-01)
+          ListTile(
+            leading: const Icon(Icons.account_balance_wallet_outlined),
+            title: Text(l10n.accounts, style: AppTypography.body),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(Routes.accounts),
+          ),
+          const Divider(height: 1),
           ListTile(
             leading: const Icon(Icons.bookmark_outline),
             title: Text(l10n.bookmarks, style: AppTypography.body),

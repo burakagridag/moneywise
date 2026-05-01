@@ -3,13 +3,13 @@
 class Routes {
   Routes._();
 
+  // Epic 8 — top-level shell tabs
+  static const String home = '/home';
   static const String transactions = '/transactions';
-  static const String stats = '/stats';
-  static const String accounts = '/accounts';
+  static const String budget = '/budget';
   static const String more = '/more';
 
   // Sprint 2 routes
-  static const String accountAddEdit = '/accounts/add';
   static const String settings = '/more/settings';
   static const String categoryManagement = '/more/settings/categories';
 
@@ -24,4 +24,8 @@ class Routes {
 
   // Sprint 6 routes
   static const String bookmarks = '/more/bookmarks';
+
+  // Epic 8 — Accounts relocated under More
+  static const String accounts = '/more/accounts';
+  static const String accountAddEdit = '/more/accounts/add';
 }

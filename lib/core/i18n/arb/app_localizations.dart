@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'MoneyWise'**
   String get appName;
 
+  /// No description provided for @tabHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get tabHome;
+
   /// No description provided for @tabTransactions.
   ///
   /// In en, this message translates to:
@@ -121,6 +127,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Accounts'**
   String get tabAccounts;
+
+  /// No description provided for @tabBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get tabBudget;
 
   /// No description provided for @tabMore.
   ///

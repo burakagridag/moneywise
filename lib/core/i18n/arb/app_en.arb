@@ -1,9 +1,11 @@
 {
   "@@locale": "en",
   "appName": "MoneyWise",
+  "tabHome": "Home",
   "tabTransactions": "Transactions",
   "tabStats": "Stats",
   "tabAccounts": "Accounts",
+  "tabBudget": "Budget",
   "tabMore": "More",
   "themeDark": "Dark",
   "themeLight": "Light",

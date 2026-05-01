@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'MoneyWise';
 
   @override
+  String get tabHome => 'Home';
+
+  @override
   String get tabTransactions => 'Transactions';
 
   @override
@@ -19,6 +22,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tabAccounts => 'Accounts';
+
+  @override
+  String get tabBudget => 'Budget';
 
   @override
   String get tabMore => 'More';

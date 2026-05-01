@@ -12,6 +12,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appName => 'MoneyWise';
 
   @override
+  String get tabHome => 'Ana Sayfa';
+
+  @override
   String get tabTransactions => 'İşlemler';
 
   @override
@@ -19,6 +22,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tabAccounts => 'Hesaplar';
+
+  @override
+  String get tabBudget => 'Bütçe';
 
   @override
   String get tabMore => 'Daha Fazla';

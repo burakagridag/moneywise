@@ -342,16 +342,18 @@ void main() {
 
   group('Routes', () {
     test('all route paths start with /', () {
+      expect(Routes.home, startsWith('/'));
       expect(Routes.transactions, startsWith('/'));
-      expect(Routes.stats, startsWith('/'));
+      expect(Routes.budget, startsWith('/'));
       expect(Routes.accounts, startsWith('/'));
       expect(Routes.more, startsWith('/'));
     });
 
     test('all routes are unique', () {
       final routes = [
+        Routes.home,
         Routes.transactions,
-        Routes.stats,
+        Routes.budget,
         Routes.accounts,
         Routes.more,
       ];
