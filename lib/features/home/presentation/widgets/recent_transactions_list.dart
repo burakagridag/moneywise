@@ -179,7 +179,7 @@ class _RecentContent extends StatelessWidget {
     final tx = details.transaction;
     final amountStr = _semanticAmount(tx, l10n);
     final name = resolveDisplayName(tx, details.categoryName, l10n);
-    return '$name. $amountStr. Tap for details.';
+    return '$name. $amountStr. ${l10n.semanticTransactionRowHint}';
   }
 
   /// 3-step display-name fallback:

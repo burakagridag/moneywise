@@ -253,5 +253,7 @@
     "placeholders": { "count": { "type": "int" } }
   },
   "homeRecentSeeAllSemanticLabel": "Tüm işlemleri görüntüle",
-  "@homeRecentSeeAllSemanticLabel": {}
+  "@homeRecentSeeAllSemanticLabel": {},
+  "semanticTransactionRowHint": "Detaylar için dokunun.",
+  "@semanticTransactionRowHint": {}
 }
