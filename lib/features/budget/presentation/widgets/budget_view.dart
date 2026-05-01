@@ -1,4 +1,4 @@
-// BudgetView — budget sub-tab content within StatsScreen — budget feature.
+// BudgetView — reusable budget widget consumed by BudgetScreen — budget feature.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +16,7 @@ import '../../../stats/presentation/providers/stats_provider.dart';
 import '../../domain/budget_entity.dart';
 import '../providers/budget_providers.dart';
 
-/// Displays the Budget sub-tab inside StatsScreen.
+/// Displays the budget view consumed by [BudgetScreen].
 /// Reads [budgetsForMonthProvider] and [statsCategoryListProvider] reactively.
 class BudgetView extends ConsumerWidget {
   const BudgetView({super.key});

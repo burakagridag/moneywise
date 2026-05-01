@@ -15,7 +15,6 @@ import 'package:moneywise/features/accounts/presentation/screens/account_add_edi
 import 'package:moneywise/features/accounts/presentation/screens/accounts_screen.dart';
 import 'package:moneywise/features/more/presentation/screens/category_management_screen.dart';
 import 'package:moneywise/features/more/presentation/screens/more_screen.dart';
-import 'package:moneywise/features/stats/presentation/screens/stats_screen.dart';
 import 'package:moneywise/features/transactions/presentation/screens/transactions_screen.dart';
 
 // ---------------------------------------------------------------------------
@@ -96,26 +95,8 @@ void main() {
       await db.close();
     });
 
-    testWidgets('StatsScreen renders', (tester) async {
-      final db = _testDb();
-      final widget = ProviderScope(
-        overrides: [appDatabaseProvider.overrideWith((_) => db)],
-        child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: const Locale('en'),
-          theme: AppTheme.light,
-          home: const StatsScreen(),
-        ),
-      );
-      await tester.pumpWidget(widget);
-      await tester.pump();
-      expect(find.byType(StatsScreen), findsOneWidget);
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(Duration.zero);
-      await tester.pump(Duration.zero);
-      await db.close();
-    });
+    // StatsScreen render test removed — EPIC8A-02: StatsScreen is no longer
+    // mounted in the navigation shell. Tests preserved in stats feature directory.
 
     testWidgets('MoreScreen renders with settings menu item', (tester) async {
       await tester.pumpWidget(_buildScreen(const MoreScreen()));
