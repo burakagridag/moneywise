@@ -41,8 +41,10 @@ class HomeScreen extends ConsumerWidget {
     // home providers so the Home tab shows fresh data the next time the user
     // navigates here without needing a manual pull-to-refresh.
     ref.listen(transactionMutationSignalProvider, (_, __) {
+      final month = DateTime(DateTime.now().year, DateTime.now().month);
       ref.invalidate(insightsProvider);
       ref.invalidate(previousMonthTotalProvider);
+      ref.invalidate(effectiveBudgetProvider(month));
     });
 
     return Scaffold(
@@ -53,9 +55,8 @@ class HomeScreen extends ConsumerWidget {
         child: RefreshIndicator(
           color: AppColors.brandPrimary,
           onRefresh: () async {
-            // Capture a fresh timestamp inside the callback to avoid stale
-            // references to the `now` value captured at build time.
-            final month = DateTime(DateTime.now().year, DateTime.now().month);
+            final now = DateTime.now();
+            final month = DateTime(now.year, now.month);
             ref.invalidate(insightsProvider);
             ref.invalidate(previousMonthTotalProvider);
             ref.invalidate(effectiveBudgetProvider(month));
