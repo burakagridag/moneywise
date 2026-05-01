@@ -105,14 +105,10 @@ class _WeekDayHeader extends StatelessWidget {
   Color _weekdayColor(BuildContext context, int index) {
     if (index == 5) {
       // Saturday — cool blue tonal
-      return context.isDark
-          ? const Color(0xFF4A7A9B)
-          : const Color(0xFF5B8FC4);
+      return context.isDark ? const Color(0xFF4A7A9B) : const Color(0xFF5B8FC4);
     } else if (index == 6) {
       // Sunday — warm rose tonal
-      return context.isDark
-          ? const Color(0xFF9B6B7A)
-          : const Color(0xFFB07080);
+      return context.isDark ? const Color(0xFF9B6B7A) : const Color(0xFFB07080);
     }
     return context.textSecondary;
   }

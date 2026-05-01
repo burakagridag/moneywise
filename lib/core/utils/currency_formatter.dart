@@ -9,11 +9,9 @@ import 'package:intl/intl.dart';
 class CurrencyFormatter {
   CurrencyFormatter._();
 
-  static NumberFormat _fmt(String locale) =>
-      NumberFormat('#,##0.00', locale);
+  static NumberFormat _fmt(String locale) => NumberFormat('#,##0.00', locale);
 
-  static bool _symbolAfter(String locale) =>
-      locale.split('_').first != 'en';
+  static bool _symbolAfter(String locale) => locale.split('_').first != 'en';
 
   static String _compose(String number, String symbol, String locale) {
     return _symbolAfter(locale) ? '$number $symbol' : '$symbol$number';
