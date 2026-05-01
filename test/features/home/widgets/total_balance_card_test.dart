@@ -289,6 +289,54 @@ void main() {
     });
 
     // -------------------------------------------------------------------------
+    // _isFlat epsilon detection
+    // -------------------------------------------------------------------------
+
+    testWidgets(
+        'renders without throwing when all sparkline netAmounts are 0.0 (flat)',
+        (tester) async {
+      // All DailyNet values are exactly 0.0 — _isFlat must return true via
+      // epsilon comparison and the sparkline must render in its flat state
+      // without any exception.
+      await tester.pumpWidget(
+        _buildCard(
+          balanceValue: const AsyncValue.data(0.0),
+          previousValue: const AsyncValue.data(null),
+          sparklineData: _flatSparkline(), // all netAmount == 0.0
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(TotalBalanceCard), findsOneWidget);
+    });
+
+    testWidgets(
+        'renders without throwing when sparkline values differ by less than epsilon',
+        (tester) async {
+      // Values within 0.001 of each other — should still be treated as flat.
+      final today = DateTime(2024, 3, 31);
+      final nearlyFlatData = List.generate(30, (i) {
+        final d = today.subtract(Duration(days: 29 - i));
+        return DailyNet(
+          date: DateTime(d.year, d.month, d.day),
+          netAmount: i == 0 ? 0.0 : 0.0005, // diff < 0.001 → flat
+        );
+      });
+
+      await tester.pumpWidget(
+        _buildCard(
+          balanceValue: const AsyncValue.data(0.0),
+          previousValue: const AsyncValue.data(null),
+          sparklineData: nearlyFlatData,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+    });
+
+    // -------------------------------------------------------------------------
     // Sparkline rendered
     // -------------------------------------------------------------------------
 

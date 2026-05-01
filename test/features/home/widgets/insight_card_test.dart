@@ -219,6 +219,20 @@ void main() {
     // Title / subtitle ellipsis
     // -----------------------------------------------------------------------
 
+    testWidgets('title Text widget uses fontSize: 14', (tester) async {
+      await tester.pumpWidget(
+        _buildCard(title: 'Spend less on food', subtitle: '62% of budget'),
+      );
+
+      // The first Text widget in the card is the title.
+      final titleWidget = tester.widgetList<Text>(find.byType(Text)).first;
+      expect(
+        titleWidget.style?.fontSize,
+        equals(14.0),
+        reason: 'InsightCard title must use fontSize 14 per redlines.md',
+      );
+    });
+
     testWidgets('title text has maxLines: 1 and ellipsis overflow',
         (tester) async {
       await tester.pumpWidget(

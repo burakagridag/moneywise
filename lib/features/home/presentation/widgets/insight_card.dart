@@ -146,7 +146,6 @@ class InsightCard extends StatelessWidget {
                   title,
                   style: AppTypography.bodyMedium.copyWith(
                     fontSize: 14,
-                    fontWeight: FontWeight.w500,
                     color: titleColor,
                   ),
                   maxLines: 1,

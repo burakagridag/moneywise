@@ -25,6 +25,24 @@ const Duration _sparklineDuration = Duration(milliseconds: 300);
 /// Number of daily net data points rendered in the sparkline.
 const int _sparklineDays = 30;
 
+// ---------------------------------------------------------------------------
+// File-scope style constants — used by both _ErrorContent and _CardContent
+// to avoid duplication between error and data states.
+// ---------------------------------------------------------------------------
+
+/// Label style for the "TOTAL BALANCE" caption — shared across error and data states.
+final TextStyle _kLabelStyle = AppTypography.caption2.copyWith(
+  color: Colors.white.withValues(alpha: 0.70),
+  letterSpacing: 0.5,
+);
+
+/// Balance value style — shared across error and data states.
+final TextStyle _kBalanceStyle = AppTypography.moneyLarge.copyWith(
+  fontSize: 30,
+  fontWeight: FontWeight.w600,
+  color: AppColors.textOnBrand,
+);
+
 /// The primary Home tab card, displaying total balance across all included
 /// accounts, a trend chip comparing to the previous month, and a 30-day
 /// sparkline chart.
@@ -218,22 +236,9 @@ class _ErrorContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'TOTAL BALANCE',
-          style: AppTypography.caption2.copyWith(
-            color: Colors.white.withValues(alpha: 0.70),
-            letterSpacing: 0.5,
-          ),
-        ),
+        Text('TOTAL BALANCE', style: _kLabelStyle),
         const SizedBox(height: 6),
-        Text(
-          '— €',
-          style: AppTypography.moneyLarge.copyWith(
-            color: AppColors.textOnBrand,
-            fontSize: 30,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        Text('— €', style: _kBalanceStyle),
       ],
     );
   }
@@ -264,24 +269,11 @@ class _CardContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label row
-        Text(
-          l10n.homeTotalBalanceLabel.toUpperCase(),
-          style: AppTypography.caption2.copyWith(
-            color: Colors.white.withValues(alpha: 0.70),
-            letterSpacing: 0.5,
-          ),
-        ),
+        Text(l10n.homeTotalBalanceLabel.toUpperCase(), style: _kLabelStyle),
         const SizedBox(height: 6),
 
         // Balance value
-        Text(
-          CurrencyFormatter.format(balance),
-          style: AppTypography.moneyLarge.copyWith(
-            color: AppColors.textOnBrand,
-            fontSize: 30,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        Text(CurrencyFormatter.format(balance), style: _kBalanceStyle),
         const SizedBox(height: 8),
 
         // Trend row (hidden when previousBalance is null or zero)
@@ -388,10 +380,11 @@ class _SparklineState extends State<_Sparkline>
   late final Animation<double> _progress;
 
   /// True when data is effectively flat (all zero or single point).
+  /// Uses epsilon comparison to avoid floating-point equality issues.
   bool get _isFlat {
     if (widget.data.length < 2) return true;
     final first = widget.data.first.netAmount;
-    return widget.data.every((d) => d.netAmount == first);
+    return widget.data.every((d) => (d.netAmount - first).abs() < 0.001);
   }
 
   @override

@@ -418,6 +418,53 @@ void main() {
     });
 
     // -----------------------------------------------------------------------
+    // Today-marker geometry — _BudgetProgressBar
+    // -----------------------------------------------------------------------
+
+    group('today-marker geometry', () {
+      testWidgets(
+          '_BudgetProgressBar renders without overflow at midpoint markerFraction',
+          (tester) async {
+        // Provide a viewport that gives the LayoutBuilder real constraints.
+        tester.view.physicalSize = const Size(375 * 3, 812 * 3);
+        tester.view.devicePixelRatio = 3;
+        addTearDown(tester.view.reset);
+
+        // A budget that positions the spent/budget ratio at roughly 50% and
+        // a real date mid-month will compute markerFraction ≈ 0.5.
+        // The key assertion is that the Positioned today-marker (top: 0,
+        // height: 12) does not escape the 12dp Stack — no overflow.
+        await tester.pumpWidget(
+          _buildCard(
+            budget: 200.0,
+            transactions: [_expense(amount: 100.0)],
+          ),
+        );
+        await tester.pump();
+
+        expect(tester.takeException(), isNull);
+      });
+
+      testWidgets(
+          '_BudgetProgressBar renders without overflow at markerFraction 0.0',
+          (tester) async {
+        tester.view.physicalSize = const Size(375 * 3, 812 * 3);
+        tester.view.devicePixelRatio = 3;
+        addTearDown(tester.view.reset);
+
+        await tester.pumpWidget(
+          _buildCard(
+            budget: 300.0,
+            transactions: [_expense(amount: 10.0)],
+          ),
+        );
+        await tester.pump();
+
+        expect(tester.takeException(), isNull);
+      });
+    });
+
+    // -----------------------------------------------------------------------
     // Dark theme
     // -----------------------------------------------------------------------
 
