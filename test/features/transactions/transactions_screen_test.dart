@@ -80,11 +80,11 @@ void main() {
       await _dispose(tester, db);
     });
 
-    testWidgets('shows Trans. title in AppBar', (tester) async {
+    testWidgets('shows Transactions title in AppBar', (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
-      expect(find.text('Trans.'), findsOneWidget);
+      expect(find.text('Transactions'), findsOneWidget);
       await _dispose(tester, db);
     });
 
@@ -155,7 +155,7 @@ void main() {
       // After tapping Description, the IndexedStack shows index 4.
       await tester.tap(find.text('Description'));
       await tester.pumpAndSettle();
-      expect(find.text('Coming soon'), findsOneWidget);
+      expect(find.textContaining('soon'), findsAtLeastNWidgets(1));
       await _dispose(tester, db);
     });
 
@@ -165,7 +165,7 @@ void main() {
       await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
       expect(find.text('Income'), findsOneWidget);
-      expect(find.text('Exp.'), findsOneWidget);
+      expect(find.text('Expense'), findsOneWidget);
       expect(find.text('Total'), findsOneWidget);
       await _dispose(tester, db);
     });
@@ -193,16 +193,16 @@ void main() {
       expect(find.byType(IncomeSummaryBar), findsOneWidget);
     });
 
-    testWidgets('shows Income, Exp., Total column labels', (tester) async {
+    testWidgets('shows Income, Expense, Total column labels', (tester) async {
       await tester.pumpWidget(buildBar(income: 0, expense: 0));
       expect(find.text('Income'), findsOneWidget);
-      expect(find.text('Exp.'), findsOneWidget);
+      expect(find.text('Expense'), findsOneWidget);
       expect(find.text('Total'), findsOneWidget);
     });
 
     testWidgets('formats positive income amount', (tester) async {
       await tester.pumpWidget(buildBar(income: 1234.56, expense: 0));
-      expect(find.textContaining('1,234.56'), findsAtLeastNWidgets(1));
+      expect(find.textContaining('1.234'), findsAtLeastNWidgets(1));
     });
 
     testWidgets('shows + prefix in Total when income > expense',

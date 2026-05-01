@@ -258,10 +258,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabDescription => 'Description';
 
   @override
-  String get transactionsTitle => 'Trans.';
+  String get transactionsTitle => 'Transactions';
 
   @override
-  String get expenseLabel => 'Exp.';
+  String get expenseLabel => 'Expense';
 
   @override
   String get totalLabel => 'Total';
