@@ -1,4 +1,4 @@
-// Widget tests for HomeScreen scaffold — home feature (EPIC8A-03, EPIC8A-07).
+// Widget tests for HomeScreen scaffold — home feature (EPIC8A-03, EPIC8A-07, EPIC8A-11).
 // Overrides all real widget providers so the full HomeScreen renders without
 // a database connection (pure unit-style widget test).
 import 'package:flutter/material.dart';
@@ -15,6 +15,7 @@ import 'package:moneywise/features/home/presentation/providers/user_settings_pro
 import 'package:moneywise/features/home/presentation/screens/home_screen.dart';
 import 'package:moneywise/features/insights/presentation/providers/insights_providers.dart';
 import 'package:moneywise/features/more/presentation/providers/app_preferences_provider.dart';
+import 'package:moneywise/features/transactions/presentation/providers/transaction_mutation_signal_provider.dart';
 import 'package:moneywise/features/transactions/presentation/providers/transactions_provider.dart';
 
 // ---------------------------------------------------------------------------
@@ -192,6 +193,172 @@ void main() {
       await tester.pump();
 
       expect(find.byType(SafeArea), findsOneWidget);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // EPIC8A-11 — Pull-to-Refresh + Tab Focus Invalidation tests
+  // ---------------------------------------------------------------------------
+
+  group('HomeScreen — EPIC8A-11 pull-to-refresh', () {
+    testWidgets('onRefresh invalidates insightsProvider and awaits its future',
+        (tester) async {
+      // Track how many times insightsProvider's build function is called.
+      var buildCount = 0;
+
+      final container = ProviderContainer(
+        overrides: [
+          ..._homeScreenOverrides(),
+          insightsProvider.overrideWith((_) async {
+            buildCount++;
+            return const [];
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const Scaffold(body: HomeScreen()),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      // Reset the count after initial build.
+      buildCount = 0;
+
+      // Retrieve the RefreshIndicator and invoke its onRefresh callback directly.
+      final indicator = tester.widget<RefreshIndicator>(
+        find.byType(RefreshIndicator),
+      );
+      await indicator.onRefresh();
+
+      // insightsProvider must have been re-built at least once (invalidated).
+      expect(buildCount, greaterThanOrEqualTo(1));
+    });
+
+    testWidgets(
+        'onRefresh invalidates insightsProvider a second time on repeated call',
+        (tester) async {
+      // This test verifies that calling onRefresh multiple times continues to
+      // invalidate insightsProvider (no single-shot guard) by tracking total
+      // build invocations across two sequential onRefresh calls.
+      var buildCount = 0;
+
+      final container = ProviderContainer(
+        overrides: [
+          ..._homeScreenOverrides(),
+          insightsProvider.overrideWith((_) async {
+            buildCount++;
+            return const [];
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const Scaffold(body: HomeScreen()),
+          ),
+        ),
+      );
+      await tester.pump();
+      buildCount = 0;
+
+      final indicator = tester.widget<RefreshIndicator>(
+        find.byType(RefreshIndicator),
+      );
+
+      // First refresh.
+      await indicator.onRefresh();
+      final afterFirst = buildCount;
+
+      // Second refresh — should trigger another rebuild.
+      await indicator.onRefresh();
+
+      expect(buildCount, greaterThan(afterFirst));
+    });
+  });
+
+  group('HomeScreen — EPIC8A-11 tab focus mutation signal', () {
+    testWidgets(
+        'incrementing transactionMutationSignalProvider triggers insightsProvider invalidation',
+        (tester) async {
+      var insightBuilds = 0;
+
+      final container = ProviderContainer(
+        overrides: [
+          ..._homeScreenOverrides(),
+          insightsProvider.overrideWith((_) async {
+            insightBuilds++;
+            return const [];
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const Scaffold(body: HomeScreen()),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      // Capture build count after initial render.
+      final countAfterFirstBuild = insightBuilds;
+
+      // Simulate a transaction mutation by incrementing the signal.
+      container.read(transactionMutationSignalProvider.notifier).increment();
+
+      // Allow the listener to fire and any triggered rebuilds to complete.
+      await tester.pump();
+
+      // insightsProvider must have been invalidated and re-built.
+      expect(insightBuilds, greaterThan(countAfterFirstBuild));
+    });
+
+    testWidgets(
+        'transactionMutationSignalProvider starts at 0 in a fresh scope',
+        (tester) async {
+      // Read the signal from the widget-test scope so Riverpod's
+      // auto-dispose scheduler runs inside the fake-async environment and
+      // does not leave a pending timer after the test.
+      late int signalValue;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: _homeScreenOverrides(),
+          child: Consumer(
+            builder: (_, ref, __) {
+              signalValue = ref.watch(transactionMutationSignalProvider);
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(signalValue, 0);
     });
   });
 }

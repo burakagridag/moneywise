@@ -1,5 +1,5 @@
-// HomeScreen scaffold — home feature (EPIC8A-03, updated EPIC8A-10).
-// EmptyStateCards replaces the _EmptyStatePlaceholder (EPIC8A-10).
+// HomeScreen scaffold — home feature (EPIC8A-03, updated EPIC8A-11).
+// Pull-to-refresh invalidation and tab-focus mutation signal wired (EPIC8A-11).
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +8,10 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart'; // AppSpacing, AppRadius
 import '../../../../core/router/routes.dart';
+import '../../../insights/presentation/providers/insights_providers.dart';
+import '../../../transactions/presentation/providers/transaction_mutation_signal_provider.dart';
+import '../providers/net_worth_provider.dart';
+import '../providers/user_settings_providers.dart';
 import '../widgets/budget_pulse_card.dart';
 import '../widgets/empty_state_cards.dart';
 import '../widgets/home_header.dart';
@@ -30,12 +34,16 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO(EPIC8A-12): fire home_tab_viewed analytics event on initState
 
-    // TODO(EPIC8A-13): tab focus invalidation stub
-    // Options per ADR-011 §Reactive Behaviour:
-    //   a) Listen to go_router RouteInformationProvider, invalidate on /home.
-    //   b) Use a Riverpod Listener on transactionMutationSignalProvider
-    //      (StateProvider<int> incremented on any mutation).
-    // Chosen approach will be documented in the PR description.
+    // Tab focus invalidation — mutation signal approach (ADR-011 §Reactive
+    // Behaviour, Option B). When any transaction is added, edited, or deleted,
+    // TransactionWriteNotifier increments transactionMutationSignalProvider.
+    // This listener fires on the next build cycle and invalidates non-streaming
+    // home providers so the Home tab shows fresh data the next time the user
+    // navigates here without needing a manual pull-to-refresh.
+    ref.listen(transactionMutationSignalProvider, (_, __) {
+      ref.invalidate(insightsProvider);
+      ref.invalidate(previousMonthTotalProvider);
+    });
 
     return Scaffold(
       backgroundColor: context.bgPrimary,
@@ -45,11 +53,16 @@ class HomeScreen extends ConsumerWidget {
         child: RefreshIndicator(
           color: AppColors.brandPrimary,
           onRefresh: () async {
-            // TODO(EPIC8A-11): invalidate home data providers on pull-to-refresh.
-            // ref.invalidate(insightsProvider);
-            // ref.invalidate(sparklineDataProvider);
-            // ref.invalidate(recentTransactionsProvider);
-            // ref.invalidate(budgetPulseProvider);
+            // Capture a fresh timestamp inside the callback to avoid stale
+            // references to the `now` value captured at build time.
+            final month = DateTime(DateTime.now().year, DateTime.now().month);
+            ref.invalidate(insightsProvider);
+            ref.invalidate(previousMonthTotalProvider);
+            ref.invalidate(effectiveBudgetProvider(month));
+            // sparklineDataProvider and recentTransactionsProvider are
+            // StreamProviders — they update automatically via Drift streams
+            // and do not need explicit invalidation (ADR-011).
+            await ref.read(insightsProvider.future);
           },
           child: CustomScrollView(
             slivers: [
