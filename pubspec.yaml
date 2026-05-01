@@ -65,6 +65,8 @@ dev_dependencies:
 
   # Testing
   mocktail: ^1.0.3
+  path_provider_platform_interface: ^2.1.2
+  plugin_platform_interface: ^2.1.8
 
 flutter:
   generate: true
