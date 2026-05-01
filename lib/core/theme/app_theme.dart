@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_spacing.dart';
+import '../constants/app_typography.dart';
 
 class AppTheme {
   AppTheme._();
@@ -25,14 +26,28 @@ class AppTheme {
           elevation: 0,
           centerTitle: true,
         ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        navigationBarTheme: NavigationBarThemeData(
           backgroundColor: AppColors.bgPrimary,
-          selectedItemColor: AppColors.brandPrimary,
-          unselectedItemColor: AppColors.textSecondary,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          type: BottomNavigationBarType.fixed,
-          elevation: 0,
+          indicatorColor: AppColors.brandPrimary.withAlpha(38),
+          indicatorShape: const StadiumBorder(),
+          labelTextStyle: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return AppTypography.caption1.copyWith(
+                color: AppColors.brandPrimary,
+              );
+            }
+            return AppTypography.caption1.copyWith(
+              color: AppColors.textSecondary,
+            );
+          }),
+          iconTheme: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const IconThemeData(
+                  color: AppColors.brandPrimary, size: 24);
+            }
+            return const IconThemeData(
+                color: AppColors.textSecondary, size: 24);
+          }),
         ),
         dividerColor: AppColors.divider,
         dividerTheme: const DividerThemeData(
@@ -45,6 +60,12 @@ class AppTheme {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.lg),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: AppColors.borderFocus),
+            borderRadius: BorderRadius.circular(AppRadius.md),
           ),
         ),
       );
@@ -68,14 +89,30 @@ class AppTheme {
           elevation: 0,
           centerTitle: true,
         ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: AppColors.bgPrimaryLight,
-          selectedItemColor: AppColors.brandPrimary,
-          unselectedItemColor: AppColors.textSecondaryLight,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          type: BottomNavigationBarType.fixed,
-          elevation: 0,
+        navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: AppColors.bgSecondaryLight,
+          indicatorColor: AppColors.brandPrimary.withAlpha(38),
+          indicatorShape: const StadiumBorder(),
+          labelTextStyle: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return AppTypography.caption1.copyWith(
+                color: AppColors.brandPrimary,
+              );
+            }
+            return AppTypography.caption1.copyWith(
+              color: AppColors.textSecondaryLight,
+            );
+          }),
+          iconTheme: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const IconThemeData(
+                  color: AppColors.brandPrimary, size: 24);
+            }
+            return const IconThemeData(
+              color: AppColors.textSecondaryLight,
+              size: 24,
+            );
+          }),
         ),
         dividerColor: AppColors.bgTertiaryLight,
         cardColor: AppColors.bgSecondaryLight,
@@ -84,6 +121,12 @@ class AppTheme {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.lg),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: AppColors.borderFocusLight),
+            borderRadius: BorderRadius.circular(AppRadius.md),
           ),
         ),
       );

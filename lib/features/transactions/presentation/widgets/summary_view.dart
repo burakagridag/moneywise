@@ -121,14 +121,15 @@ class _StatSummaryCard extends StatelessWidget {
     return '${rate.toStringAsFixed(1)}%';
   }
 
-  Color get _savingsColor {
-    if (totals.income == 0) return AppColors.textSecondary;
+  Color _savingsColor(BuildContext context) {
+    if (totals.income == 0) return context.textSecondary;
     final rate = totals.income - totals.expense;
-    return rate >= 0 ? AppColors.income : AppColors.expense;
+    return rate >= 0 ? AppColors.income : context.expenseColor;
   }
 
   /// Net amount color: green for positive, coral for negative.
-  Color get _netColor => totals.net >= 0 ? AppColors.income : AppColors.expense;
+  Color _netColor(BuildContext context) =>
+      totals.net >= 0 ? AppColors.income : context.expenseColor;
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +165,7 @@ class _StatSummaryCard extends StatelessWidget {
                   child: _MiniStatCard(
                     label: l10n.expenseLabel,
                     value: CurrencyFormatter.format(totals.expense),
-                    valueColor: AppColors.expense,
+                    valueColor: context.expenseColor,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -172,7 +173,7 @@ class _StatSummaryCard extends StatelessWidget {
                   child: _MiniStatCard(
                     label: l10n.totalLabel,
                     value: CurrencyFormatter.formatSigned(totals.net),
-                    valueColor: _netColor,
+                    valueColor: _netColor(context),
                   ),
                 ),
               ],
@@ -201,7 +202,7 @@ class _StatSummaryCard extends StatelessWidget {
                     Text(
                       _savingsRate,
                       style: AppTypography.moneySmall.copyWith(
-                        color: _savingsColor,
+                        color: _savingsColor(context),
                       ),
                     ),
                   ],
@@ -340,7 +341,7 @@ class _AccountsCard extends StatelessWidget {
                       Text(
                         CurrencyFormatter.format(totalExpense),
                         style: AppTypography.moneyMedium.copyWith(
-                          color: AppColors.expense,
+                          color: context.expenseColor,
                         ),
                       ),
                   ],
@@ -465,7 +466,7 @@ class _BudgetCard extends StatelessWidget {
                 Text(
                   AppLocalizations.of(context)!.budgetCardTitle,
                   style: AppTypography.caption1.copyWith(
-                    color: context.textTertiary,
+                    color: context.textSecondary,
                   ),
                 ),
                 Text(

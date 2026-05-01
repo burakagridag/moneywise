@@ -1,20 +1,54 @@
 // Unit tests for DbEncryptionService — data/local/encryption feature.
 // Uses a fake in-memory FlutterSecureStorage to avoid platform-channel calls.
+// On macOS the service uses path_provider; we swap in a temp-dir mock.
+import 'dart:io';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moneywise/data/local/encryption/db_encryption_service.dart';
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 // ---------------------------------------------------------------------------
-// Fake in-memory implementation of FlutterSecureStorage
+// Fake PathProviderPlatform — returns a temp directory for all path types.
 // ---------------------------------------------------------------------------
 
-/// Replaces the real platform-channel-backed storage with an in-memory map.
-/// We swap it in via FlutterSecureStorage.setMockInitialValues before each test.
+class _FakePathProvider extends Fake
+    with MockPlatformInterfaceMixin
+    implements PathProviderPlatform {
+  final String tempPath;
+  _FakePathProvider(this.tempPath);
+
+  @override
+  Future<String?> getApplicationSupportPath() async => tempPath;
+  @override
+  Future<String?> getTemporaryPath() async => tempPath;
+  @override
+  Future<String?> getApplicationDocumentsPath() async => tempPath;
+  @override
+  Future<String?> getApplicationCachePath() async => tempPath;
+}
 
 void main() {
-  setUp(() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  late Directory tempDir;
+
+  setUpAll(() async {
+    tempDir = await Directory.systemTemp.createTemp('moneywise_test_');
+    PathProviderPlatform.instance = _FakePathProvider(tempDir.path);
+  });
+
+  tearDownAll(() async {
+    await tempDir.delete(recursive: true);
+  });
+
+  setUp(() async {
     // Reset the mock storage before every test for isolation.
     FlutterSecureStorage.setMockInitialValues({});
+    // Remove any persisted macOS key file so tests start clean.
+    final keyFile = File('${tempDir.path}/.moneywise_db_key');
+    if (await keyFile.exists()) await keyFile.delete();
   });
 
   // ---------------------------------------------------------------------------
@@ -38,8 +72,10 @@ void main() {
 
     test('returns different keys for independent storage sessions', () async {
       final key1 = await DbEncryptionService.getEncryptionKey();
-      // Reset storage → simulates fresh install
+      // Reset storage → simulates fresh install (wipe both storage backends).
       FlutterSecureStorage.setMockInitialValues({});
+      final keyFile = File('${tempDir.path}/.moneywise_db_key');
+      if (await keyFile.exists()) await keyFile.delete();
       final key2 = await DbEncryptionService.getEncryptionKey();
       // With overwhelming probability two random 32-byte keys differ.
       expect(key1, isNot(equals(key2)));

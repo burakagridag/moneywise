@@ -144,7 +144,7 @@ class _AccountPickerRow extends ConsumerWidget {
       subtitle: Text(
         '${account.currencyCode} ${fmt.format(balance)}',
         style: AppTypography.caption1.copyWith(
-          color: isDisabled ? context.textTertiary : context.textSecondary,
+          color: context.textSecondary,
         ),
       ),
       onTap: isDisabled ? null : onTap,

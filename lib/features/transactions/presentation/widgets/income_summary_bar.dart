@@ -35,7 +35,7 @@ class IncomeSummaryBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Container(
-      height: 60,
+      height: AppHeights.listItem,
       decoration: BoxDecoration(
         color: context.bgPrimary,
         border: Border(
@@ -54,9 +54,9 @@ class IncomeSummaryBar extends StatelessWidget {
           ),
           const _VerticalDivider(),
           _SummaryColumn(
-            label: l10n.expenseLabel,
+            label: l10n.expense,
             value: CurrencyFormatter.format(expense, symbol: currencySymbol),
-            valueColor: AppColors.expense,
+            valueColor: context.expenseColor,
             semanticsLabel: 'Total expense: '
                 '${CurrencyFormatter.format(expense, symbol: currencySymbol)}',
             onTap: onExpenseTap,
@@ -66,7 +66,7 @@ class IncomeSummaryBar extends StatelessWidget {
             label: l10n.totalLabel,
             value:
                 CurrencyFormatter.formatSigned(_total, symbol: currencySymbol),
-            valueColor: _total >= 0 ? AppColors.income : AppColors.expense,
+            valueColor: context.textPrimary,
             semanticsLabel: 'Net balance: '
                 '${CurrencyFormatter.formatSigned(_total, symbol: currencySymbol)}',
             onTap: onTotalTap,

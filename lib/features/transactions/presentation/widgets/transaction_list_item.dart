@@ -54,7 +54,7 @@ class TransactionListItem extends StatelessWidget {
           amountColor = AppColors.income;
           amountText = '+ $currencySymbol $amt';
         case 'expense':
-          amountColor = AppColors.expense;
+          amountColor = context.expenseColor;
           amountText = '- $currencySymbol $amt';
         default:
           amountColor = context.textSecondary;

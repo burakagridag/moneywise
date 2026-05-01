@@ -84,8 +84,8 @@ void main() {
       );
       await tester.pumpWidget(widget);
       await tester.pump();
-      // The AppBar title from i18n is 'Trans.'
-      expect(find.text('Trans.'), findsOneWidget);
+      // The AppBar title from i18n is 'Transactions'
+      expect(find.text('Transactions'), findsOneWidget);
       // Replace widget tree → ProviderScope.dispose → Drift schedules
       // zero-duration timers for each stream. Pump several times to drain.
       await tester.pumpWidget(const SizedBox.shrink());
@@ -292,16 +292,16 @@ void main() {
   // ---------------------------------------------------------------------------
 
   group('AppColors', () {
-    test('brand primary is coral', () {
-      expect(AppColors.brandPrimary, const Color(0xFFFF6B5C));
+    test('brand primary is slate blue (sprint-7 refresh)', () {
+      expect(AppColors.brandPrimary, const Color(0xFF3D5A99));
     });
 
     test('dark bg primary is darkest background', () {
-      expect(AppColors.bgPrimary, const Color(0xFF1A1B1E));
+      expect(AppColors.bgPrimary, const Color(0xFF0F1117));
     });
 
-    test('income is blue', () {
-      expect(AppColors.income, const Color(0xFF4A90E2));
+    test('income is teal blue', () {
+      expect(AppColors.income, const Color(0xFF2E86AB));
     });
   });
 

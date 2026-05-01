@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/utils/currency_formatter.dart';
@@ -19,16 +20,16 @@ class BookmarkListItem extends StatelessWidget {
   final Bookmark bookmark;
   final VoidCallback? onTap;
 
-  Color get _typeColor {
+  Color _typeColor(BuildContext context) {
     switch (bookmark.type) {
       case 'income':
         return AppColors.income;
       case 'expense':
-        return AppColors.expense;
+        return context.expenseColor;
       case 'transfer':
         return AppColors.warning;
       default:
-        return AppColors.textSecondary;
+        return context.textSecondary;
     }
   }
 
@@ -39,7 +40,7 @@ class BookmarkListItem extends StatelessWidget {
       title: Text(bookmark.name, style: AppTypography.body),
       subtitle: Row(
         children: [
-          _TypeChip(label: bookmark.type, color: _typeColor),
+          _TypeChip(label: bookmark.type, color: _typeColor(context)),
           if (bookmark.amount != null) ...[
             const SizedBox(width: AppSpacing.sm),
             Text(

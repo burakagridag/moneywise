@@ -44,13 +44,13 @@ class SummaryBar extends StatelessWidget {
           _SummaryCell(
             label: l10n.summaryExpense,
             value: '$currencySymbol ${fmt.format(expense)}',
-            valueColor: AppColors.expense,
+            valueColor: context.expenseColor,
           ),
           const _Divider(),
           _SummaryCell(
             label: l10n.summaryTotal,
             value: '$currencySymbol ${fmt.format(total)}',
-            valueColor: total >= 0 ? AppColors.income : AppColors.expense,
+            valueColor: total >= 0 ? AppColors.income : context.expenseColor,
           ),
         ],
       ),

@@ -118,11 +118,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen>
             onPressed: _toggleSearchBar,
           ),
         ),
-        title: Text(
-          l10n.transactionsTitle,
-          style: AppTypography.headline.copyWith(color: context.textPrimary),
-        ),
-        centerTitle: true,
+        title: Text(l10n.tabTransactions, style: AppTypography.title2),
+        centerTitle: false,
         actions: [
           Semantics(
             label: 'Open bookmarks',
@@ -202,10 +199,10 @@ class _PeriodTabBar extends StatelessWidget {
         controller: controller,
         isScrollable: true,
         tabAlignment: TabAlignment.start,
-        labelStyle: AppTypography.subhead.copyWith(
+        labelStyle: AppTypography.caption1.copyWith(
           fontWeight: FontWeight.w600,
         ),
-        unselectedLabelStyle: AppTypography.subhead,
+        unselectedLabelStyle: AppTypography.caption1,
         labelColor: context.textPrimary,
         unselectedLabelColor: context.textSecondary,
         indicatorColor: AppColors.brandPrimary,
@@ -320,6 +317,13 @@ class _DescriptionView extends StatelessWidget {
   const _DescriptionView();
 
   @override
-  Widget build(BuildContext context) =>
-      const Center(child: Text('Coming soon'));
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Text(
+        l10n.comingSoon,
+        style: AppTypography.subhead.copyWith(color: context.textSecondary),
+      ),
+    );
+  }
 }

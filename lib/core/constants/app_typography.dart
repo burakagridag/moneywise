@@ -24,6 +24,7 @@ class AppTypography {
   static const TextStyle headline = TextStyle(
     fontSize: 17,
     fontWeight: FontWeight.w600,
+    letterSpacing: 0.1,
   );
   static const TextStyle body = TextStyle(
     fontSize: 17,
@@ -48,25 +49,36 @@ class AppTypography {
   static const TextStyle caption1 = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w400,
+    letterSpacing: 0.3,
   );
   static const TextStyle caption2 = TextStyle(
     fontSize: 11,
     fontWeight: FontWeight.w400,
+    letterSpacing: 0.4,
   );
 
   static const TextStyle moneyLarge = TextStyle(
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: FontWeight.w700,
+    letterSpacing: -1.0,
     fontFeatures: [FontFeature.tabularFigures()],
   );
   static const TextStyle moneyMedium = TextStyle(
-    fontSize: 17,
+    fontSize: 20,
     fontWeight: FontWeight.w600,
+    letterSpacing: -0.5,
     fontFeatures: [FontFeature.tabularFigures()],
   );
   static const TextStyle moneySmall = TextStyle(
-    fontSize: 15,
+    fontSize: 17,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.0,
+    fontFeatures: [FontFeature.tabularFigures()],
+  );
+  static const TextStyle moneyTiny = TextStyle(
+    fontSize: 13,
     fontWeight: FontWeight.w500,
+    letterSpacing: 0,
     fontFeatures: [FontFeature.tabularFigures()],
   );
 }

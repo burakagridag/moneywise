@@ -12,8 +12,9 @@ import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../providers/transactions_provider.dart';
 
-// Coral highlight for current-week row (BUG-007).
-const Color _currentWeekBg = Color(0x14FF6B5C); // expense.withOpacity(0.08)
+// Muted highlight for current-week row — uses brand primary at low opacity (BUG-007).
+const Color _currentWeekBg =
+    Color(0x143D5A99); // brandPrimary.withOpacity(0.08)
 
 /// Shows 12 month accordion cards for the selected year.
 class MonthlyView extends ConsumerWidget {
@@ -156,6 +157,13 @@ class _MonthCard extends ConsumerWidget {
 
   String get _monthLabel => DateFormat('MMMM').format(DateTime(year, month));
 
+  /// Returns a sign-aware color for the net total amount.
+  Color _totalColor(double net, BuildContext ctx) {
+    if (net > 0) return AppColors.income;
+    if (net < 0) return ctx.expenseColor;
+    return ctx.textSecondary;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weeks = _computeWeeks();
@@ -173,62 +181,97 @@ class _MonthCard extends ConsumerWidget {
       margin: const EdgeInsets.symmetric(vertical: 1),
       child: Column(
         children: [
-          // Month row (header)
+          // Month row (header) — 2-line layout (P0-M1/M2/M3 fix).
           Semantics(
             label: expandedSemanticsLabel,
             expanded: isExpanded,
             child: InkWell(
               onTap: onToggle,
               child: Container(
-                height: 52,
                 color: isExpanded ? context.bgTertiary : context.bgSecondary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.md,
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Current month accent bar
-                    if (isCurrentMonth)
-                      Container(
-                        width: 3,
-                        height: 28,
-                        color: AppColors.brandPrimary,
-                        margin: const EdgeInsets.only(right: AppSpacing.sm),
-                      ),
-                    // Expand chevron
-                    AnimatedRotation(
-                      turns: isExpanded ? 0.25 : 0,
-                      duration: const Duration(milliseconds: 250),
-                      child: Icon(
-                        Icons.chevron_right,
-                        color: context.textTertiary,
-                        size: 16,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    // Month name
-                    SizedBox(
-                      width: 60,
-                      child: Text(
-                        _monthLabel,
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: context.textPrimary,
+                    // Line 1: chevron + month name + net total
+                    Row(
+                      children: [
+                        // Current month accent bar
+                        if (isCurrentMonth)
+                          Container(
+                            width: 3,
+                            height: 20,
+                            color: AppColors.brandPrimary,
+                            margin: const EdgeInsets.only(right: AppSpacing.sm),
+                          ),
+                        // Expand/collapse chevron (24dp slot)
+                        SizedBox(
+                          width: 24,
+                          child: AnimatedRotation(
+                            turns: isExpanded ? 0.25 : 0,
+                            duration: const Duration(milliseconds: 250),
+                            child: Icon(
+                              Icons.chevron_right,
+                              color: context.textTertiary,
+                              size: 16,
+                            ),
+                          ),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        // Month name (full, flex)
+                        Expanded(
+                          child: Text(
+                            '$_monthLabel $year',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: context.textPrimary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        // Net total (sign-aware color)
+                        Text(
+                          CurrencyFormatter.formatSigned(totals.net),
+                          style: AppTypography.moneySmall.copyWith(
+                            color: _totalColor(totals.net, context),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Line 2: date range + income + expense (24dp left-indent)
+                    Padding(
+                      padding: const EdgeInsets.only(left: AppSpacing.xxl),
+                      child: Row(
+                        children: [
+                          Text(
+                            _dateRangeLabel,
+                            style: AppTypography.caption1.copyWith(
+                              color: context.textSecondary,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            CurrencyFormatter.format(totals.income),
+                            style: AppTypography.caption1.copyWith(
+                              color: totals.income > 0
+                                  ? AppColors.income
+                                  : context.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Text(
+                            CurrencyFormatter.format(totals.expense),
+                            style: AppTypography.caption1.copyWith(
+                              color: totals.expense > 0
+                                  ? context.expenseColor
+                                  : context.textSecondary,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
-                    // Date range
-                    Text(
-                      _dateRangeLabel,
-                      style: AppTypography.caption1.copyWith(
-                        color: context.textTertiary,
-                      ),
-                    ),
-                    const Spacer(),
-                    // Totals
-                    _TotalsGroup(totals: totals),
                   ],
                 ),
               ),
@@ -274,7 +317,7 @@ class _NoTransactionsRow extends StatelessWidget {
         child: Text(
           AppLocalizations.of(context)!.monthlyNoTransactions,
           style: AppTypography.caption1.copyWith(
-            color: context.textTertiary,
+            color: context.textSecondary,
           ),
         ),
       ),
@@ -322,87 +365,75 @@ class _WeekRowWidget extends StatelessWidget {
           'Income: ${CurrencyFormatter.format(totals.income)}, '
           'Expense: ${CurrencyFormatter.format(totals.expense)}, '
           'Total: ${CurrencyFormatter.formatSigned(totals.net)}.',
+      // 2-line layout (P1-M3/M4 fix) — 48dp total left-indent (xxl + xxl).
       child: Container(
-        height: 44,
         color: bg,
-        padding: const EdgeInsets.only(
-          left: AppSpacing.xl,
-          right: AppSpacing.lg,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.md,
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: 100,
-              child: Text(
-                weekRange.label,
-                style: AppTypography.caption1.copyWith(
-                  color: context.textSecondary,
-                ),
+            // Line 1: week label + net total (48dp left-indent)
+            Padding(
+              padding: const EdgeInsets.only(left: AppSpacing.xxxxl),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      weekRange.label,
+                      style: AppTypography.caption1.copyWith(
+                        color: context.textSecondary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    CurrencyFormatter.formatSigned(totals.net),
+                    style: AppTypography.caption1.copyWith(
+                      color: _weekNetColor(totals.net, context),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const Spacer(),
-            _TotalsGroup(totals: totals),
+            // Line 2: income + expense (48dp left-indent)
+            Padding(
+              padding: const EdgeInsets.only(left: AppSpacing.xxxxl),
+              child: Row(
+                children: [
+                  const Spacer(),
+                  Text(
+                    CurrencyFormatter.format(totals.income),
+                    style: AppTypography.caption1.copyWith(
+                      color: totals.income > 0
+                          ? AppColors.income
+                          : context.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(
+                    CurrencyFormatter.format(totals.expense),
+                    style: AppTypography.caption1.copyWith(
+                      color: totals.expense > 0
+                          ? context.expenseColor
+                          : context.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-}
 
-// ---------------------------------------------------------------------------
-// Shared totals group
-// ---------------------------------------------------------------------------
-
-class _TotalsGroup extends StatelessWidget {
-  const _TotalsGroup({required this.totals});
-
-  final MonthTotals totals;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 72,
-          child: Text(
-            CurrencyFormatter.format(totals.income),
-            style: AppTypography.moneySmall.copyWith(
-              color:
-                  totals.income > 0 ? AppColors.income : context.textTertiary,
-            ),
-            textAlign: TextAlign.right,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        SizedBox(
-          width: 72,
-          child: Text(
-            CurrencyFormatter.format(totals.expense),
-            style: AppTypography.moneySmall.copyWith(
-              color:
-                  totals.expense > 0 ? AppColors.expense : context.textTertiary,
-            ),
-            textAlign: TextAlign.right,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        SizedBox(
-          width: 76,
-          child: Text(
-            CurrencyFormatter.formatSigned(totals.net),
-            style: AppTypography.moneySmall.copyWith(
-              color: totals.net >= 0 ? AppColors.income : AppColors.expense,
-            ),
-            textAlign: TextAlign.right,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
+  Color _weekNetColor(double net, BuildContext ctx) {
+    if (net > 0) return AppColors.income;
+    if (net < 0) return ctx.expenseColor;
+    return ctx.textSecondary;
   }
 }

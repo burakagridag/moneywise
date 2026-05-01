@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'MoneyWise';
 
   @override
-  String get tabTransactions => 'Trans.';
+  String get tabTransactions => 'Transactions';
 
   @override
   String get tabStats => 'Stats';
@@ -258,10 +258,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabDescription => 'Description';
 
   @override
-  String get transactionsTitle => 'Trans.';
+  String get transactionsTitle => 'Transactions';
 
   @override
-  String get expenseLabel => 'Exp.';
+  String get expenseLabel => 'Expense';
 
   @override
   String get totalLabel => 'Total';

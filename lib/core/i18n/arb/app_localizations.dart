@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @tabTransactions.
   ///
   /// In en, this message translates to:
-  /// **'Trans.'**
+  /// **'Transactions'**
   String get tabTransactions;
 
   /// No description provided for @tabStats.
@@ -575,13 +575,13 @@ abstract class AppLocalizations {
   /// No description provided for @transactionsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Trans.'**
+  /// **'Transactions'**
   String get transactionsTitle;
 
   /// No description provided for @expenseLabel.
   ///
   /// In en, this message translates to:
-  /// **'Exp.'**
+  /// **'Expense'**
   String get expenseLabel;
 
   /// No description provided for @totalLabel.

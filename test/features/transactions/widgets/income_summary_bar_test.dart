@@ -32,7 +32,7 @@ void main() {
       await tester.pump();
 
       // Expect formatted income somewhere in the tree.
-      expect(find.textContaining('1,234'), findsAtLeastNWidgets(1),
+      expect(find.textContaining('1.234'), findsAtLeastNWidgets(1),
           reason: 'Income amount should be displayed formatted');
     });
 
@@ -59,7 +59,7 @@ void main() {
       await tester.pump();
 
       expect(find.text('Income'), findsOneWidget);
-      expect(find.text('Exp.'), findsOneWidget);
+      expect(find.text('Expense'), findsOneWidget);
       expect(find.text('Total'), findsOneWidget);
     });
 
