@@ -1387,6 +1387,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Minus {amount}'**
   String semanticAmountNegative(String amount);
+
+  /// No description provided for @homeRecentSemanticContainerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent transactions. {count} shown.'**
+  String homeRecentSemanticContainerLabel(int count);
+
+  /// No description provided for @homeRecentSeeAllSemanticLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'View all transactions'**
+  String get homeRecentSeeAllSemanticLabel;
 }
 
 class _AppLocalizationsDelegate

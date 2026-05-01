@@ -236,5 +236,22 @@
   "homeThisWeekTitle": "Bu hafta",
 
   "semanticAmountPositive": "+{amount}",
-  "semanticAmountNegative": "-{amount}"
+  "@semanticAmountPositive": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "semanticAmountNegative": "-{amount}",
+  "@semanticAmountNegative": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+
+  "homeRecentSemanticContainerLabel": "Son işlemler. {count} gösteriliyor.",
+  "@homeRecentSemanticContainerLabel": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "homeRecentSeeAllSemanticLabel": "Tüm işlemleri görüntüle",
+  "@homeRecentSeeAllSemanticLabel": {}
 }

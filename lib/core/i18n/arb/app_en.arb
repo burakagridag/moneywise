@@ -246,5 +246,12 @@
     "placeholders": {
       "amount": { "type": "String" }
     }
-  }
+  },
+
+  "homeRecentSemanticContainerLabel": "Recent transactions. {count} shown.",
+  "@homeRecentSemanticContainerLabel": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "homeRecentSeeAllSemanticLabel": "View all transactions",
+  "@homeRecentSeeAllSemanticLabel": {}
 }

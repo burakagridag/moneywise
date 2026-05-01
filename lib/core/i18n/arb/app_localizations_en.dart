@@ -685,4 +685,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String semanticAmountNegative(String amount) {
     return 'Minus $amount';
   }
+
+  @override
+  String homeRecentSemanticContainerLabel(int count) {
+    return 'Recent transactions. $count shown.';
+  }
+
+  @override
+  String get homeRecentSeeAllSemanticLabel => 'View all transactions';
 }

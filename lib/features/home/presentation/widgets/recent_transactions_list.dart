@@ -74,7 +74,7 @@ class _RecentContent extends StatelessWidget {
     final containerBorder = isDark ? AppColors.border : AppColors.borderLight;
 
     return Semantics(
-      label: 'Recent transactions. ${transactions.length} shown.',
+      label: l10n.homeRecentSemanticContainerLabel(transactions.length),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -96,7 +96,7 @@ class _RecentContent extends StatelessWidget {
                   ),
                 ),
                 Semantics(
-                  label: 'View all transactions',
+                  label: l10n.homeRecentSeeAllSemanticLabel,
                   button: true,
                   child: GestureDetector(
                     onTap: onSeeAllTap,

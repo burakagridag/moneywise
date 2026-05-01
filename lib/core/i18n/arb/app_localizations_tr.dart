@@ -684,4 +684,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String semanticAmountNegative(String amount) {
     return '-$amount';
   }
+
+  @override
+  String homeRecentSemanticContainerLabel(int count) {
+    return 'Son işlemler. $count gösteriliyor.';
+  }
+
+  @override
+  String get homeRecentSeeAllSemanticLabel => 'Tüm işlemleri görüntüle';
 }
