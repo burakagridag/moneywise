@@ -84,8 +84,8 @@ void main() {
       );
       await tester.pumpWidget(widget);
       await tester.pump();
-      // The AppBar title from i18n is 'Trans.'
-      expect(find.text('Trans.'), findsOneWidget);
+      // The AppBar title from i18n is 'Transactions'
+      expect(find.text('Transactions'), findsOneWidget);
       // Replace widget tree → ProviderScope.dispose → Drift schedules
       // zero-duration timers for each stream. Pump several times to drain.
       await tester.pumpWidget(const SizedBox.shrink());
