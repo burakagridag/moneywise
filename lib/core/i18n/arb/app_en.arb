@@ -233,5 +233,18 @@
   "homeTotalBalanceLabel": "Total Balance",
   "homeTrendSinceLastMonth": "since last month",
 
-  "homeThisWeekTitle": "This week"
+  "homeThisWeekTitle": "This week",
+
+  "semanticAmountPositive": "Plus {amount}",
+  "@semanticAmountPositive": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "semanticAmountNegative": "Minus {amount}",
+  "@semanticAmountNegative": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  }
 }

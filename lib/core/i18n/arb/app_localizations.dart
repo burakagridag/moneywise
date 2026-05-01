@@ -1375,6 +1375,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This week'**
   String get homeThisWeekTitle;
+
+  /// No description provided for @semanticAmountPositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Plus {amount}'**
+  String semanticAmountPositive(String amount);
+
+  /// No description provided for @semanticAmountNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Minus {amount}'**
+  String semanticAmountNegative(String amount);
 }
 
 class _AppLocalizationsDelegate

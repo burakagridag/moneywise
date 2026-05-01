@@ -675,4 +675,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeThisWeekTitle => 'This week';
+
+  @override
+  String semanticAmountPositive(String amount) {
+    return 'Plus $amount';
+  }
+
+  @override
+  String semanticAmountNegative(String amount) {
+    return 'Minus $amount';
+  }
 }

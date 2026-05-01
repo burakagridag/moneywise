@@ -233,5 +233,8 @@
   "homeTotalBalanceLabel": "Toplam Bakiye",
   "homeTrendSinceLastMonth": "geçen aydan bu yana",
 
-  "homeThisWeekTitle": "Bu hafta"
+  "homeThisWeekTitle": "Bu hafta",
+
+  "semanticAmountPositive": "+{amount}",
+  "semanticAmountNegative": "-{amount}"
 }

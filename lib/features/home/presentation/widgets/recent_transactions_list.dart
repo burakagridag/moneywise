@@ -177,10 +177,9 @@ class _RecentContent extends StatelessWidget {
     AppLocalizations l10n,
   ) {
     final tx = details.transaction;
-    final typeName = tx.transactionType.name;
-    final amountStr = _semanticAmount(tx);
+    final amountStr = _semanticAmount(tx, l10n);
     final name = resolveDisplayName(tx, details.categoryName, l10n);
-    return '$name. $amountStr. $typeName. Tap for details.';
+    return '$name. $amountStr. Tap for details.';
   }
 
   /// 3-step display-name fallback:
@@ -208,14 +207,14 @@ class _RecentContent extends StatelessWidget {
     }
   }
 
-  String _semanticAmount(Transaction tx) {
+  String _semanticAmount(Transaction tx, AppLocalizations l10n) {
     final abs = tx.amount.abs();
     final formatted = CurrencyFormatter.format(abs);
     switch (tx.transactionType) {
       case TransactionType.income:
-        return 'Plus $formatted';
+        return l10n.semanticAmountPositive(formatted);
       case TransactionType.expense:
-        return 'Minus $formatted';
+        return l10n.semanticAmountNegative(formatted);
       case TransactionType.transfer:
         return formatted;
     }
@@ -393,8 +392,11 @@ class _TransactionDetailPreview extends StatelessWidget {
     final isDark = context.isDark;
     final l10n = AppLocalizations.of(context)!;
     final bgColor = isDark ? AppColors.bgSecondary : AppColors.bgElevatedLight;
-    final typeName = tx.transactionType.name;
-    final typeLabel = typeName[0].toUpperCase() + typeName.substring(1);
+    final typeLabel = switch (tx.transactionType) {
+      TransactionType.income => l10n.income,
+      TransactionType.expense => l10n.expense,
+      TransactionType.transfer => l10n.transfer,
+    };
     final displayName =
         _RecentContent.resolveDisplayName(tx, details.categoryName, l10n);
 
