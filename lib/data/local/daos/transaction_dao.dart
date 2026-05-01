@@ -102,7 +102,13 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   /// account names via LEFT OUTER JOINs, ordered newest-first.
   /// Used by [recentTransactionsProvider] to enable the 3-step display-name
   /// fallback (description → category name → type string).
-  Stream<List<TransactionWithNames>> watchAllTransactionsWithDetails() {
+  ///
+  /// [limit] is pushed into SQL so only the requested number of rows are
+  /// transferred from the DB — avoids fetching the entire table to discard
+  /// all but a handful of rows in Dart.
+  Stream<List<TransactionWithNames>> watchAllTransactionsWithDetails({
+    int limit = 5,
+  }) {
     final toAcc = alias(accounts, 'to_acc');
 
     final query = select(transactions).join([
@@ -129,7 +135,8 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
           expression: transactions.createdAt,
           mode: OrderingMode.desc,
         ),
-      ]);
+      ])
+      ..limit(limit);
 
     return query.watch().map((rows) {
       return rows.map((row) {

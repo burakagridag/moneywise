@@ -12,14 +12,17 @@ part 'recent_transactions_provider.g.dart';
 /// ordered newest-first, enriched with resolved category and account names.
 /// The UI layer takes `.take(2)` for display.
 ///
-/// Uses [TransactionRepository.watchAllWithDetails] which joins categories and
-/// accounts via LEFT OUTER JOIN, enabling the 3-step title fallback:
+/// The LIMIT is applied at the SQL level via [TransactionRepository.watchAllWithDetails]
+/// — no Dart-side filtering is needed, ensuring only 5 rows are read from the DB.
+///
+/// Uses a LEFT OUTER JOIN on categories and accounts, enabling the 3-step
+/// title fallback:
 ///   1. transaction.description (if non-empty)
 ///   2. categoryName (if available)
-///   3. type string ("Income" / "Expense" / "Transfer")
+///   3. type string (via AppLocalizations)
 @riverpod
 Stream<List<TransactionWithDetails>> recentTransactions(
     RecentTransactionsRef ref) {
   final repo = ref.watch(transactionRepositoryProvider);
-  return repo.watchAllWithDetails().map((all) => all.take(5).toList());
+  return repo.watchAllWithDetails(limit: 5);
 }

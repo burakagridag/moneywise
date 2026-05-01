@@ -48,8 +48,11 @@ class TransactionRepository {
   /// account names — used by the home tab's recent-transactions list so that the
   /// 3-step display-name fallback (description → category name → type string)
   /// has access to the resolved category name without a second round-trip.
-  Stream<List<TransactionWithDetails>> watchAllWithDetails() =>
-      _dao.watchAllTransactionsWithDetails().map(
+  ///
+  /// [limit] is forwarded to the DAO so that SQL-level LIMIT is applied;
+  /// defaults to 5 to match the home tab's requirements.
+  Stream<List<TransactionWithDetails>> watchAllWithDetails({int limit = 5}) =>
+      _dao.watchAllTransactionsWithDetails(limit: limit).map(
             (rows) => rows.map(_mapToDetailEntity).toList(),
           );
 

@@ -143,7 +143,7 @@ class _RecentContent extends StatelessWidget {
               child: Column(
                 children: [
                   Semantics(
-                    label: _rowSemanticLabel(transactions[0]),
+                    label: _rowSemanticLabel(transactions[0], l10n),
                     button: true,
                     child: ExcludeSemantics(
                       child: _RecentTransactionRow(
@@ -154,7 +154,7 @@ class _RecentContent extends StatelessWidget {
                   if (transactions.length > 1) ...[
                     ExcludeSemantics(child: _InsetDivider()),
                     Semantics(
-                      label: _rowSemanticLabel(transactions[1]),
+                      label: _rowSemanticLabel(transactions[1], l10n),
                       button: true,
                       child: ExcludeSemantics(
                         child: _RecentTransactionRow(
@@ -172,19 +172,26 @@ class _RecentContent extends StatelessWidget {
     );
   }
 
-  String _rowSemanticLabel(TransactionWithDetails details) {
+  String _rowSemanticLabel(
+    TransactionWithDetails details,
+    AppLocalizations l10n,
+  ) {
     final tx = details.transaction;
     final typeName = tx.transactionType.name;
     final amountStr = _semanticAmount(tx);
-    final name = resolveDisplayName(tx, details.categoryName);
+    final name = resolveDisplayName(tx, details.categoryName, l10n);
     return '$name. $amountStr. $typeName. Tap for details.';
   }
 
   /// 3-step display-name fallback:
   ///   1. transaction.description — if non-null and non-empty.
   ///   2. categoryName — if available.
-  ///   3. type string — "Income" / "Expense" / "Transfer".
-  static String resolveDisplayName(Transaction tx, String? categoryName) {
+  ///   3. type string — resolved via [AppLocalizations] (never hard-coded English).
+  static String resolveDisplayName(
+    Transaction tx,
+    String? categoryName,
+    AppLocalizations l10n,
+  ) {
     if (tx.description?.isNotEmpty == true) {
       return tx.description!;
     }
@@ -193,11 +200,11 @@ class _RecentContent extends StatelessWidget {
     }
     switch (tx.transactionType) {
       case TransactionType.income:
-        return 'Income';
+        return l10n.income;
       case TransactionType.expense:
-        return 'Expense';
+        return l10n.expense;
       case TransactionType.transfer:
-        return 'Transfer';
+        return l10n.transfer;
     }
   }
 
@@ -229,8 +236,9 @@ class _RecentTransactionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDark;
+    final l10n = AppLocalizations.of(context)!;
     final displayName =
-        _RecentContent.resolveDisplayName(_tx, details.categoryName);
+        _RecentContent.resolveDisplayName(_tx, details.categoryName, l10n);
 
     // Show the category name as subtitle only when it is available AND different
     // from the resolved display name (avoids duplicate lines such as
@@ -383,11 +391,12 @@ class _TransactionDetailPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     final tx = details.transaction;
     final isDark = context.isDark;
+    final l10n = AppLocalizations.of(context)!;
     final bgColor = isDark ? AppColors.bgSecondary : AppColors.bgElevatedLight;
     final typeName = tx.transactionType.name;
     final typeLabel = typeName[0].toUpperCase() + typeName.substring(1);
     final displayName =
-        _RecentContent.resolveDisplayName(tx, details.categoryName);
+        _RecentContent.resolveDisplayName(tx, details.categoryName, l10n);
 
     return Container(
       decoration: BoxDecoration(
