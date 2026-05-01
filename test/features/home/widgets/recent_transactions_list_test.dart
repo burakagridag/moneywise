@@ -289,6 +289,100 @@ void main() {
     });
 
     // -----------------------------------------------------------------------
+    // NEW-01: Transaction name shows description, not type string
+    // -----------------------------------------------------------------------
+
+    testWidgets('row label shows description when present', (tester) async {
+      final tx = _makeTx(id: 'tx1', type: 'expense', description: 'Migros');
+      final stream = Stream.value([tx]);
+
+      await tester.pumpWidget(_buildWidget(stream: stream));
+      await tester.pump();
+
+      expect(find.text('Migros'), findsOneWidget,
+          reason: 'description field must be used as the row label');
+      // Raw type string must NOT appear as row label
+      expect(find.text('Expense'), findsNothing,
+          reason: 'type string must not be shown when description is set');
+    });
+
+    testWidgets('row label falls back to type name when description is null',
+        (tester) async {
+      final tx = _makeTx(id: 'tx1', type: 'income', description: null);
+      final stream = Stream.value([tx]);
+
+      await tester.pumpWidget(_buildWidget(stream: stream));
+      await tester.pump();
+
+      // With no description the widget falls back to 'Income'
+      expect(find.text('Income'), findsOneWidget,
+          reason: 'type name fallback must appear when description is null');
+    });
+
+    testWidgets('row label falls back to type name when description is empty',
+        (tester) async {
+      final tx = _makeTx(id: 'tx1', type: 'expense', description: '');
+      final stream = Stream.value([tx]);
+
+      await tester.pumpWidget(_buildWidget(stream: stream));
+      await tester.pump();
+
+      expect(find.text('Expense'), findsOneWidget,
+          reason:
+              'type name fallback must appear when description is empty string');
+    });
+
+    // -----------------------------------------------------------------------
+    // NEW-02: Income/Expense arrow icon direction
+    // -----------------------------------------------------------------------
+
+    testWidgets('income row uses arrow_upward icon', (tester) async {
+      final tx = _makeTx(id: 'tx1', type: 'income', amount: 100.0);
+      final stream = Stream.value([tx]);
+
+      await tester.pumpWidget(_buildWidget(stream: stream));
+      await tester.pump();
+
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is Icon && w.icon == Icons.arrow_upward,
+        ),
+        findsOneWidget,
+        reason: 'Income must render Icons.arrow_upward (money coming in)',
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is Icon && w.icon == Icons.arrow_downward,
+        ),
+        findsNothing,
+        reason: 'Income must NOT render Icons.arrow_downward',
+      );
+    });
+
+    testWidgets('expense row uses arrow_downward icon', (tester) async {
+      final tx = _makeTx(id: 'tx1', type: 'expense', amount: 50.0);
+      final stream = Stream.value([tx]);
+
+      await tester.pumpWidget(_buildWidget(stream: stream));
+      await tester.pump();
+
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is Icon && w.icon == Icons.arrow_downward,
+        ),
+        findsOneWidget,
+        reason: 'Expense must render Icons.arrow_downward (money going out)',
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is Icon && w.icon == Icons.arrow_upward,
+        ),
+        findsNothing,
+        reason: 'Expense must NOT render Icons.arrow_upward',
+      );
+    });
+
+    // -----------------------------------------------------------------------
     // Amount sign prefix
     // -----------------------------------------------------------------------
 

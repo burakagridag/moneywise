@@ -320,14 +320,16 @@ class _RecentTransactionRow extends StatelessWidget {
         color: context.textSecondary,
       );
     }
-    // No category emoji available at this layer without JOIN — use type icon
+    // No category emoji available at this layer without JOIN — use type icon.
+    // Income = money coming IN → upward arrow.
+    // Expense = money going OUT → downward arrow.
     switch (transaction.transactionType) {
       case TransactionType.income:
-        return const Icon(Icons.arrow_downward,
+        return const Icon(Icons.arrow_upward,
             size: 16, color: AppColors.income);
       case TransactionType.expense:
         return Icon(
-          Icons.arrow_upward,
+          Icons.arrow_downward,
           size: 16,
           color: context.expenseColor,
         );
