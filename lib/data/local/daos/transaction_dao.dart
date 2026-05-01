@@ -98,6 +98,57 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
         ..orderBy([(t) => OrderingTerm.desc(t.date)]))
       .watch();
 
+  /// Reactive stream of all non-deleted transactions enriched with category and
+  /// account names via LEFT OUTER JOINs, ordered newest-first.
+  /// Used by [recentTransactionsProvider] to enable the 3-step display-name
+  /// fallback (description → category name → type string).
+  Stream<List<TransactionWithNames>> watchAllTransactionsWithDetails() {
+    final toAcc = alias(accounts, 'to_acc');
+
+    final query = select(transactions).join([
+      leftOuterJoin(
+        categories,
+        categories.id.equalsExp(transactions.categoryId),
+      ),
+      leftOuterJoin(
+        accounts,
+        accounts.id.equalsExp(transactions.accountId),
+      ),
+      leftOuterJoin(
+        toAcc,
+        toAcc.id.equalsExp(transactions.toAccountId),
+      ),
+    ])
+      ..where(transactions.isDeleted.equals(false))
+      ..orderBy([
+        OrderingTerm(
+          expression: transactions.date,
+          mode: OrderingMode.desc,
+        ),
+        OrderingTerm(
+          expression: transactions.createdAt,
+          mode: OrderingMode.desc,
+        ),
+      ]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        final tx = row.readTable(transactions);
+        final cat = row.readTableOrNull(categories);
+        final acc = row.readTableOrNull(accounts);
+        final toAccRow = row.readTableOrNull(toAcc);
+        return TransactionWithNames(
+          transaction: tx,
+          categoryName: cat?.name,
+          categoryEmoji: cat?.iconEmoji,
+          categoryColorHex: cat?.colorHex,
+          accountName: acc?.name,
+          toAccountName: toAccRow?.name,
+        );
+      }).toList();
+    });
+  }
+
   /// One-shot fetch of non-deleted transactions for [year]/[month].
   Future<List<Transaction>> getTransactionsByMonth(int year, int month) {
     final start = DateTime(year, month);

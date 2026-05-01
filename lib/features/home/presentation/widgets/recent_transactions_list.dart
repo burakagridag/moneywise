@@ -10,6 +10,7 @@ import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../domain/entities/transaction.dart';
+import '../../../../domain/entities/transaction_with_details.dart';
 import '../providers/recent_transactions_provider.dart';
 
 // ---------------------------------------------------------------------------
@@ -60,7 +61,7 @@ class _RecentContent extends StatelessWidget {
     required this.onSeeAllTap,
   });
 
-  final List<Transaction> transactions;
+  final List<TransactionWithDetails> transactions;
   final VoidCallback onSeeAllTap;
 
   @override
@@ -146,7 +147,7 @@ class _RecentContent extends StatelessWidget {
                     button: true,
                     child: ExcludeSemantics(
                       child: _RecentTransactionRow(
-                        transaction: transactions[0],
+                        details: transactions[0],
                       ),
                     ),
                   ),
@@ -157,7 +158,7 @@ class _RecentContent extends StatelessWidget {
                       button: true,
                       child: ExcludeSemantics(
                         child: _RecentTransactionRow(
-                          transaction: transactions[1],
+                          details: transactions[1],
                         ),
                       ),
                     ),
@@ -171,21 +172,24 @@ class _RecentContent extends StatelessWidget {
     );
   }
 
-  String _rowSemanticLabel(Transaction tx) {
+  String _rowSemanticLabel(TransactionWithDetails details) {
+    final tx = details.transaction;
     final typeName = tx.transactionType.name;
     final amountStr = _semanticAmount(tx);
-    final name = _resolveDisplayName(tx);
+    final name = resolveDisplayName(tx, details.categoryName);
     return '$name. $amountStr. $typeName. Tap for details.';
   }
 
-  /// Returns the display name for [tx]: description when set, otherwise the
-  /// capitalised transaction type name (Income / Expense / Transfer).
-  /// Category name is not resolved here (no JOIN available at this layer).
-  /// TODO(EPIC8B): resolve category name via categoryId when a category
-  /// lookup provider is available.
-  static String _resolveDisplayName(Transaction tx) {
+  /// 3-step display-name fallback:
+  ///   1. transaction.description — if non-null and non-empty.
+  ///   2. categoryName — if available.
+  ///   3. type string — "Income" / "Expense" / "Transfer".
+  static String resolveDisplayName(Transaction tx, String? categoryName) {
     if (tx.description?.isNotEmpty == true) {
       return tx.description!;
+    }
+    if (categoryName != null && categoryName.isNotEmpty) {
+      return categoryName;
     }
     switch (tx.transactionType) {
       case TransactionType.income:
@@ -216,80 +220,97 @@ class _RecentContent extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _RecentTransactionRow extends StatelessWidget {
-  const _RecentTransactionRow({required this.transaction});
+  const _RecentTransactionRow({required this.details});
 
-  final Transaction transaction;
+  final TransactionWithDetails details;
+
+  Transaction get _tx => details.transaction;
 
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDark;
+    final displayName =
+        _RecentContent.resolveDisplayName(_tx, details.categoryName);
+
+    // Show the category name as subtitle only when it is available AND different
+    // from the resolved display name (avoids duplicate lines such as
+    // title="Salary" / subtitle="Salary").
+    final showSubtitle = details.categoryName != null &&
+        details.categoryName!.isNotEmpty &&
+        details.categoryName != displayName;
 
     return InkWell(
       onTap: () => _openDetail(context),
       splashColor: AppColors.brandPrimaryGlow,
       highlightColor: AppColors.brandPrimaryGlow,
-      child: SizedBox(
-        height: AppHeights.listItem,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.md,
-            horizontal: 14,
-          ),
-          child: Row(
-            children: [
-              // Category icon container
-              ExcludeSemantics(
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: _iconBgColor(context),
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                  ),
-                  child: Center(
-                    child: _buildIcon(context),
-                  ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: AppSpacing.md,
+          horizontal: 14,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Category icon container
+            ExcludeSemantics(
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: _iconBgColor(context),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                ),
+                child: Center(
+                  child: _buildIcon(context),
                 ),
               ),
-              const SizedBox(width: AppSpacing.sm),
+            ),
+            const SizedBox(width: AppSpacing.sm),
 
-              // Transaction name
-              Expanded(
-                child: Text(
-                  _displayName,
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: context.textPrimary,
+            // Title + optional subtitle column
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    displayName,
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: context.textPrimary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                  if (showSubtitle)
+                    Text(
+                      details.categoryName!,
+                      style: AppTypography.caption1.copyWith(
+                        color: context.textSecondary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                ],
               ),
-              const SizedBox(width: AppSpacing.sm),
+            ),
+            const SizedBox(width: AppSpacing.sm),
 
-              // Signed amount
-              Text(
-                _formattedAmount,
-                style: AppTypography.moneySmall.copyWith(
-                  color: _amountColor(isDark),
-                ),
+            // Signed amount
+            Text(
+              _formattedAmount,
+              style: AppTypography.moneySmall.copyWith(
+                color: _amountColor(isDark),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  // Displays description when set; falls back to the transaction type name
-  // (Income / Expense / Transfer) when description is null or empty.
-  // Category name is not resolved here (no JOIN available at this layer).
-  // TODO(EPIC8B): resolve category name via categoryId when a category
-  // lookup provider is available.
-  String get _displayName => _RecentContent._resolveDisplayName(transaction);
-
   String get _formattedAmount {
-    final formatted = CurrencyFormatter.format(transaction.amount.abs());
-    switch (transaction.transactionType) {
+    final formatted = CurrencyFormatter.format(_tx.amount.abs());
+    switch (_tx.transactionType) {
       case TransactionType.income:
         return '+$formatted';
       case TransactionType.expense:
@@ -301,7 +322,7 @@ class _RecentTransactionRow extends StatelessWidget {
   }
 
   Color _amountColor(bool isDark) {
-    switch (transaction.transactionType) {
+    switch (_tx.transactionType) {
       case TransactionType.income:
         return AppColors.income;
       case TransactionType.expense:
@@ -312,7 +333,7 @@ class _RecentTransactionRow extends StatelessWidget {
   }
 
   Color _iconBgColor(BuildContext context) {
-    switch (transaction.transactionType) {
+    switch (_tx.transactionType) {
       case TransactionType.income:
         return AppColors.income.withAlpha(38);
       case TransactionType.expense:
@@ -322,12 +343,12 @@ class _RecentTransactionRow extends StatelessWidget {
     }
   }
 
-  // No category emoji available at this layer without JOIN — use type icon.
+  // No category emoji available without JOIN — use type icon.
   // Income = money coming IN → upward arrow.
   // Expense = money going OUT → downward arrow.
   // Transfer = swap horizontal.
   Widget _buildIcon(BuildContext context) {
-    switch (transaction.transactionType) {
+    switch (_tx.transactionType) {
       case TransactionType.income:
         return const Icon(Icons.arrow_upward,
             size: 16, color: AppColors.income);
@@ -340,16 +361,11 @@ class _RecentTransactionRow extends StatelessWidget {
   }
 
   void _openDetail(BuildContext context) {
-    // Navigate to Transactions tab to view details — no standalone detail
-    // bottom-sheet is available at this data layer (no category join).
-    // Full detail is accessible via the Transactions tab.
-    // TODO(EPIC8A-09): replace with TransactionDetailSheet once a enriched
-    // provider is wired to the home feature (requires category JOIN).
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _TransactionDetailPreview(transaction: transaction),
+      builder: (_) => _TransactionDetailPreview(details: details),
     );
   }
 }
@@ -359,16 +375,19 @@ class _RecentTransactionRow extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _TransactionDetailPreview extends StatelessWidget {
-  const _TransactionDetailPreview({required this.transaction});
+  const _TransactionDetailPreview({required this.details});
 
-  final Transaction transaction;
+  final TransactionWithDetails details;
 
   @override
   Widget build(BuildContext context) {
+    final tx = details.transaction;
     final isDark = context.isDark;
     final bgColor = isDark ? AppColors.bgSecondary : AppColors.bgElevatedLight;
-    final typeName = transaction.transactionType.name;
+    final typeName = tx.transactionType.name;
     final typeLabel = typeName[0].toUpperCase() + typeName.substring(1);
+    final displayName =
+        _RecentContent.resolveDisplayName(tx, details.categoryName);
 
     return Container(
       decoration: BoxDecoration(
@@ -404,9 +423,9 @@ class _TransactionDetailPreview extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            CurrencyFormatter.format(transaction.amount.abs()),
+            CurrencyFormatter.format(tx.amount.abs()),
             style: AppTypography.moneyLarge.copyWith(
-              color: switch (transaction.transactionType) {
+              color: switch (tx.transactionType) {
                 TransactionType.income => AppColors.income,
                 TransactionType.expense =>
                   isDark ? AppColors.expenseDark : AppColors.expense,
@@ -414,10 +433,10 @@ class _TransactionDetailPreview extends StatelessWidget {
               },
             ),
           ),
-          if (transaction.description?.isNotEmpty == true) ...[
+          if (displayName != typeLabel) ...[
             const SizedBox(height: AppSpacing.sm),
             Text(
-              transaction.description!,
+              displayName,
               style:
                   AppTypography.subhead.copyWith(color: context.textSecondary),
             ),
@@ -503,30 +522,25 @@ class _ShimmerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: AppHeights.listItem,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: AppSpacing.md,
-          horizontal: 14,
-        ),
-        child: Row(
-          children: [
-            _ShimmerBox(
-              width: 32,
-              height: 32,
-              base: base,
-              highlight: highlight,
-              radius: AppRadius.sm,
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            _ShimmerBox(
-                width: 120, height: 14, base: base, highlight: highlight),
-            const Spacer(),
-            _ShimmerBox(
-                width: 70, height: 14, base: base, highlight: highlight),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: AppSpacing.md,
+        horizontal: 14,
+      ),
+      child: Row(
+        children: [
+          _ShimmerBox(
+            width: 32,
+            height: 32,
+            base: base,
+            highlight: highlight,
+            radius: AppRadius.sm,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          _ShimmerBox(width: 120, height: 14, base: base, highlight: highlight),
+          const Spacer(),
+          _ShimmerBox(width: 70, height: 14, base: base, highlight: highlight),
+        ],
       ),
     );
   }

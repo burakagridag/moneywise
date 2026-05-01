@@ -8,6 +8,7 @@ import 'package:moneywise/core/constants/app_colors.dart';
 import 'package:moneywise/core/i18n/arb/app_localizations.dart';
 import 'package:moneywise/core/theme/app_theme.dart';
 import 'package:moneywise/domain/entities/transaction.dart';
+import 'package:moneywise/domain/entities/transaction_with_details.dart';
 import 'package:moneywise/features/home/presentation/providers/recent_transactions_provider.dart';
 import 'package:moneywise/features/home/presentation/widgets/recent_transactions_list.dart';
 
@@ -20,6 +21,7 @@ Transaction _makeTx({
   required String type,
   double amount = 100.0,
   String? description,
+  String? categoryId,
 }) {
   final now = DateTime(2026, 5, 1);
   return Transaction(
@@ -30,14 +32,33 @@ Transaction _makeTx({
     accountId: 'acc_1',
     date: now,
     description: description,
+    categoryId: categoryId,
     createdAt: now,
     updatedAt: now,
   );
 }
 
+TransactionWithDetails _makeDetails({
+  required String id,
+  required String type,
+  double amount = 100.0,
+  String? description,
+  String? categoryName,
+}) {
+  return TransactionWithDetails(
+    transaction: _makeTx(
+      id: id,
+      type: type,
+      amount: amount,
+      description: description,
+    ),
+    categoryName: categoryName,
+  );
+}
+
 /// Wraps [RecentTransactionsList] with the given [stream] override.
 Widget _buildWidget({
-  required Stream<List<Transaction>> stream,
+  required Stream<List<TransactionWithDetails>> stream,
   VoidCallback? onSeeAllTap,
   ThemeData? theme,
 }) {
@@ -70,7 +91,7 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('hides entire section when 0 transactions', (tester) async {
-      final stream = Stream.value(<Transaction>[]);
+      final stream = Stream.value(<TransactionWithDetails>[]);
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
 
@@ -84,8 +105,9 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('shows 1 row when 1 transaction provided', (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'expense', description: 'Coffee');
-      final stream = Stream.value([tx]);
+      final details =
+          _makeDetails(id: 'tx1', type: 'expense', description: 'Coffee');
+      final stream = Stream.value([details]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -97,8 +119,8 @@ void main() {
     });
 
     testWidgets('shows no divider with 1 transaction', (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'income', amount: 500.0);
-      final stream = Stream.value([tx]);
+      final details = _makeDetails(id: 'tx1', type: 'income', amount: 500.0);
+      final stream = Stream.value([details]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -116,12 +138,12 @@ void main() {
 
     testWidgets('shows exactly 2 rows when 2+ transactions provided',
         (tester) async {
-      final txs = [
-        _makeTx(id: 'tx1', type: 'expense', description: 'Rent'),
-        _makeTx(id: 'tx2', type: 'income', description: 'Salary'),
-        _makeTx(id: 'tx3', type: 'expense', description: 'Gym'),
+      final details = [
+        _makeDetails(id: 'tx1', type: 'expense', description: 'Rent'),
+        _makeDetails(id: 'tx2', type: 'income', description: 'Salary'),
+        _makeDetails(id: 'tx3', type: 'expense', description: 'Gym'),
       ];
-      final stream = Stream.value(txs);
+      final stream = Stream.value(details);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -133,11 +155,11 @@ void main() {
     });
 
     testWidgets('shows inset divider between 2 rows', (tester) async {
-      final txs = [
-        _makeTx(id: 'tx1', type: 'expense', description: 'Row A'),
-        _makeTx(id: 'tx2', type: 'income', description: 'Row B'),
+      final details = [
+        _makeDetails(id: 'tx1', type: 'expense', description: 'Row A'),
+        _makeDetails(id: 'tx2', type: 'income', description: 'Row B'),
       ];
-      final stream = Stream.value(txs);
+      final stream = Stream.value(details);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -154,7 +176,7 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('"All →" link is visible with transactions', (tester) async {
-      final stream = Stream.value([_makeTx(id: 'tx1', type: 'expense')]);
+      final stream = Stream.value([_makeDetails(id: 'tx1', type: 'expense')]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -164,7 +186,7 @@ void main() {
 
     testWidgets('"All →" tap fires onSeeAllTap callback', (tester) async {
       var tapped = false;
-      final stream = Stream.value([_makeTx(id: 'tx1', type: 'expense')]);
+      final stream = Stream.value([_makeDetails(id: 'tx1', type: 'expense')]);
 
       await tester.pumpWidget(_buildWidget(
         stream: stream,
@@ -184,8 +206,8 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('income amount renders with income color', (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'income', amount: 500.0);
-      final stream = Stream.value([tx]);
+      final details = _makeDetails(id: 'tx1', type: 'income', amount: 500.0);
+      final stream = Stream.value([details]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -204,8 +226,8 @@ void main() {
 
     testWidgets('expense amount renders with expense color (light theme)',
         (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'expense', amount: 200.0);
-      final stream = Stream.value([tx]);
+      final details = _makeDetails(id: 'tx1', type: 'expense', amount: 200.0);
+      final stream = Stream.value([details]);
 
       await tester
           .pumpWidget(_buildWidget(stream: stream, theme: AppTheme.light));
@@ -225,8 +247,8 @@ void main() {
 
     testWidgets('expense amount renders with expenseDark color (dark theme)',
         (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'expense', amount: 200.0);
-      final stream = Stream.value([tx]);
+      final details = _makeDetails(id: 'tx1', type: 'expense', amount: 200.0);
+      final stream = Stream.value([details]);
 
       await tester
           .pumpWidget(_buildWidget(stream: stream, theme: AppTheme.dark));
@@ -249,7 +271,7 @@ void main() {
 
     testWidgets('shows shimmer placeholders while loading', (tester) async {
       // StreamController that never emits — keeps provider in loading state.
-      final controller = StreamController<List<Transaction>>();
+      final controller = StreamController<List<TransactionWithDetails>>();
       addTearDown(controller.close);
 
       await tester.pumpWidget(_buildWidget(stream: controller.stream));
@@ -264,7 +286,8 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('shows error message when provider errors', (tester) async {
-      final stream = Stream<List<Transaction>>.error(Exception('DB error'));
+      final stream =
+          Stream<List<TransactionWithDetails>>.error(Exception('DB error'));
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -281,7 +304,7 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('section header shows "RECENT" label', (tester) async {
-      final stream = Stream.value([_makeTx(id: 'tx1', type: 'income')]);
+      final stream = Stream.value([_makeDetails(id: 'tx1', type: 'income')]);
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
 
@@ -293,8 +316,9 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('row label shows description when present', (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'expense', description: 'Migros');
-      final stream = Stream.value([tx]);
+      final details =
+          _makeDetails(id: 'tx1', type: 'expense', description: 'Migros');
+      final stream = Stream.value([details]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -308,8 +332,9 @@ void main() {
 
     testWidgets('row label falls back to type name when description is null',
         (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'income', description: null);
-      final stream = Stream.value([tx]);
+      final details =
+          _makeDetails(id: 'tx1', type: 'income', description: null);
+      final stream = Stream.value([details]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -321,8 +346,8 @@ void main() {
 
     testWidgets('row label falls back to type name when description is empty',
         (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'expense', description: '');
-      final stream = Stream.value([tx]);
+      final details = _makeDetails(id: 'tx1', type: 'expense', description: '');
+      final stream = Stream.value([details]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -337,8 +362,8 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('income row uses arrow_upward icon', (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'income', amount: 100.0);
-      final stream = Stream.value([tx]);
+      final details = _makeDetails(id: 'tx1', type: 'income', amount: 100.0);
+      final stream = Stream.value([details]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -360,8 +385,8 @@ void main() {
     });
 
     testWidgets('expense row uses arrow_downward icon', (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'expense', amount: 50.0);
-      final stream = Stream.value([tx]);
+      final details = _makeDetails(id: 'tx1', type: 'expense', amount: 50.0);
+      final stream = Stream.value([details]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -383,8 +408,8 @@ void main() {
     });
 
     testWidgets('transfer row uses swap_horiz icon', (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'transfer', amount: 250.0);
-      final stream = Stream.value([tx]);
+      final details = _makeDetails(id: 'tx1', type: 'transfer', amount: 250.0);
+      final stream = Stream.value([details]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -417,8 +442,8 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('income amount prefixed with +', (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'income', amount: 100.0);
-      final stream = Stream.value([tx]);
+      final details = _makeDetails(id: 'tx1', type: 'income', amount: 100.0);
+      final stream = Stream.value([details]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -437,8 +462,8 @@ void main() {
 
     testWidgets('expense amount prefixed with minus sign (U+2212)',
         (tester) async {
-      final tx = _makeTx(id: 'tx1', type: 'expense', amount: 100.0);
-      final stream = Stream.value([tx]);
+      final details = _makeDetails(id: 'tx1', type: 'expense', amount: 100.0);
+      final stream = Stream.value([details]);
 
       await tester.pumpWidget(_buildWidget(stream: stream));
       await tester.pump();
@@ -454,6 +479,74 @@ void main() {
         isNotEmpty,
         reason: 'Expense amount must use U+2212 MINUS SIGN prefix',
       );
+    });
+
+    // -----------------------------------------------------------------------
+    // NEW-03: 3-step display-name fallback + category subtitle
+    // -----------------------------------------------------------------------
+
+    testWidgets(
+        'title shows description and subtitle shows category name when both set',
+        (tester) async {
+      // "Migros" is the description; "Food & Drink" is the category name.
+      // Title must be "Migros", subtitle must be "Food & Drink".
+      final details = _makeDetails(
+        id: 'tx1',
+        type: 'expense',
+        description: 'Migros',
+        categoryName: 'Food & Drink',
+      );
+      final stream = Stream.value([details]);
+
+      await tester.pumpWidget(_buildWidget(stream: stream));
+      await tester.pump();
+
+      expect(find.text('Migros'), findsOneWidget,
+          reason: 'description must be used as the title');
+      expect(find.text('Food & Drink'), findsOneWidget,
+          reason: 'category name must appear as subtitle row');
+    });
+
+    testWidgets('title falls back to category name when description is null',
+        (tester) async {
+      // No description; category name is "Salary".
+      // Title must be "Salary"; subtitle must NOT be shown (title == category).
+      final details = _makeDetails(
+        id: 'tx1',
+        type: 'income',
+        description: null,
+        categoryName: 'Salary',
+      );
+      final stream = Stream.value([details]);
+
+      await tester.pumpWidget(_buildWidget(stream: stream));
+      await tester.pump();
+
+      expect(find.text('Salary'), findsOneWidget,
+          reason:
+              'category name must be used as title when description is null');
+      expect(find.text('Income'), findsNothing,
+          reason:
+              'type string must not appear when category name is available');
+    });
+
+    testWidgets(
+        'title falls back to type string when both description and category are null',
+        (tester) async {
+      // Neither description nor categoryName set — must show "Income".
+      final details = _makeDetails(
+        id: 'tx1',
+        type: 'income',
+        description: null,
+        categoryName: null,
+      );
+      final stream = Stream.value([details]);
+
+      await tester.pumpWidget(_buildWidget(stream: stream));
+      await tester.pump();
+
+      expect(find.text('Income'), findsOneWidget,
+          reason: 'type string must be the last-resort fallback');
     });
   });
 }
