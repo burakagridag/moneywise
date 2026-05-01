@@ -255,5 +255,12 @@
   "homeRecentSeeAllSemanticLabel": "View all transactions",
   "@homeRecentSeeAllSemanticLabel": {},
   "semanticTransactionRowHint": "Tap for details.",
-  "@semanticTransactionRowHint": {}
+  "@semanticTransactionRowHint": {},
+
+  "homeEmptyStateAddTransactionTitle": "Add your first transaction",
+  "homeEmptyStateAddTransactionSubtitle": "Track income, expenses and transfers",
+  "homeEmptyStateManageAccountsTitle": "Manage your accounts",
+  "homeEmptyStateManageAccountsSubtitle": "Add cash, bank or card accounts",
+  "homeEmptyStateSetBudgetTitle": "Set a monthly budget",
+  "homeEmptyStateSetBudgetSubtitle": "Stay on top of your spending"
 }

@@ -1399,6 +1399,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View all transactions'**
   String get homeRecentSeeAllSemanticLabel;
+
+  /// No description provided for @semanticTransactionRowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap for details.'**
+  String get semanticTransactionRowHint;
+
+  /// No description provided for @homeEmptyStateAddTransactionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first transaction'**
+  String get homeEmptyStateAddTransactionTitle;
+
+  /// No description provided for @homeEmptyStateAddTransactionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track income, expenses and transfers'**
+  String get homeEmptyStateAddTransactionSubtitle;
+
+  /// No description provided for @homeEmptyStateManageAccountsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your accounts'**
+  String get homeEmptyStateManageAccountsTitle;
+
+  /// No description provided for @homeEmptyStateManageAccountsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add cash, bank or card accounts'**
+  String get homeEmptyStateManageAccountsSubtitle;
+
+  /// No description provided for @homeEmptyStateSetBudgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a monthly budget'**
+  String get homeEmptyStateSetBudgetTitle;
+
+  /// No description provided for @homeEmptyStateSetBudgetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay on top of your spending'**
+  String get homeEmptyStateSetBudgetSubtitle;
 }
 
 class _AppLocalizationsDelegate

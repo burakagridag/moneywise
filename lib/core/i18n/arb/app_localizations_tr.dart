@@ -692,4 +692,28 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get homeRecentSeeAllSemanticLabel => 'Tüm işlemleri görüntüle';
+
+  @override
+  String get semanticTransactionRowHint => 'Detaylar için dokunun.';
+
+  @override
+  String get homeEmptyStateAddTransactionTitle => 'İlk işleminizi ekleyin';
+
+  @override
+  String get homeEmptyStateAddTransactionSubtitle =>
+      'Gelir, gider ve transferleri takip edin';
+
+  @override
+  String get homeEmptyStateManageAccountsTitle => 'Hesaplarınızı yönetin';
+
+  @override
+  String get homeEmptyStateManageAccountsSubtitle =>
+      'Nakit, banka veya kart hesabı ekleyin';
+
+  @override
+  String get homeEmptyStateSetBudgetTitle => 'Aylık bütçe belirleyin';
+
+  @override
+  String get homeEmptyStateSetBudgetSubtitle =>
+      'Harcamalarınızın üstünde kalın';
 }

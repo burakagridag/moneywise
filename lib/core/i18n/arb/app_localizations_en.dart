@@ -693,4 +693,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeRecentSeeAllSemanticLabel => 'View all transactions';
+
+  @override
+  String get semanticTransactionRowHint => 'Tap for details.';
+
+  @override
+  String get homeEmptyStateAddTransactionTitle => 'Add your first transaction';
+
+  @override
+  String get homeEmptyStateAddTransactionSubtitle =>
+      'Track income, expenses and transfers';
+
+  @override
+  String get homeEmptyStateManageAccountsTitle => 'Manage your accounts';
+
+  @override
+  String get homeEmptyStateManageAccountsSubtitle =>
+      'Add cash, bank or card accounts';
+
+  @override
+  String get homeEmptyStateSetBudgetTitle => 'Set a monthly budget';
+
+  @override
+  String get homeEmptyStateSetBudgetSubtitle => 'Stay on top of your spending';
 }

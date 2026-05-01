@@ -255,5 +255,12 @@
   "homeRecentSeeAllSemanticLabel": "Tüm işlemleri görüntüle",
   "@homeRecentSeeAllSemanticLabel": {},
   "semanticTransactionRowHint": "Detaylar için dokunun.",
-  "@semanticTransactionRowHint": {}
+  "@semanticTransactionRowHint": {},
+
+  "homeEmptyStateAddTransactionTitle": "İlk işleminizi ekleyin",
+  "homeEmptyStateAddTransactionSubtitle": "Gelir, gider ve transferleri takip edin",
+  "homeEmptyStateManageAccountsTitle": "Hesaplarınızı yönetin",
+  "homeEmptyStateManageAccountsSubtitle": "Nakit, banka veya kart hesabı ekleyin",
+  "homeEmptyStateSetBudgetTitle": "Aylık bütçe belirleyin",
+  "homeEmptyStateSetBudgetSubtitle": "Harcamalarınızın üstünde kalın"
 }

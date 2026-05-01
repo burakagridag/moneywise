@@ -1,6 +1,5 @@
-// HomeScreen scaffold — home feature (EPIC8A-03, updated EPIC8A-08).
-// ThisWeekSection (InsightCards) is now live; other slots remain as placeholders
-// until EPIC8A-09 through EPIC8A-10 replace them.
+// HomeScreen scaffold — home feature (EPIC8A-03, updated EPIC8A-10).
+// EmptyStateCards replaces the _EmptyStatePlaceholder (EPIC8A-10).
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,9 +7,9 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart'; // AppSpacing, AppRadius
-import '../../../../core/constants/app_typography.dart';
 import '../../../../core/router/routes.dart';
 import '../widgets/budget_pulse_card.dart';
+import '../widgets/empty_state_cards.dart';
 import '../widgets/home_header.dart';
 import '../widgets/recent_transactions_list.dart';
 import '../widgets/this_week_section.dart';
@@ -84,9 +83,9 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.md),
 
-                    // Slot 6 — EmptyState
-                    // Shown only when 0 transactions ever. Implemented in EPIC8A-10.
-                    const _EmptyStatePlaceholder(),
+                    // Slot 6 — EmptyState (EPIC8A-10)
+                    // Auto-dismisses when recentTransactionsProvider emits ≥1 transaction.
+                    const EmptyStateCards(),
 
                     const SizedBox(height: AppSpacing.xxl),
                   ]),
@@ -94,30 +93,6 @@ class HomeScreen extends ConsumerWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Section placeholder widgets — remaining until EPIC8A-09 and EPIC8A-10
-// ---------------------------------------------------------------------------
-
-/// Placeholder for EmptyState — implemented in EPIC8A-10.
-///
-/// Replaces sections 2–5 when the user has no transaction history.
-class _EmptyStatePlaceholder extends StatelessWidget {
-  const _EmptyStatePlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 60,
-      child: Center(
-        child: Text(
-          'EmptyState — coming in EPIC8A-10',
-          style: AppTypography.caption1.copyWith(color: context.textTertiary),
         ),
       ),
     );
