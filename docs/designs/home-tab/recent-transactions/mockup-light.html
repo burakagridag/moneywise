@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recent Transactions — Light Mode</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  background: #E8E6E1;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+.page { max-width: 420px; margin: 0 auto; }
+.meta {
+  background: #FFF;
+  border: 1px solid #C8C4BC;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 11px;
+  color: #5C5E6B;
+  line-height: 1.6;
+}
+.meta strong { color: #3D5A99; }
+.phone {
+  background: #F7F6F3;
+  border-radius: 32px;
+  padding: 20px 0;
+  border: 1px solid #C8C4BC;
+}
+.variant-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #9395A3;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 16px 4px;
+}
+.page-divider { height: 1px; background: #E3E1DD; margin: 8px 16px; }
+.tab-num { font-variant-numeric: tabular-nums; }
+
+/* Section header */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 16px 10px;
+}
+.section-title {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #5C5E6B;
+}
+.section-link {
+  font-size: 12px;
+  font-weight: 400;
+  color: #3D5A99;
+  cursor: pointer;
+  padding: 16px 0 16px 16px;
+  margin: -16px 0 -16px -16px;
+}
+
+/* List container */
+.recent-list {
+  background: #FFFFFF;
+  border: 1px solid #C8C4BC;
+  border-radius: 14px;
+  margin: 0 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* Transaction row — height 60dp */
+.tx-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  min-height: 60px;
+  cursor: pointer;
+}
+.tx-row:hover { background: #FAFAFA; }
+
+/* Category icon container */
+.cat-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Transaction name */
+.tx-name {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1A1C24;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Amount */
+.tx-amount {
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.tx-amount.expense { color: #C0392B; }
+.tx-amount.income  { color: #2E86AB; }
+.tx-amount.transfer { color: #7B8DB0; }
+
+/* Inset divider */
+.inset-divider {
+  height: 1px;
+  background: #E3E1DD;
+  margin-left: 54px; /* 14 + 32 + 8 */
+}
+
+/* Shimmer */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.shimmer {
+  border-radius: 4px;
+  background: linear-gradient(90deg, #E3E1DD 25%, #EEECEA 50%, #E3E1DD 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="meta">
+  <strong>Recent Transactions — Light Mode</strong><br>
+  Container: white / #C8C4BC border / 14dp radius / subtle shadow<br>
+  Row: 60dp height / 12×14dp padding / icon 32dp / name bodyMedium / amount moneySmall<br>
+  Divider: #E3E1DD / left inset 54dp (14+32+8) · Section link: caption1 / #3D5A99<br>
+  Income: #2E86AB · Expense: #C0392B · Transfer: #7B8DB0
+</div>
+
+<div class="phone">
+
+  <!-- STATE 1: Two transactions -->
+  <p class="variant-label">State 1 — Two transactions</p>
+  <div class="section-header">
+    <span class="section-title">Recent</span>
+    <span class="section-link">All →</span>
+  </div>
+  <div class="recent-list">
+    <div class="tx-row">
+      <div class="cat-icon" style="background: #EDE9FE;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <span class="tx-name">Rent</span>
+      <span class="tx-amount expense tab-num">−500,00 €</span>
+    </div>
+    <div class="inset-divider"></div>
+    <div class="tx-row">
+      <div class="cat-icon" style="background: #DCFCE7;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <span class="tx-name">Salary</span>
+      <span class="tx-amount income tab-num">+1.000,00 €</span>
+    </div>
+  </div>
+
+  <div class="page-divider" style="margin-top:16px;"></div>
+
+  <!-- STATE 2: One transaction -->
+  <p class="variant-label">State 2 — One transaction</p>
+  <div class="section-header">
+    <span class="section-title">Recent</span>
+    <span class="section-link">All →</span>
+  </div>
+  <div class="recent-list">
+    <div class="tx-row">
+      <div class="cat-icon" style="background: #FEF3C7;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </div>
+      <span class="tx-name">Groceries</span>
+      <span class="tx-amount expense tab-num">−87,40 €</span>
+    </div>
+  </div>
+
+  <div class="page-divider" style="margin-top:16px;"></div>
+
+  <!-- STATE 3: Transfer transaction -->
+  <p class="variant-label">State 3 — With transfer row</p>
+  <div class="section-header">
+    <span class="section-title">Recent</span>
+    <span class="section-link">All →</span>
+  </div>
+  <div class="recent-list">
+    <div class="tx-row">
+      <div class="cat-icon" style="background: #E8EAF2;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B8DB0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="17 1 21 5 17 9"/>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+          <polyline points="7 23 3 19 7 15"/>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+        </svg>
+      </div>
+      <span class="tx-name">Savings transfer</span>
+      <span class="tx-amount transfer tab-num">250,00 €</span>
+    </div>
+    <div class="inset-divider"></div>
+    <div class="tx-row">
+      <div class="cat-icon" style="background: #EDE9FE;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <span class="tx-name">Rent</span>
+      <span class="tx-amount expense tab-num">−500,00 €</span>
+    </div>
+  </div>
+
+  <div class="page-divider" style="margin-top:16px;"></div>
+
+  <!-- STATE 4: Loading shimmer -->
+  <p class="variant-label">State 4 — Loading (shimmer)</p>
+  <div class="section-header">
+    <div class="shimmer" style="width:50px; height:10px; margin-top:4px;"></div>
+    <div class="shimmer" style="width:28px; height:10px; margin-top:4px;"></div>
+  </div>
+  <div class="recent-list" style="box-shadow:none;">
+    <div class="tx-row" style="cursor:default;">
+      <div class="shimmer" style="width:32px; height:32px; border-radius:6px; flex-shrink:0;"></div>
+      <div class="shimmer" style="flex:1; height:14px; max-width:120px;"></div>
+      <div class="shimmer" style="width:70px; height:14px; flex-shrink:0;"></div>
+    </div>
+    <div class="inset-divider" style="background: #E3E1DD;"></div>
+    <div class="tx-row" style="cursor:default;">
+      <div class="shimmer" style="width:32px; height:32px; border-radius:6px; flex-shrink:0;"></div>
+      <div class="shimmer" style="flex:1; height:14px; max-width:100px;"></div>
+      <div class="shimmer" style="width:80px; height:14px; flex-shrink:0;"></div>
+    </div>
+  </div>
+
+  <div class="page-divider" style="margin-top:16px;"></div>
+
+  <!-- STATE 5: Error -->
+  <p class="variant-label">State 5 — Error</p>
+  <div class="section-header">
+    <span class="section-title">Recent</span>
+    <span class="section-link">All →</span>
+  </div>
+  <div class="recent-list">
+    <div style="padding: 20px 14px; text-align:center; font-size:12px; color:#9395A3;">
+      Could not load transactions
+    </div>
+  </div>
+
+  <div style="height:16px;"></div>
+
+</div>
+</div>
+</body>
+</html>
