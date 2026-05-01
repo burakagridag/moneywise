@@ -13,7 +13,6 @@ import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../more/presentation/providers/app_preferences_provider.dart';
-import '../../../transactions/presentation/providers/transactions_provider.dart';
 import '../providers/user_settings_providers.dart';
 
 // ---------------------------------------------------------------------------
@@ -49,7 +48,7 @@ class BudgetPulseCard extends ConsumerWidget {
     final month = DateTime(now.year, now.month);
 
     final budgetAsync = ref.watch(effectiveBudgetProvider(month));
-    final spentAsync = ref.watch(transactionsByMonthProvider);
+    final spentAsync = ref.watch(effectiveSpentProvider(month));
     final prefsAsync = ref.watch(appPreferencesNotifierProvider);
 
     final currencySymbol = prefsAsync.maybeWhen(
@@ -61,11 +60,11 @@ class BudgetPulseCard extends ConsumerWidget {
       orElse: () => 'tr_TR',
     );
 
-    // Compute spent total from the transactions stream (sum of expense type).
+    // Compute mode-aware spent total: effectiveSpentProvider returns the full
+    // expense sum in global-budget mode, or only the category-scoped sum in
+    // fallback mode, keeping numerator and denominator on the same scope.
     final double spent = spentAsync.maybeWhen(
-      data: (txList) => txList
-          .where((t) => t.type == 'expense' && !t.isExcluded && !t.isDeleted)
-          .fold<double>(0.0, (sum, t) => sum + t.amount),
+      data: (value) => value,
       orElse: () => 0.0,
     );
 
@@ -377,10 +376,17 @@ class _BudgetPulseContent extends StatelessWidget {
     return _remaining > 0 ? _remaining / remainingDays : 0.0;
   }
 
-  bool get _isOverBudget => _remaining <= 0;
+  // True only when spent genuinely exceeds budget (not merely equal/zero-diff).
+  bool get _isOverBudget => _remaining < -0.005;
+
+  // True when remaining is within the zero-epsilon band (spent == budget).
+  // Uses <= so that _remaining == -0.005 (the exact boundary) is captured here
+  // and not left unhandled between the two strict comparisons.
+  bool get _isOnBudget => _remaining.abs() <= 0.005;
 
   bool get _isWarning =>
       !_isOverBudget &&
+      !_isOnBudget &&
       _currentDay > 5 &&
       _safeDailyAmount > 0 &&
       _actualDailyPace > _safeDailyAmount * 1.5;
@@ -399,6 +405,11 @@ class _BudgetPulseContent extends StatelessWidget {
     if (_isOverBudget) {
       return '${l10n.homeBudgetPulseTitle}. '
           '${l10n.homeBudgetPulseOverBudget}. '
+          '${l10n.homeBudgetPulseDailyPace}$formattedPace.';
+    }
+    if (_isOnBudget) {
+      return '${l10n.homeBudgetPulseTitle}. '
+          '${l10n.homeBudgetPulseOnBudgetLabel}. '
           '${l10n.homeBudgetPulseDailyPace}$formattedPace.';
     }
     return '${l10n.homeBudgetPulseTitle}. '
@@ -425,8 +436,11 @@ class _BudgetPulseContent extends StatelessWidget {
 
     final remainingColor = _isOverBudget ? expenseColor : textPrimary;
 
+    // Bug 1 fix: avoid "−€0.00" — clamp near-zero to exactly 0.0.
+    final absRemaining = _remaining.abs();
+    final displayRemaining = _isOnBudget ? 0.0 : absRemaining;
     final formattedRemaining = CurrencyFormatter.format(
-      _remaining.abs(),
+      displayRemaining,
       symbol: currencySymbol,
       locale: locale,
     );
@@ -497,12 +511,14 @@ class _BudgetPulseContent extends StatelessWidget {
               const SizedBox(height: _kHeaderToRemainingGap),
 
               // --- Remaining amount row ---
+              // Bug 2 fix: over-budget shows "X over budget"; otherwise shows
+              // "X left of Y budget" (with X=0 when on-budget, per Bug 1).
               Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-                    _isOverBudget ? '−$formattedRemaining' : formattedRemaining,
+                    formattedRemaining,
                     style: AppTypography.moneyMedium.copyWith(
                       color: remainingColor,
                     ),
@@ -510,7 +526,9 @@ class _BudgetPulseContent extends StatelessWidget {
                   const SizedBox(width: _kRemainingNumberToSubtextGap),
                   Flexible(
                     child: Text(
-                      l10n.homeBudgetPulseLeftOf(formattedBudget),
+                      _isOverBudget
+                          ? l10n.homeBudgetPulseOverBudget
+                          : l10n.homeBudgetPulseLeftOf(formattedBudget),
                       style: AppTypography.caption1.copyWith(
                         color: textSecondary,
                       ),
@@ -536,6 +554,7 @@ class _BudgetPulseContent extends StatelessWidget {
                 formattedPace: formattedPace,
                 formattedSafe: formattedSafe,
                 isOverBudget: _isOverBudget,
+                isOnBudget: _isOnBudget,
                 isWarning: _isWarning,
                 isDark: isDark,
               ),
@@ -637,6 +656,7 @@ class _PaceLine extends StatelessWidget {
     required this.formattedPace,
     required this.formattedSafe,
     required this.isOverBudget,
+    required this.isOnBudget,
     required this.isWarning,
     required this.isDark,
   });
@@ -645,6 +665,8 @@ class _PaceLine extends StatelessWidget {
   final String formattedPace;
   final String? formattedSafe;
   final bool isOverBudget;
+  // Bug 3: spent == budget exactly (remaining within ±0.005 epsilon).
+  final bool isOnBudget;
   final bool isWarning;
   final bool isDark;
 
@@ -659,11 +681,23 @@ class _PaceLine extends StatelessWidget {
           ? AppColors.warning
           : (isDark ? AppColors.textPrimary : AppColors.textPrimaryLight),
     );
+
+    // Bug 3 fix: 3 distinct status states.
+    //   remaining > 0.005  → success green  ("You can spend …/day")
+    //   remaining.abs() < 0.005 → warning amber ("On budget")
+    //   remaining < -0.005 → expense red    ("Over budget")
+    final Color statusColor;
+    if (isOverBudget) {
+      statusColor = isDark ? AppColors.expenseDark : AppColors.expense;
+    } else if (isOnBudget) {
+      statusColor = AppColors.warning; // amber — defined in AppColors
+    } else {
+      statusColor = AppColors.success;
+    }
+
     final safeStyle = AppTypography.caption2.copyWith(
       fontWeight: FontWeight.w600,
-      color: isOverBudget
-          ? (isDark ? AppColors.expenseDark : AppColors.expense)
-          : AppColors.success,
+      color: statusColor,
     );
 
     final List<InlineSpan> spans = [
@@ -672,10 +706,17 @@ class _PaceLine extends StatelessWidget {
     ];
 
     if (isOverBudget) {
+      // "… Over budget"
       spans.add(
         TextSpan(text: l10n.homeBudgetPulseOverBudgetSuffix, style: safeStyle),
       );
+    } else if (isOnBudget) {
+      // "… On budget"
+      spans.add(
+        TextSpan(text: l10n.homeBudgetPulseOnBudget, style: safeStyle),
+      );
     } else {
+      // "… You can spend X/day"
       spans
         ..add(TextSpan(text: l10n.homeBudgetPulseCanSpend, style: baseStyle))
         ..add(

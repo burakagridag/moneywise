@@ -16,6 +16,7 @@ import 'package:moneywise/features/home/presentation/providers/user_settings_pro
 import 'package:moneywise/features/home/presentation/screens/home_screen.dart';
 import 'package:moneywise/features/insights/presentation/providers/insights_providers.dart';
 import 'package:moneywise/features/more/presentation/providers/app_preferences_provider.dart';
+import 'package:moneywise/features/home/presentation/providers/empty_state_provider.dart';
 import 'package:moneywise/features/transactions/presentation/providers/transaction_mutation_signal_provider.dart';
 import 'package:moneywise/features/transactions/presentation/providers/transactions_provider.dart';
 
@@ -68,6 +69,12 @@ List<Override> _homeScreenOverrides({double? budget}) {
     insightsProvider.overrideWith((_) async => const []),
     // RecentTransactionsList
     recentTransactionsProvider.overrideWith((_) => const Stream.empty()),
+    // EPIC8A-10 — EmptyStateCards provider stubs
+    // Stream.value(1) / Stream.value(true) satisfies all completion conditions
+    // so onboarding cards are hidden by default; existing tests are unaffected.
+    totalTransactionCountProvider.overrideWith((_) => Stream.value(1)),
+    userAccountCountProvider.overrideWith((_) => Stream.value(1)),
+    hasBudgetConfiguredProvider.overrideWith((_) => Stream.value(true)),
   ];
 }
 

@@ -1,6 +1,7 @@
 // EmptyStateCards — home feature (EPIC8A-10).
-// Shows 3 onboarding action cards when the user has zero transactions.
-// Auto-dismisses when recentTransactionsProvider emits at least 1 transaction.
+// Shows onboarding action cards independently per completion state.
+// Each card auto-dismisses when the user completes its respective action.
+// All cards hidden → entire widget collapses to SizedBox.shrink().
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,58 +12,97 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/router/routes.dart';
-import '../providers/recent_transactions_provider.dart';
+import '../providers/empty_state_provider.dart';
+
+/// Side length of the icon well container inside each onboarding card.
+const double _kIconWellSize = 48.0;
+
+/// Size of the icon glyph rendered inside the icon well.
+const double _kIconGlyphSize = 24.0;
 
 /// Chevron icon size for onboarding card trailing indicator.
 const double _kChevronIconSize = 16.0;
 
-/// Renders 3 onboarding action cards when the user has no transactions.
+/// Renders onboarding action cards for actions the user has not yet completed.
 ///
-/// Watches [recentTransactionsProvider]. Returns [SizedBox.shrink] as soon as
-/// the provider emits a non-empty list (auto-dismiss behaviour, no animation
-/// required for V1 per Sponsor decision).
+/// Each of the three cards has an independent completion condition:
+///   - "Add your first transaction" — hidden once [totalTransactionCountProvider] > 0
+///   - "Manage your accounts"       — hidden once [userAccountCountProvider] > 0
+///   - "Set a monthly budget"       — hidden once [hasBudgetConfiguredProvider] emits true
+///     (true when a global budget OR any category budget with amount > 0 exists)
+///
+/// If all three conditions are met the entire widget (including the section header)
+/// collapses to [SizedBox.shrink]. While any provider is still loading the widget
+/// stays hidden to avoid incorrect flashing.
 class EmptyStateCards extends ConsumerWidget {
   const EmptyStateCards({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncTxns = ref.watch(recentTransactionsProvider);
+    final txCountAsync = ref.watch(totalTransactionCountProvider);
+    final acctCountAsync = ref.watch(userAccountCountProvider);
+    final hasBudgetAsync = ref.watch(hasBudgetConfiguredProvider);
 
-    // While loading or on error, stay hidden so we don't flash incorrectly.
-    final isEmpty = asyncTxns.when(
-      data: (txns) => txns.isEmpty,
-      loading: () => false,
-      error: (_, __) => false,
-    );
+    // While any provider is still loading, stay hidden — no flash on startup.
+    if (txCountAsync.isLoading ||
+        acctCountAsync.isLoading ||
+        hasBudgetAsync.isLoading) {
+      return const SizedBox.shrink();
+    }
 
-    if (!isEmpty) return const SizedBox.shrink();
+    // On error, stay hidden — don't surface provider errors in onboarding UI.
+    if (txCountAsync.hasError ||
+        acctCountAsync.hasError ||
+        hasBudgetAsync.hasError) {
+      return const SizedBox.shrink();
+    }
+
+    final showAddTransaction = (txCountAsync.valueOrNull ?? 0) == 0;
+    final showManageAccounts = (acctCountAsync.valueOrNull ?? 0) == 0;
+    // Card is hidden when any budget (global or category) is configured.
+    final showSetBudget = !(hasBudgetAsync.valueOrNull ?? false);
+
+    final anyVisible =
+        showAddTransaction || showManageAccounts || showSetBudget;
+    if (!anyVisible) return const SizedBox.shrink();
 
     final l10n = AppLocalizations.of(context)!;
 
+    final cards = <Widget>[];
+
+    if (showAddTransaction) {
+      if (cards.isNotEmpty) cards.add(const SizedBox(height: AppSpacing.sm));
+      cards.add(_OnboardingCard(
+        icon: Icons.add_circle_outline,
+        title: l10n.homeEmptyStateAddTransactionTitle,
+        subtitle: l10n.homeEmptyStateAddTransactionSubtitle,
+        onTap: () => context.go(Routes.transactions),
+      ));
+    }
+
+    if (showManageAccounts) {
+      if (cards.isNotEmpty) cards.add(const SizedBox(height: AppSpacing.sm));
+      cards.add(_OnboardingCard(
+        icon: Icons.account_balance_wallet_outlined,
+        title: l10n.homeEmptyStateManageAccountsTitle,
+        subtitle: l10n.homeEmptyStateManageAccountsSubtitle,
+        onTap: () => context.go(Routes.accounts),
+      ));
+    }
+
+    if (showSetBudget) {
+      if (cards.isNotEmpty) cards.add(const SizedBox(height: AppSpacing.sm));
+      cards.add(_OnboardingCard(
+        icon: Icons.savings_outlined,
+        title: l10n.homeEmptyStateSetBudgetTitle,
+        subtitle: l10n.homeEmptyStateSetBudgetSubtitle,
+        onTap: () => context.go(Routes.budget),
+      ));
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _OnboardingCard(
-          icon: Icons.add_circle_outline,
-          title: l10n.homeEmptyStateAddTransactionTitle,
-          subtitle: l10n.homeEmptyStateAddTransactionSubtitle,
-          onTap: () => context.go(Routes.transactions),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _OnboardingCard(
-          icon: Icons.account_balance_wallet_outlined,
-          title: l10n.homeEmptyStateManageAccountsTitle,
-          subtitle: l10n.homeEmptyStateManageAccountsSubtitle,
-          onTap: () => context.go(Routes.more),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _OnboardingCard(
-          icon: Icons.savings_outlined,
-          title: l10n.homeEmptyStateSetBudgetTitle,
-          subtitle: l10n.homeEmptyStateSetBudgetSubtitle,
-          onTap: () => context.go(Routes.budget),
-        ),
-      ],
+      children: cards,
     );
   }
 }
@@ -111,17 +151,17 @@ class _OnboardingCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                // Icon container — 48×48dp
+                // Icon container — _kIconWellSize × _kIconWellSize dp
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: _kIconWellSize,
+                  height: _kIconWellSize,
                   decoration: BoxDecoration(
                     color: context.brandSurfaceAdaptive,
                     borderRadius: BorderRadius.circular(AppRadius.lg),
                   ),
                   child: Icon(
                     icon,
-                    size: 24,
+                    size: _kIconGlyphSize,
                     color: AppColors.brandPrimary,
                   ),
                 ),

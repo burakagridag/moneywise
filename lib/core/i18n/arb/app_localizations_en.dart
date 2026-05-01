@@ -653,6 +653,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeBudgetPulseOverBudgetSuffix => '  ·  Over budget';
 
   @override
+  String get homeBudgetPulseOnBudget => '  ·  On budget';
+
+  @override
+  String get homeBudgetPulseOnBudgetLabel => 'On budget';
+
+  @override
   String get homeBudgetPulseUnavailable => 'Budget data unavailable';
 
   @override

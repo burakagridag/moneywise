@@ -652,6 +652,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeBudgetPulseOverBudgetSuffix => '  ·  Bütçe aşıldı';
 
   @override
+  String get homeBudgetPulseOnBudget => '  ·  Bütçede';
+
+  @override
+  String get homeBudgetPulseOnBudgetLabel => 'Bütçede';
+
+  @override
   String get homeBudgetPulseUnavailable => 'Bütçe verisi kullanılamıyor';
 
   @override

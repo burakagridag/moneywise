@@ -452,6 +452,21 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   }
 
   // ---------------------------------------------------------------------------
+  // Count queries — EPIC8A-10
+  // ---------------------------------------------------------------------------
+
+  /// Reactive stream of the total number of non-deleted transactions.
+  ///
+  /// Uses a SQL COUNT aggregate so only a single integer is transferred from
+  /// the database — avoids joining three tables and fetching full rows just to
+  /// derive a count for onboarding card visibility.
+  Stream<int> watchTransactionCount() => (selectOnly(transactions)
+        ..addColumns([transactions.id.count()])
+        ..where(transactions.isDeleted.equals(false)))
+      .watchSingle()
+      .map((row) => row.read(transactions.id.count()) ?? 0);
+
+  // ---------------------------------------------------------------------------
   // Write paths
   // ---------------------------------------------------------------------------
 

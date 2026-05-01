@@ -223,6 +223,8 @@
   "homeBudgetPulseCanSpend": "  ·  Harcayabilirsiniz ",
   "homeBudgetPulsePerDay": "/gün",
   "homeBudgetPulseOverBudgetSuffix": "  ·  Bütçe aşıldı",
+  "homeBudgetPulseOnBudget": "  ·  Bütçede",
+  "homeBudgetPulseOnBudgetLabel": "Bütçede",
   "homeBudgetPulseUnavailable": "Bütçe verisi kullanılamıyor",
   "homeBudgetPulseViewSemanticLabel": "Bütçe detaylarını görüntüle",
 

@@ -223,6 +223,8 @@
   "homeBudgetPulseCanSpend": "  ·  You can spend ",
   "homeBudgetPulsePerDay": "/day",
   "homeBudgetPulseOverBudgetSuffix": "  ·  Over budget",
+  "homeBudgetPulseOnBudget": "  ·  On budget",
+  "homeBudgetPulseOnBudgetLabel": "On budget",
   "homeBudgetPulseUnavailable": "Budget data unavailable",
   "homeBudgetPulseViewSemanticLabel": "View budget details",
 

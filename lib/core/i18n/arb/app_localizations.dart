@@ -1328,6 +1328,18 @@ abstract class AppLocalizations {
   /// **'  ·  Over budget'**
   String get homeBudgetPulseOverBudgetSuffix;
 
+  /// No description provided for @homeBudgetPulseOnBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'  ·  On budget'**
+  String get homeBudgetPulseOnBudget;
+
+  /// No description provided for @homeBudgetPulseOnBudgetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'On budget'**
+  String get homeBudgetPulseOnBudgetLabel;
+
   /// No description provided for @homeBudgetPulseUnavailable.
   ///
   /// In en, this message translates to:
