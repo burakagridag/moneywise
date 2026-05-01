@@ -1,10 +1,11 @@
-// Widget tests for HomeScreen scaffold — home feature (EPIC8A-03, EPIC8A-07, EPIC8A-11).
+// Widget tests for HomeScreen scaffold — home feature (EPIC8A-03, EPIC8A-07, EPIC8A-11, EPIC8A-12).
 // Overrides all real widget providers so the full HomeScreen renders without
 // a database connection (pure unit-style widget test).
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moneywise/core/analytics/analytics_service.dart';
 import 'package:moneywise/core/i18n/arb/app_localizations.dart';
 import 'package:moneywise/core/router/routes.dart';
 import 'package:moneywise/core/theme/app_theme.dart';
@@ -33,6 +34,19 @@ class _FakePrefsNotifier extends AppPreferencesNotifier {
 }
 
 // ---------------------------------------------------------------------------
+// Spy analytics service — records all logged events for assertion.
+// ---------------------------------------------------------------------------
+
+class _SpyAnalyticsService implements AnalyticsService {
+  final List<({String name, Map<String, dynamic>? parameters})> events = [];
+
+  @override
+  void logEvent(String name, {Map<String, dynamic>? parameters}) {
+    events.add((name: name, parameters: parameters));
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Full provider override set for HomeScreen
 // ---------------------------------------------------------------------------
 
@@ -40,6 +54,8 @@ List<Override> _homeScreenOverrides({double? budget}) {
   final now = DateTime.now();
   final month = DateTime(now.year, now.month);
   return [
+    // Analytics stub — prevents real provider usage in tests (EPIC8A-12).
+    analyticsServiceProvider.overrideWith((_) => StubAnalyticsService()),
     // BudgetPulseCard
     effectiveBudgetProvider(month).overrideWith((_) async => budget),
     transactionsByMonthProvider.overrideWith((_) => const Stream.empty()),
@@ -359,6 +375,70 @@ void main() {
       await tester.pump();
 
       expect(signalValue, 0);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // EPIC8A-12 — Analytics event tests
+  // ---------------------------------------------------------------------------
+
+  group('HomeScreen — EPIC8A-12 analytics', () {
+    testWidgets('fires home_tab_viewed exactly once on first mount',
+        (tester) async {
+      final spy = _SpyAnalyticsService();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            ..._homeScreenOverrides(),
+            analyticsServiceProvider.overrideWith((_) => spy),
+          ],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const Scaffold(body: HomeScreen()),
+          ),
+        ),
+      );
+      // Allow the post-frame callback to fire.
+      await tester.pump();
+
+      expect(
+        spy.events.where((e) => e.name == 'home_tab_viewed'),
+        hasLength(1),
+      );
+    });
+
+    testWidgets('home_tab_viewed does not fire a second time after rebuild',
+        (tester) async {
+      final spy = _SpyAnalyticsService();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            ..._homeScreenOverrides(),
+            analyticsServiceProvider.overrideWith((_) => spy),
+          ],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            theme: AppTheme.light,
+            home: const Scaffold(body: HomeScreen()),
+          ),
+        ),
+      );
+      await tester.pump();
+      // Trigger a second pump to simulate a rebuild.
+      await tester.pump();
+
+      // Must still be exactly 1 — the _didLogTabView guard prevents duplicates.
+      expect(
+        spy.events.where((e) => e.name == 'home_tab_viewed'),
+        hasLength(1),
+      );
     });
   });
 }

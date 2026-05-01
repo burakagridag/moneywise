@@ -1376,6 +1376,12 @@ abstract class AppLocalizations {
   /// **'This week'**
   String get homeThisWeekTitle;
 
+  /// No description provided for @homeInsightsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights unavailable'**
+  String get homeInsightsUnavailable;
+
   /// No description provided for @semanticAmountPositive.
   ///
   /// In en, this message translates to:

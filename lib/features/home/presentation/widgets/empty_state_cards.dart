@@ -13,6 +13,9 @@ import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/router/routes.dart';
 import '../providers/recent_transactions_provider.dart';
 
+/// Chevron icon size for onboarding card trailing indicator.
+const double _kChevronIconSize = 16.0;
+
 /// Renders 3 onboarding action cards when the user has no transactions.
 ///
 /// Watches [recentTransactionsProvider]. Returns [SizedBox.shrink] as soon as
@@ -152,7 +155,7 @@ class _OnboardingCard extends StatelessWidget {
                 // Chevron
                 Icon(
                   Icons.chevron_right,
-                  size: 16,
+                  size: _kChevronIconSize,
                   color: context.textTertiary,
                 ),
               ],

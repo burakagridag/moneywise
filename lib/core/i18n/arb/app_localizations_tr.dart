@@ -676,6 +676,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeThisWeekTitle => 'Bu hafta';
 
   @override
+  String get homeInsightsUnavailable => 'İçgörüler kullanılamıyor';
+
+  @override
   String semanticAmountPositive(String amount) {
     return '+$amount';
   }

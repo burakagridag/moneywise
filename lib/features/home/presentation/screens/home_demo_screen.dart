@@ -12,7 +12,8 @@ import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../data/local/daos/transaction_dao.dart';
-import '../../../../domain/entities/transaction_with_details.dart' as domain_details;
+import '../../../../domain/entities/transaction_with_details.dart'
+    as domain_details;
 import '../../../../domain/entities/transaction.dart' as domain_tx;
 import '../../../../features/insights/domain/insight.dart';
 import '../../../../features/insights/presentation/providers/insights_providers.dart';

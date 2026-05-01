@@ -1,13 +1,16 @@
-// ThisWeekSection widget — home feature (EPIC8A-08).
+// ThisWeekSection widget — home feature (EPIC8A-08, updated EPIC8A-12).
 // Renders the "This week" insight cards or hides the section when no insights.
+// Fires insight_card_tapped analytics event when a card is tapped (EPIC8A-12).
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../../../features/insights/presentation/providers/insights_providers.dart';
 import 'insight_card.dart';
 
@@ -29,7 +32,7 @@ class ThisWeekSection extends ConsumerWidget {
 
     return asyncInsights.when(
       loading: () => const _ThisWeekShimmer(),
-      error: (_, __) => _ThisWeekError(context: context),
+      error: (_, __) => const _ThisWeekError(),
       data: (insights) {
         if (insights.isEmpty) {
           // Section occupies zero height when there are no insights.
@@ -43,7 +46,7 @@ class ThisWeekSection extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Section header — "THIS WEEK"
-            _ThisWeekHeader(),
+            const _ThisWeekHeader(),
             ...visible.map(
               (insight) => Padding(
                 padding: const EdgeInsets.only(
@@ -57,14 +60,20 @@ class ThisWeekSection extends ConsumerWidget {
                   iconBackgroundColor: insight.iconBackgroundColor,
                   title: insight.headline,
                   subtitle: insight.body,
-                  onTap: insight.actionRoute != null
-                      ? () {
-                          // mounted check not needed in ConsumerWidget — context
-                          // is always valid within build; navigation deferred to
-                          // next frame via GoRouter.
-                          context.go(insight.actionRoute!);
-                        }
-                      : null,
+                  onTap: () {
+                    // Fire analytics event for every tap, regardless of
+                    // whether there is an actionRoute (EPIC8A-12).
+                    ref.read(analyticsServiceProvider).logEvent(
+                      'insight_card_tapped',
+                      parameters: {'insight_type': insight.id},
+                    );
+                    if (insight.actionRoute != null) {
+                      // mounted check not needed in ConsumerWidget — context
+                      // is always valid within build; navigation deferred to
+                      // next frame via GoRouter.
+                      context.go(insight.actionRoute!);
+                    }
+                  },
                 ),
               ),
             ),
@@ -80,6 +89,8 @@ class ThisWeekSection extends ConsumerWidget {
 // ---------------------------------------------------------------------------
 
 class _ThisWeekHeader extends StatelessWidget {
+  const _ThisWeekHeader();
+
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDark;
@@ -91,7 +102,7 @@ class _ThisWeekHeader extends StatelessWidget {
         right: AppSpacing.lg,
       ),
       child: Text(
-        'THIS WEEK',
+        AppLocalizations.of(context)!.homeThisWeekTitle.toUpperCase(),
         style: AppTypography.caption2.copyWith(
           color:
               isDark ? AppColors.textSecondary : AppColors.textSecondaryLight,
@@ -207,24 +218,26 @@ class _ThisWeekShimmer extends StatelessWidget {
 // Error state
 // ---------------------------------------------------------------------------
 
+/// Non-blocking error fallback for [ThisWeekSection].
+///
+/// Uses the `build(BuildContext context)` parameter — never stores a stale
+/// [BuildContext] as a constructor field (Critical 1, code review 2026-05-01).
 class _ThisWeekError extends StatelessWidget {
-  const _ThisWeekError({required this.context});
-
-  final BuildContext context;
+  const _ThisWeekError();
 
   @override
-  Widget build(BuildContext ctx) {
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _ThisWeekHeader(),
+        const _ThisWeekHeader(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Center(
             child: Text(
-              'Insights unavailable',
+              AppLocalizations.of(context)!.homeInsightsUnavailable,
               style: AppTypography.caption1.copyWith(
-                color: ctx.isDark
+                color: context.isDark
                     ? AppColors.textSecondary
                     : AppColors.textSecondaryLight,
               ),

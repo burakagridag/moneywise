@@ -1,8 +1,10 @@
-// Widget tests for ThisWeekSection — home feature (EPIC8A-08).
+// Widget tests for ThisWeekSection — home feature (EPIC8A-08, EPIC8A-12).
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moneywise/core/analytics/analytics_service.dart';
 import 'package:moneywise/core/constants/app_colors.dart';
+import 'package:moneywise/core/i18n/arb/app_localizations.dart';
 import 'package:moneywise/core/theme/app_theme.dart';
 import 'package:moneywise/features/home/presentation/widgets/insight_card.dart';
 import 'package:moneywise/features/home/presentation/widgets/this_week_section.dart';
@@ -10,6 +12,19 @@ import 'package:moneywise/features/insights/domain/insight.dart';
 import 'package:moneywise/features/insights/domain/insight_context.dart';
 import 'package:moneywise/features/insights/domain/insight_provider.dart';
 import 'package:moneywise/features/insights/presentation/providers/insights_providers.dart';
+
+// ---------------------------------------------------------------------------
+// Spy analytics service — records all logged events for assertion.
+// ---------------------------------------------------------------------------
+
+class _SpyAnalyticsService implements AnalyticsService {
+  final List<({String name, Map<String, dynamic>? parameters})> events = [];
+
+  @override
+  void logEvent(String name, {Map<String, dynamic>? parameters}) {
+    events.add((name: name, parameters: parameters));
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Fake InsightProvider — returns a configurable list synchronously.
@@ -48,6 +63,8 @@ Widget _buildSection({
 }) =>
     ProviderScope(
       overrides: [
+        // Analytics stub — prevents real provider usage in tests (EPIC8A-12).
+        analyticsServiceProvider.overrideWith((_) => StubAnalyticsService()),
         // Override the FutureProvider directly to avoid DB calls in widget tests.
         // This also verifies that insightProviderInstanceProvider is injectable.
         insightProviderInstanceProvider
@@ -55,6 +72,9 @@ Widget _buildSection({
         insightsProvider.overrideWith((_) async => insights),
       ],
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('en'),
         theme: theme ?? AppTheme.light,
         home: const Scaffold(
           body: SingleChildScrollView(child: ThisWeekSection()),
@@ -184,11 +204,17 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            // Analytics stub (EPIC8A-12).
+            analyticsServiceProvider
+                .overrideWith((_) => StubAnalyticsService()),
             insightProviderInstanceProvider.overrideWithValue(fakeProvider),
             // Override insightsProvider to bypass DB calls.
             insightsProvider.overrideWith((_) async => injectedInsights),
           ],
           child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('en'),
             home: Scaffold(
               body: SingleChildScrollView(child: ThisWeekSection()),
             ),
@@ -214,6 +240,46 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.byType(InsightCard), findsOneWidget);
+    });
+
+    // -----------------------------------------------------------------------
+    // EPIC8A-12 — Analytics: insight_card_tapped spy test
+    // -----------------------------------------------------------------------
+
+    testWidgets(
+        'tapping InsightCard fires insight_card_tapped with correct insight_type',
+        (tester) async {
+      final spy = _SpyAnalyticsService();
+      final insight = _makeInsight('budget_warning', InsightSeverity.warning);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            analyticsServiceProvider.overrideWith((_) => spy),
+            insightProviderInstanceProvider
+                .overrideWithValue(_FakeProvider([insight])),
+            insightsProvider.overrideWith((_) async => [insight]),
+          ],
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('en'),
+            home: Scaffold(
+              body: SingleChildScrollView(child: ThisWeekSection()),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      // Tap the rendered InsightCard.
+      await tester.tap(find.byType(InsightCard).first);
+      await tester.pump();
+
+      final tapped = spy.events.where((e) => e.name == 'insight_card_tapped');
+      expect(tapped, hasLength(1));
+      expect(
+          tapped.first.parameters, equals({'insight_type': 'budget_warning'}));
     });
   });
 }

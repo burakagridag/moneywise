@@ -234,6 +234,7 @@
   "homeTrendSinceLastMonth": "since last month",
 
   "homeThisWeekTitle": "This week",
+  "homeInsightsUnavailable": "Insights unavailable",
 
   "semanticAmountPositive": "Plus {amount}",
   "@semanticAmountPositive": {
