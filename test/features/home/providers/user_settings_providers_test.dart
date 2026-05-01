@@ -75,8 +75,7 @@ void main() {
       final month = DateTime(2026, 5);
       await db.userSettingsDao.upsertGlobalBudget(3000.0);
 
-      final value =
-          await container.read(effectiveBudgetProvider(month).future);
+      final value = await container.read(effectiveBudgetProvider(month).future);
       expect(value, 3000.0);
     });
   });
@@ -92,8 +91,7 @@ void main() {
 
       // Global is null (fresh DB), no category budgets seeded.
       final month = DateTime(2026, 5);
-      final value =
-          await container.read(effectiveBudgetProvider(month).future);
+      final value = await container.read(effectiveBudgetProvider(month).future);
       expect(value, isNull);
     });
   });
@@ -126,8 +124,7 @@ void main() {
       final global = await container.read(globalBudgetProvider.future);
       expect(global, isNull);
 
-      final value =
-          await container.read(effectiveBudgetProvider(month).future);
+      final value = await container.read(effectiveBudgetProvider(month).future);
       // effectiveBudgetProvider must return the category sum (≥ 500.0).
       expect(value, greaterThan(0));
       expect(value, isNotNull);

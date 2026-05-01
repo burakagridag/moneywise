@@ -76,9 +76,11 @@ void main() {
       await db.userSettingsDao.upsertGlobalBudget(75.0);
       await db.userSettingsDao.upsertGlobalBudget(null);
 
-      final count = await db.customSelect(
-        'SELECT COUNT(*) AS c FROM user_settings',
-      ).getSingle();
+      final count = await db
+          .customSelect(
+            'SELECT COUNT(*) AS c FROM user_settings',
+          )
+          .getSingle();
       expect(count.read<int>('c'), 1);
     });
 
@@ -94,9 +96,11 @@ void main() {
       // We verify the count constraint instead: after the DAO's upsert path
       // is the only write path, COUNT(*) must remain 1.
       await db.userSettingsDao.upsertGlobalBudget(10.0);
-      final count = await db.customSelect(
-        'SELECT COUNT(*) AS c FROM user_settings',
-      ).getSingle();
+      final count = await db
+          .customSelect(
+            'SELECT COUNT(*) AS c FROM user_settings',
+          )
+          .getSingle();
       expect(count.read<int>('c'), 1,
           reason: 'DAO must never insert more than one row');
     });
