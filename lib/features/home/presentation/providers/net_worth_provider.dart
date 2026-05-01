@@ -1,43 +1,96 @@
 // Riverpod providers for total balance and previous-month balance — home feature (EPIC8A-06).
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../data/local/database.dart';
 import '../../../../data/repositories/account_repository.dart';
-import '../../../accounts/presentation/providers/accounts_provider.dart';
+import '../../../../data/repositories/transaction_repository.dart';
+import '../../../../domain/entities/account.dart' as domain;
 
 part 'net_worth_provider.g.dart';
 
-/// Emits the sum of [Account.balance] for all accounts where
-/// [Account.includeInTotals] == true.
+/// Emits the sum of the computed balance for all accounts where
+/// [domain.Account.includeInTotals] == true.
 ///
-/// The balance is kept reactive: it re-emits whenever any account stream
-/// emits. Per-account balance computation relies on [watchAccountBalance] in
-/// [TransactionDao]; here we aggregate the current stored balances from
-/// [allAccountsProvider] combined with [AccountBalanceProvider] per account.
+/// Uses pure stream composition (no rxdart) to avoid the `async*` + `ref.watch`
+/// anti-pattern that caused perpetual `AsyncLoading`:
 ///
-/// For simplicity in V1 we sum [Account.initialBalance] plus the delta
-/// computed via [accountBalanceProvider] for each included account. This avoids
-/// coupling the provider to a raw SQL aggregation and stays consistent with the
-/// existing per-account balance calculation.
+/// - The accounts stream drives the outer `asyncExpand`, which re-subscribes
+///   the inner combined-balance stream whenever the account list changes.
+/// - The inner stream opens one `watchAccountBalance` stream per included
+///   account and emits their running sum via a [StreamController] that closes
+///   when superseded.
+///
+/// This guarantees that [accountsTotalProvider] transitions to `AsyncData`
+/// exactly once per emission of any upstream stream, with no intermediate
+/// `AsyncLoading` flicker.
 @riverpod
-Stream<double> accountsTotal(AccountsTotalRef ref) async* {
-  final accounts = ref.watch(allAccountsProvider).valueOrNull ?? [];
+Stream<double> accountsTotal(AccountsTotalRef ref) {
+  final accountRepo = ref.watch(accountRepositoryProvider);
+  final txRepo = ref.watch(transactionRepositoryProvider);
+
+  return accountRepo.watchAccounts().asyncExpand(
+        (accounts) => _combineBalances(accounts, txRepo),
+      );
+}
+
+/// Combines per-account balance streams for [accounts] that have
+/// [domain.Account.includeInTotals] == true into a single `Stream<double>`.
+///
+/// Emits 0.0 immediately when there are no included accounts.
+/// Otherwise opens one reactive balance stream per account and emits
+/// the running sum every time any individual balance changes.
+Stream<double> _combineBalances(
+  List<domain.Account> accounts,
+  TransactionRepository txRepo,
+) {
   final included = accounts.where((a) => a.includeInTotals).toList();
 
   if (included.isEmpty) {
-    yield 0.0;
-    return;
+    return Stream.value(0.0);
   }
 
-  // Watch each included account's reactive balance, sum them.
-  // Re-evaluates whenever any account changes.
-  double total = 0.0;
-  for (final account in included) {
-    final balance =
-        ref.watch(accountBalanceProvider(account.id)).valueOrNull ?? 0.0;
-    total += balance;
+  // One stream per account — each emits the computed balance reactively.
+  final streams = included
+      .map((a) => txRepo.watchAccountBalance(a.id))
+      .toList(growable: false);
+
+  // Maintain a list of the most-recent value from each stream.
+  // Initialised to null; we only emit a sum once every stream has a value.
+  final latestValues = List<double?>.filled(streams.length, null);
+  var resolvedCount = 0;
+
+  final controller = StreamController<double>();
+
+  final subscriptions = <StreamSubscription<double>>[];
+  for (var i = 0; i < streams.length; i++) {
+    final index = i;
+    final sub = streams[index].listen(
+      (balance) {
+        if (latestValues[index] == null) resolvedCount++;
+        latestValues[index] = balance;
+        if (resolvedCount == streams.length) {
+          // All streams have at least one value — safe to sum.
+          final total = latestValues.fold<double>(
+            0.0,
+            (sum, v) => sum + (v ?? 0.0),
+          );
+          if (!controller.isClosed) controller.add(total);
+        }
+      },
+      onError: controller.addError,
+    );
+    subscriptions.add(sub);
   }
-  yield total;
+
+  controller.onCancel = () {
+    for (final sub in subscriptions) {
+      sub.cancel();
+    }
+  };
+
+  return controller.stream;
 }
 
 /// One-shot Future returning the total balance one calendar month ago.
