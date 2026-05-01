@@ -1,6 +1,5 @@
 // Unit tests for UserSettingsDao — data/local feature (EPIC8A-04).
 import 'package:drift/native.dart';
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moneywise/data/local/database.dart';
 

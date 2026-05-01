@@ -417,7 +417,7 @@ class _SparklineState extends State<_Sparkline>
   /// Builds the full list of spots using index as x-axis (per ADR-012).
   List<FlSpot> _buildAllSpots() {
     if (widget.data.isEmpty) {
-      return [const FlSpot(0, 0), FlSpot(_sparklineDays - 1.0, 0)];
+      return [const FlSpot(0, 0), const FlSpot(_sparklineDays - 1.0, 0)];
     }
     return widget.data
         .asMap()

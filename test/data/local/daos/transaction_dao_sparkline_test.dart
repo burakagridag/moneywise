@@ -2,7 +2,6 @@
 import 'package:drift/native.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moneywise/data/local/daos/transaction_dao.dart';
 import 'package:moneywise/data/local/database.dart';
 import 'package:uuid/uuid.dart';
 
