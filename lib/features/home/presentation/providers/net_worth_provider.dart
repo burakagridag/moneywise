@@ -1,6 +1,7 @@
 // Riverpod providers for total balance and previous-month balance — home feature (EPIC8A-06).
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../data/local/database.dart';
@@ -59,7 +60,6 @@ Stream<double> _combineBalances(
   // Maintain a list of the most-recent value from each stream.
   // Initialised to null; we only emit a sum once every stream has a value.
   final latestValues = List<double?>.filled(streams.length, null);
-  var resolvedCount = 0;
 
   final controller = StreamController<double>();
 
@@ -68,14 +68,10 @@ Stream<double> _combineBalances(
     final index = i;
     final sub = streams[index].listen(
       (balance) {
-        if (latestValues[index] == null) resolvedCount++;
         latestValues[index] = balance;
-        if (resolvedCount == streams.length) {
+        if (latestValues.every((v) => v != null)) {
           // All streams have at least one value — safe to sum.
-          final total = latestValues.fold<double>(
-            0.0,
-            (sum, v) => sum + (v ?? 0.0),
-          );
+          final total = latestValues.fold<double>(0.0, (sum, v) => sum + v!);
           if (!controller.isClosed) controller.add(total);
         }
       },
@@ -84,10 +80,10 @@ Stream<double> _combineBalances(
     subscriptions.add(sub);
   }
 
-  controller.onCancel = () {
-    for (final sub in subscriptions) {
-      sub.cancel();
-    }
+  // Cancel all subscriptions AND close the controller to release resources.
+  controller.onCancel = () async {
+    await Future.wait(subscriptions.map((s) => s.cancel()));
+    await controller.close();
   };
 
   return controller.stream;
@@ -125,27 +121,45 @@ Future<double?> previousMonthTotal(PreviousMonthTotalRef ref) async {
     startOfCurrentMonth,
   );
 
-  // Sum initial balances for included accounts.
-  double prevTotal = included.fold(0.0, (sum, a) => sum + a.initialBalance);
+  // Sum initial balances for included accounts using integer cent accumulation
+  // to avoid IEEE 754 float drift (BUG-010). Consistent with watchDailyNetAmounts
+  // and watchMonthlyTotals in TransactionDao.
+  int prevCents =
+      included.fold(0, (sum, a) => sum + (a.initialBalance * 100).round());
 
   // Add transaction deltas up to end of previous month.
   for (final tx in txList) {
     if (tx.isExcluded || tx.isDeleted) continue;
     if (excludedIds.contains(tx.accountId)) continue;
 
+    final deltaCents = (tx.amount * tx.exchangeRate * 100).round();
+
     if (tx.type == 'income' && includedIds.contains(tx.accountId)) {
-      prevTotal += tx.amount * tx.exchangeRate;
+      prevCents += deltaCents;
     } else if (tx.type == 'expense' && includedIds.contains(tx.accountId)) {
-      prevTotal -= tx.amount * tx.exchangeRate;
+      prevCents -= deltaCents;
     } else if (tx.type == 'transfer') {
-      if (includedIds.contains(tx.accountId)) {
-        prevTotal -= tx.amount * tx.exchangeRate;
-      }
+      if (includedIds.contains(tx.accountId)) prevCents -= deltaCents;
       if (tx.toAccountId != null && includedIds.contains(tx.toAccountId)) {
-        prevTotal += tx.amount * tx.exchangeRate;
+        prevCents += deltaCents;
       }
     }
   }
 
-  return prevTotal;
+  return prevCents / 100.0;
 }
+
+// ---------------------------------------------------------------------------
+// Testing shim — makes _combineBalances accessible for unit tests without
+// exposing it as part of the public API.
+// ---------------------------------------------------------------------------
+
+/// Thin wrapper around [_combineBalances] that makes it accessible from tests.
+///
+/// Only intended for use in `net_worth_provider_test.dart`.
+@visibleForTesting
+Stream<double> combineBalancesForTesting(
+  List<domain.Account> accounts,
+  TransactionRepository txRepo,
+) =>
+    _combineBalances(accounts, txRepo);
