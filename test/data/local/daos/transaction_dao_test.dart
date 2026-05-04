@@ -556,4 +556,63 @@ void main() {
       expect(rows[1].transaction.amount, 3.0);
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // watchTransactionCount — EPIC8A-10
+  // ---------------------------------------------------------------------------
+
+  group('TransactionDao.watchTransactionCount', () {
+    test('returns 0 when no transactions exist', () async {
+      final count = await db.transactionDao.watchTransactionCount().first;
+      expect(count, 0);
+    });
+
+    test('returns correct count after inserting 2 transactions', () async {
+      final accountId = await seedAccount(db);
+      await insertTx(db, accountId: accountId, type: 'expense', amount: 10.0);
+      await insertTx(db, accountId: accountId, type: 'income', amount: 50.0);
+
+      final count = await db.transactionDao.watchTransactionCount().first;
+      expect(count, 2);
+    });
+
+    test('excludes soft-deleted transactions from count', () async {
+      final accountId = await seedAccount(db);
+      final id = _uuid.v4();
+      await db.transactionDao.insertTransaction(
+        TransactionsCompanion(
+          id: Value(id),
+          type: const Value('expense'),
+          date: Value(DateTime.now()),
+          amount: const Value(25.0),
+          currencyCode: const Value('EUR'),
+          accountId: Value(accountId),
+        ),
+      );
+      await db.transactionDao.softDeleteTransaction(id);
+
+      final count = await db.transactionDao.watchTransactionCount().first;
+      expect(count, 0);
+    });
+
+    test('emits updated count reactively after insert', () async {
+      final accountId = await seedAccount(db);
+      final stream = db.transactionDao.watchTransactionCount();
+
+      // Collect the first two values emitted by the stream.
+      final collected = <int>[];
+      final subscription = stream.listen(collected.add);
+      addTearDown(subscription.cancel);
+
+      // Wait for the initial 0 count.
+      await Future<void>.delayed(Duration.zero);
+
+      await insertTx(db, accountId: accountId, type: 'expense', amount: 5.0);
+
+      // Wait for the reactive update.
+      await Future<void>.delayed(Duration.zero);
+
+      expect(collected, containsAllInOrder([0, 1]));
+    });
+  });
 }

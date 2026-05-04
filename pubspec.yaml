@@ -48,8 +48,10 @@ dependencies:
   # ID generation
   uuid: ^4.4.0
 
-  cupertino_icons: ^1.0.8
+  # Preferences
   shared_preferences: ^2.5.5
+
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:

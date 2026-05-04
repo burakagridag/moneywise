@@ -32,9 +32,12 @@ class TransactionFilter {
     this.types = const {},
     this.categoryId,
     this.dateRange,
+    this.query,
+    this.type,
+    this.amountMin,
   });
 
-  /// Selected types — empty means no type filter (show all).
+  /// Selected types — empty means no type filter (show all). Legacy multi-select.
   final Set<String> types;
 
   /// When non-null, only transactions matching this category id are shown.
@@ -43,14 +46,35 @@ class TransactionFilter {
   /// When non-null, only transactions within this date range are shown.
   final DateTimeRange? dateRange;
 
-  bool get hasActiveFilter =>
-      types.isNotEmpty || categoryId != null || dateRange != null;
+  /// Text search query. When non-null and non-empty, only matching transactions
+  /// are shown. Used by the unified [SearchFilterNotifier].
+  final String? query;
+
+  /// Single transaction type filter: 'income', 'expense', or 'transfer'.
+  /// Takes precedence over [types] when both are set.
+  final String? type;
+
+  /// Minimum absolute transaction amount filter.
+  final double? amountMin;
+
+  /// Returns true when no filter criteria are active.
+  bool get isEmpty =>
+      types.isEmpty &&
+      categoryId == null &&
+      dateRange == null &&
+      (query == null || query!.isEmpty) &&
+      type == null &&
+      amountMin == null;
+
+  bool get hasActiveFilter => !isEmpty;
 
   int get activeCount {
     int count = 0;
-    if (types.isNotEmpty) count++;
+    if (types.isNotEmpty || type != null) count++;
     if (categoryId != null) count++;
     if (dateRange != null) count++;
+    if (query != null && query!.isNotEmpty) count++;
+    if (amountMin != null) count++;
     return count;
   }
 
@@ -60,13 +84,62 @@ class TransactionFilter {
     DateTimeRange? dateRange,
     bool clearCategoryId = false,
     bool clearDateRange = false,
+    Object? query = _sentinel,
+    Object? type = _sentinel,
+    Object? amountMin = _sentinel,
   }) {
     return TransactionFilter(
       types: types ?? this.types,
       categoryId: clearCategoryId ? null : (categoryId ?? this.categoryId),
       dateRange: clearDateRange ? null : (dateRange ?? this.dateRange),
+      query: identical(query, _sentinel) ? this.query : query as String?,
+      type: identical(type, _sentinel) ? this.type : type as String?,
+      amountMin:
+          identical(amountMin, _sentinel) ? this.amountMin : amountMin as double?,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      other is TransactionFilter &&
+      other.types == types &&
+      other.categoryId == categoryId &&
+      other.dateRange == dateRange &&
+      other.query == query &&
+      other.type == type &&
+      other.amountMin == amountMin;
+
+  @override
+  int get hashCode =>
+      Object.hash(types, categoryId, dateRange, query, type, amountMin);
+}
+
+const _sentinel = Object();
+
+// ---------------------------------------------------------------------------
+// Unified search+filter notifier (EPIC8A / Sprint 8 simplified API)
+// ---------------------------------------------------------------------------
+
+/// Unified notifier that holds both search query and filter criteria in a
+/// single [TransactionFilter] state object. Used by the search bar and the
+/// filter sheet to atomically update all filter criteria.
+@riverpod
+class SearchFilterNotifier extends _$SearchFilterNotifier {
+  @override
+  TransactionFilter build() => const TransactionFilter();
+
+  /// Updates the text search query.
+  void setQuery(String query) =>
+      state = state.copyWith(query: query.isEmpty ? null : query);
+
+  /// Clears the text search query.
+  void clearQuery() => state = state.copyWith(query: '');
+
+  /// Replaces the entire filter state atomically.
+  void apply(TransactionFilter filter) => state = filter;
+
+  /// Resets all criteria to the empty filter.
+  void reset() => state = const TransactionFilter();
 }
 
 // ---------------------------------------------------------------------------

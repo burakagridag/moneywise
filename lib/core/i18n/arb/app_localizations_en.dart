@@ -725,4 +725,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeEmptyStateSetBudgetSubtitle => 'Stay on top of your spending';
+
+  @override
+  String get insightConcentrationTitle => 'Spending concentrated';
+
+  @override
+  String insightConcentrationBody(int pct) {
+    return '$pct% of spending in one category.';
+  }
+
+  @override
+  String get insightSavingsGoalTitle => 'Low savings rate';
+
+  @override
+  String get insightSavingsGoalBody => 'Saving less than 10% this month.';
+
+  @override
+  String get insightDailyOverpacingTitle => 'Overspending pace';
+
+  @override
+  String get insightDailyOverpacingBody => 'On track to exceed budget.';
+
+  @override
+  String get insightBigTransactionTitle => 'Large transaction';
+
+  @override
+  String insightBigTransactionBodyNormal(String amount, int pct) {
+    return '$amount ($pct% of budget)';
+  }
+
+  @override
+  String get insightBigTransactionBodyExceeds => 'Exceeds your monthly budget';
 }

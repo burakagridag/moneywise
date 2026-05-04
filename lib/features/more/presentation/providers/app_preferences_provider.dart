@@ -50,26 +50,28 @@ class AppPreferences {
 // Helpers
 // ---------------------------------------------------------------------------
 
-ThemeMode _themeModeFromString(String? value) {
-  switch (value) {
-    case 'light':
-      return ThemeMode.light;
-    case 'dark':
-      return ThemeMode.dark;
-    default:
-      return ThemeMode.system;
+ThemeMode _themeModeFromIndex(int? value) {
+  if (value == null || value < 0 || value >= ThemeMode.values.length) {
+    return ThemeMode.system;
   }
+  return ThemeMode.values[value];
 }
 
-String _themeModeToString(ThemeMode mode) {
-  switch (mode) {
-    case ThemeMode.light:
-      return 'light';
-    case ThemeMode.dark:
-      return 'dark';
-    case ThemeMode.system:
-      return 'system';
+/// Read ThemeMode from [prefs] safely, handling both the current int format and
+/// the legacy String format written by pre-Sprint 8b builds (e.g. "ThemeMode.light").
+/// Falls back to [ThemeMode.system] when the stored value is absent or unrecognised.
+ThemeMode _readThemeMode(SharedPreferences prefs, String key) {
+  // Try int first (current format).
+  final dynamic raw = prefs.get(key);
+  if (raw is int) {
+    return _themeModeFromIndex(raw);
   }
+  // Fallback: legacy String format stored by the previous setString() call.
+  if (raw is String) {
+    if (raw.contains('dark')) return ThemeMode.dark;
+    if (raw.contains('light')) return ThemeMode.light;
+  }
+  return ThemeMode.system; // default
 }
 
 // ---------------------------------------------------------------------------
@@ -93,7 +95,7 @@ class AppPreferencesNotifier extends _$AppPreferencesNotifier {
   Future<AppPreferences> build() async {
     _prefs = await SharedPreferences.getInstance();
     return AppPreferences(
-      themeMode: _themeModeFromString(_safePrefs.getString(_kThemeMode)),
+      themeMode: _readThemeMode(_safePrefs, _kThemeMode),
       currencyCode: _safePrefs.getString(_kCurrencyCode) ?? 'EUR',
       languageCode: _safePrefs.getString(_kLanguageCode) ?? 'en',
     );
@@ -101,7 +103,7 @@ class AppPreferencesNotifier extends _$AppPreferencesNotifier {
 
   /// Persists and applies a new [ThemeMode].
   Future<void> setThemeMode(ThemeMode mode) async {
-    await _safePrefs.setString(_kThemeMode, _themeModeToString(mode));
+    await _safePrefs.setInt(_kThemeMode, mode.index);
     state = AsyncData(
       state.requireValue.copyWith(themeMode: mode),
     );

@@ -725,4 +725,35 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get homeEmptyStateSetBudgetSubtitle =>
       'Harcamalarınızın üstünde kalın';
+
+  @override
+  String get insightConcentrationTitle => 'Harcama yoğunlaşması';
+
+  @override
+  String insightConcentrationBody(int pct) {
+    return 'Harcamanın %$pct\'i tek kategoride.';
+  }
+
+  @override
+  String get insightSavingsGoalTitle => 'Düşük tasarruf oranı';
+
+  @override
+  String get insightSavingsGoalBody => 'Bu ay %10\'dan az birikim.';
+
+  @override
+  String get insightDailyOverpacingTitle => 'Aşırı harcama';
+
+  @override
+  String get insightDailyOverpacingBody => 'Bu hızda bütçenizi aşacaksınız.';
+
+  @override
+  String get insightBigTransactionTitle => 'Büyük işlem';
+
+  @override
+  String insightBigTransactionBodyNormal(String amount, int pct) {
+    return '$amount (bütçenin %$pct\'i)';
+  }
+
+  @override
+  String get insightBigTransactionBodyExceeds => 'Aylık bütçenizi aşan işlem';
 }

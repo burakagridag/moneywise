@@ -37,6 +37,18 @@ class BookmarkRepository {
     await _dao.upsert(_mapToCompanion(bookmark));
   }
 
+  /// Inserts a new [bookmark]. Alias for [save] used by provider/test callers.
+  Future<void> add(Bookmark bookmark) => save(bookmark);
+
+  /// Replaces an existing bookmark. Alias for [save] used by provider/test callers.
+  Future<void> update(Bookmark bookmark) => save(bookmark);
+
+  /// One-shot fetch of all non-deleted bookmarks.
+  Future<List<Bookmark>> getAll() async {
+    final rows = await _dao.watchAll().first;
+    return rows.map(_mapToDomain).toList();
+  }
+
   /// Soft-deletes the bookmark with the given [id].
   Future<void> delete(String id) async {
     await _dao.softDelete(id);

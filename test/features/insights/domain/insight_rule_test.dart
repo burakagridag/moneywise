@@ -1,7 +1,6 @@
 // Unit tests for InsightRule stubs and RuleBasedInsightProvider — insights feature.
 // Placeholder tests for the four V1 rule classes; full tests in Epic 8b.
 // ignore_for_file: prefer_const_constructors, prefer_const_declarations
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moneywise/features/insights/data/rule_based_insight_provider.dart';
 import 'package:moneywise/features/insights/domain/insight.dart';
@@ -23,6 +22,7 @@ InsightContext _emptyContext() => InsightContext(
       currentMonthBudgets: const [],
       effectiveBudget: null,
       referenceDate: DateTime(2026, 5, 1),
+      formatAmount: (amount) => amount.toStringAsFixed(2),
     );
 
 /// A fake rule that always fires with a known insight.
@@ -38,9 +38,6 @@ class _AlwaysFiresRule implements InsightRule {
         severity: severity,
         headline: 'Test: $id',
         body: 'Body: $id',
-        icon: Icons.info,
-        iconColor: Colors.blue,
-        iconBackgroundColor: Colors.blue.withValues(alpha: 0.1),
       );
 }
 

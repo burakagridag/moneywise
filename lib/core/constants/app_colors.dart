@@ -65,4 +65,17 @@ class AppColors {
   static const Color borderLight = Color(0xFFC8C4BC);
   static const Color borderFocus = Color(0xFF4A5580);
   static const Color borderFocusLight = Color(0xFF3D5A99);
+
+  // Insight palette
+  static const Color insightWarningIcon = Color(0xFFF59E0B); // amber-500
+  static const Color insightWarningIconBg = Color(0xFFFEF3C7); // amber-100
+  static const Color insightCriticalIcon = Color(0xFFEF4444); // red-500
+  static const Color insightCriticalIconBg = Color(0xFFFEE2E2); // red-100
+  static const Color insightNeutralIcon = Color(0xFF6B7280); // gray-500
+  static const Color insightNeutralIconBg = Color(0xFFF3F4F6); // gray-100
+
+  // Insight palette — dark-mode companions (lower opacity on dark surfaces).
+  static const Color insightWarningIconBgDark = Color(0x33FFA726); // amber, 20% opacity
+  static const Color insightCriticalIconBgDark = Color(0x33EF4444); // red, 20% opacity
+  static const Color insightNeutralIconBgDark = Color(0x1F6B7280); // gray, 12% opacity
 }

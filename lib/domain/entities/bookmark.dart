@@ -8,12 +8,12 @@ class Bookmark {
     required this.name,
     required this.type,
     this.amount,
-    required this.currencyCode,
+    this.currencyCode = 'EUR',
     this.accountId,
     this.toAccountId,
     this.categoryId,
     this.note,
-    required this.sortOrder,
+    this.sortOrder = 0,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -27,13 +27,15 @@ class Bookmark {
   /// Pre-filled amount — null means the user must enter one each time.
   final double? amount;
 
-  /// ISO 4217 currency code.
+  /// ISO 4217 currency code. Defaults to 'EUR'.
   final String currencyCode;
 
   final String? accountId;
   final String? toAccountId;
   final String? categoryId;
   final String? note;
+
+  /// Display sort order. Defaults to 0.
   final int sortOrder;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -42,7 +44,7 @@ class Bookmark {
     String? id,
     String? name,
     String? type,
-    double? amount,
+    Object? amount = _sentinel,
     String? currencyCode,
     String? accountId,
     String? toAccountId,
@@ -56,7 +58,7 @@ class Bookmark {
       id: id ?? this.id,
       name: name ?? this.name,
       type: type ?? this.type,
-      amount: amount ?? this.amount,
+      amount: identical(amount, _sentinel) ? this.amount : amount as double?,
       currencyCode: currencyCode ?? this.currencyCode,
       accountId: accountId ?? this.accountId,
       toAccountId: toAccountId ?? this.toAccountId,
@@ -68,3 +70,5 @@ class Bookmark {
     );
   }
 }
+
+const _sentinel = Object();

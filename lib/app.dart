@@ -12,17 +12,20 @@ class MoneyWiseApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // BUG-S6-011: read theme mode and locale from the unified AppPreferences.
     final prefs = ref.watch(appPreferencesNotifierProvider);
     final themeMode =
         prefs.whenOrNull(data: (p) => p.themeMode) ?? ThemeMode.system;
     final locale = prefs.whenOrNull(
       data: (p) => p.languageCode.isNotEmpty ? Locale(p.languageCode) : null,
     );
+
     return MaterialApp.router(
       title: 'MoneyWise',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
+      // BUG-S6-011: locale is driven by the persisted languageCode preference.
       locale: locale,
       routerConfig: appRouter,
       localizationsDelegates: const [

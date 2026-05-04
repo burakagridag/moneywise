@@ -31,16 +31,19 @@ void main() {
 
       expect(find.text('Categories'), findsOneWidget);
       expect(find.byIcon(Icons.category_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+      // Multiple chevron_right icons after Sprint 6 settings tiles were added.
+      expect(find.byIcon(Icons.chevron_right), findsAtLeastNWidgets(1));
     });
 
     testWidgets('Categories tile has onTap handler', (tester) async {
       await tester.pumpWidget(_buildScreen());
       await tester.pump();
 
-      // The screen may have multiple ListTiles — verify at least one exists and
-      // that the Categories tile specifically is tappable.
-      expect(find.byType(ListTile), findsAtLeastNWidgets(1));
+      // Sprint 6 adds ThemePickerTile, CurrencyPickerTile, LanguagePickerTile
+      // in addition to the Categories tile — so there are now 4 ListTiles.
+      final tiles = find.byType(ListTile);
+      expect(tiles, findsAtLeastNWidgets(1));
+      // The Categories tile specifically is tappable.
       expect(find.text('Categories'), findsOneWidget);
     });
   });

@@ -39,8 +39,16 @@ class ThisWeekSection extends ConsumerWidget {
           return const SizedBox.shrink();
         }
 
-        // Cap at 2 cards per spec display logic.
-        final visible = insights.take(2).toList();
+        // Resolve actual device brightness — correctly handles ThemeMode.system.
+        // The provider cannot do this (no BuildContext), so it defaults to light
+        // when ThemeMode.system is set. Re-apply the correct icon background
+        // here where brightness is authoritative.
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+
+        // Cap at 2 cards per spec display logic (EPIC8A-08).
+        // copyWithDark corrects iconBackgroundColor for ThemeMode.system users.
+        final visible =
+            insights.take(2).map((vm) => vm.copyWithDark(isDark)).toList();
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
