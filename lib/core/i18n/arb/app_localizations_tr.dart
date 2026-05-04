@@ -636,7 +636,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String homeBudgetPulseLeftOf(String budget) {
-    return '$budget bütçesinin kalan';
+    return 'kaldı (toplam $budget)';
   }
 
   @override
