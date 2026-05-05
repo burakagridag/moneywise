@@ -332,7 +332,7 @@
   "budgetMetricDeltaNoData": "No previous data",
   "budgetCategoriesTitle": "CATEGORIES",
   "budgetCategoriesEditLink": "Edit ›",
-  "budgetCategoriesCollapsedCount": "{n, plural, one{# more category} other{# more categories}}",
+  "budgetCategoriesCollapsedCount": "{n, plural, one{{n} more category} other{{n} more categories}}",
   "@budgetCategoriesCollapsedCount": {
     "placeholders": { "n": { "type": "int" } }
   },
@@ -413,7 +413,7 @@
     "placeholders": { "amount": { "type": "String" } }
   },
   "transactionsSummaryTopCategoriesTitle": "TOP CATEGORIES",
-  "transactionsSummarySingleCategoryHint": "{n, plural, one{Only # category with spending} other{Only # categories with spending}}",
+  "transactionsSummarySingleCategoryHint": "{n, plural, one{Only {n} category with spending} other{Only {n} categories with spending}}",
   "@transactionsSummarySingleCategoryHint": {
     "placeholders": { "n": { "type": "int" } }
   },

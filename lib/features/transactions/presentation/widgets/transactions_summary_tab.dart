@@ -473,13 +473,18 @@ class _WeekTrendSection extends ConsumerWidget {
       loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
       data: (weekMap) {
-        if (weekMap.isEmpty) return const SizedBox.shrink();
+        // Hide section when there are no transactions at all (all weeks zero).
+        final hasAnyData = weekMap.values.any(
+          (t) => t.income > 0 || t.expense > 0,
+        );
+        if (weekMap.isEmpty || !hasAnyData) return const SizedBox.shrink();
 
         // Sort weeks chronologically.
         final sortedWeeks = weekMap.entries.toList()
           ..sort((a, b) => a.key.compareTo(b.key));
 
         // Find busiest week (max net magnitude: |income - expense|).
+        // Weeks with zero net will never beat a non-zero week in reduce.
         final busiestEntry = sortedWeeks.reduce((best, e) {
           final eNet = (e.value.income - e.value.expense).abs();
           final bestNet = (best.value.income - best.value.expense).abs();
@@ -491,10 +496,11 @@ class _WeekTrendSection extends ConsumerWidget {
           return net > max ? net : max;
         });
 
-        // Format busiest week range.
+        // Format busiest week range with locale-aware month names.
+        final locale = Localizations.localeOf(context).languageCode;
         final weekStart = busiestEntry.key;
         final weekEnd = weekStart.add(const Duration(days: 6));
-        final rangeFmt = DateFormat('MMM d');
+        final rangeFmt = DateFormat('MMM d', locale);
         final range =
             '${rangeFmt.format(weekStart)} – ${rangeFmt.format(weekEnd)}';
 

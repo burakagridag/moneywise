@@ -202,8 +202,9 @@ class _DayHeaderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weekday = day.weekday;
-    final dayLabel = DateFormat('EEE').format(day);
-    final semanticsLabel = '${DateFormat('d MMMM, EEEE').format(day)}. '
+    final locale = Localizations.localeOf(context).languageCode;
+    final dayLabel = DateFormat('EEE', locale).format(day);
+    final semanticsLabel = '${DateFormat('d MMMM, EEEE', locale).format(day)}. '
         'Income: ${CurrencyFormatter.format(income)}, '
         'Expense: ${CurrencyFormatter.format(expense)}';
 

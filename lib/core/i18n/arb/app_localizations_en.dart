@@ -816,8 +816,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# more categories',
-      one: '# more category',
+      other: '$n more categories',
+      one: '$n more category',
     );
     return '$_temp0';
   }
@@ -959,8 +959,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Only # categories with spending',
-      one: 'Only # category with spending',
+      other: 'Only $n categories with spending',
+      one: 'Only $n category with spending',
     );
     return '$_temp0';
   }

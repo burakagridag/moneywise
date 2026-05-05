@@ -1595,7 +1595,7 @@ abstract class AppLocalizations {
   /// No description provided for @budgetCategoriesCollapsedCount.
   ///
   /// In en, this message translates to:
-  /// **'{n, plural, one{# more category} other{# more categories}}'**
+  /// **'{n, plural, one{{n} more category} other{{n} more categories}}'**
   String budgetCategoriesCollapsedCount(int n);
 
   /// No description provided for @budgetCategoriesCollapsedSubtitle.
@@ -1841,7 +1841,7 @@ abstract class AppLocalizations {
   /// No description provided for @transactionsSummarySingleCategoryHint.
   ///
   /// In en, this message translates to:
-  /// **'{n, plural, one{Only # category with spending} other{Only # categories with spending}}'**
+  /// **'{n, plural, one{Only {n} category with spending} other{Only {n} categories with spending}}'**
   String transactionsSummarySingleCategoryHint(int n);
 
   /// No description provided for @transactionsSummaryWeekTrendTitle.

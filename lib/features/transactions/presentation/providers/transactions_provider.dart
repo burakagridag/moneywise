@@ -182,8 +182,29 @@ Stream<List<domain.Transaction>> dayTransactions(
   return repo.watchTransactionsForDay(date);
 }
 
+/// Returns all Monday week-starts that overlap with [year]/[month].
+/// The first week start is the Monday on or before the 1st of the month;
+/// subsequent starts are added while they do not exceed the last day of the month.
+List<DateTime> _allWeekStartsForMonth(int year, int month) {
+  final firstDay = DateTime(year, month, 1);
+  final lastDay = DateTime(year, month + 1, 0); // last day of month
+
+  // First week start = Monday on or before firstDay.
+  var weekStart = firstDay.subtract(
+    Duration(days: (firstDay.weekday - 1) % 7),
+  );
+
+  final weeks = <DateTime>[];
+  while (!weekStart.isAfter(lastDay)) {
+    weeks.add(weekStart);
+    weekStart = weekStart.add(const Duration(days: 7));
+  }
+  return weeks;
+}
+
 /// Emits weekly totals for a given [year]/[month], keyed by week-start date.
-/// Client-side aggregation over the monthly transaction stream (BUG-006).
+/// All weeks that overlap the month are always present — weeks with no
+/// transactions emit zero-income/zero-expense totals (BUG-006 + Bulgu #3).
 @riverpod
 Stream<Map<DateTime, MonthTotals>> weeklyTotalsForMonth(
   WeeklyTotalsForMonthRef ref,
@@ -192,11 +213,15 @@ Stream<Map<DateTime, MonthTotals>> weeklyTotalsForMonth(
 ) {
   final repo = ref.watch(transactionRepositoryProvider);
   return repo.watchTransactionsForMonth(year, month).map((txList) {
-    final Map<DateTime, ({int incomeCents, int expenseCents})> acc = {};
+    // Seed all weeks with zero so missing-data weeks still appear in the chart.
+    final Map<DateTime, ({int incomeCents, int expenseCents})> acc = {
+      for (final ws in _allWeekStartsForMonth(year, month))
+        ws: (incomeCents: 0, expenseCents: 0),
+    };
 
     for (final tx in txList) {
       if (tx.isExcluded) continue;
-      // Week start = most recent Monday on or before tx.date
+      // Week start = most recent Monday on or before tx.date.
       final date = DateTime(tx.date.year, tx.date.month, tx.date.day);
       final weekStart = date.subtract(Duration(days: date.weekday - 1));
 
