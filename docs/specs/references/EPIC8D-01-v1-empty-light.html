@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPIC8D-01 — Transactions Empty State (Light)</title>
+<style>
+  :root {
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --border: #C8C4BC;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04);
+    --text-primary: #1A1C24;
+    --text-secondary: #5C5E6B;
+    --text-tertiary: #8A90A8;
+    --brand: #3D5A99;
+    --brand-variant: #2E4A87;
+    --income: #047857;
+    --expense: #C0392B;
+    --highlight: #EAEEF7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: #E5E3DE;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  .phone {
+    width: 430px;
+    min-height: 932px;
+    background: var(--bg);
+    border-radius: 48px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .status-bar {
+    height: 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 32px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .status-bar .right { display: flex; gap: 6px; align-items: center; font-size: 14px; }
+
+  .header { padding: 16px 20px 12px; }
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .header-actions { display: flex; gap: 4px; }
+
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: transparent; border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-primary);
+  }
+
+  .icon-btn svg { width: 22px; height: 22px; stroke-width: 2; }
+
+  .header-title {
+    font-size: 28px; font-weight: 700;
+    color: var(--text-primary); letter-spacing: -0.5px;
+  }
+
+  .month-nav {
+    display: flex; justify-content: center; align-items: center;
+    gap: 24px; padding: 4px 0 16px;
+  }
+
+  .month-nav-arrow {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: none; background: transparent;
+    color: var(--text-secondary); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .month-nav-arrow svg { width: 20px; height: 20px; }
+
+  .month-nav-label {
+    font-size: 18px; font-weight: 600; color: var(--text-primary);
+  }
+
+  .tab-bar {
+    display: flex; background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+  }
+
+  .tab {
+    flex: 1; padding: 14px 0; text-align: center;
+    font-size: 15px; font-weight: 500;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    cursor: pointer; margin-bottom: -1px;
+  }
+
+  .tab.active {
+    color: var(--brand);
+    border-bottom-color: var(--brand);
+    font-weight: 600;
+  }
+
+  /* Empty state */
+  .empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 32px 140px;
+    text-align: center;
+  }
+
+  .empty-illustration {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--highlight) 0%, #DDE5F1 100%);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .empty-illustration::before {
+    content: '';
+    position: absolute;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    border: 2px dashed var(--brand);
+    opacity: 0.2;
+  }
+
+  .empty-illustration-icon {
+    font-size: 56px;
+  }
+
+  .empty-title {
+    font-size: 22px; font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+
+  .empty-subtitle {
+    font-size: 15px; line-height: 1.5;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    max-width: 280px;
+  }
+
+  .empty-cta {
+    background: var(--brand);
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 14px;
+    font-size: 16px; font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(61, 90, 153, 0.25);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .empty-cta svg { width: 20px; height: 20px; stroke-width: 2.5; }
+
+  .empty-secondary-hint {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+
+  .fab {
+    position: absolute; right: 20px; bottom: 110px;
+    width: 56px; height: 56px; border-radius: 16px;
+    background: var(--brand); color: white;
+    border: none; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(61, 90, 153, 0.4);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+  }
+
+  .fab svg { width: 24px; height: 24px; stroke-width: 2.5; }
+
+  .bottom-nav {
+    display: flex; background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 12px 20px 32px; gap: 4px;
+    position: absolute; bottom: 0; left: 0; right: 0;
+  }
+
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    padding: 6px 0; color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .nav-item.active { color: var(--brand); }
+
+  .nav-item-icon {
+    width: 56px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 14px;
+  }
+
+  .nav-item.active .nav-item-icon { background: var(--highlight); }
+  .nav-item-icon svg { width: 22px; height: 22px; stroke-width: 2; }
+  .nav-item-label { font-size: 11px; font-weight: 600; }
+
+  .frame-label {
+    text-align: center; margin-bottom: 16px;
+    font-size: 14px; font-weight: 600; color: #5C5E6B;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  .frame-wrapper { display: flex; flex-direction: column; align-items: center; }
+</style>
+</head>
+<body>
+
+<div class="frame-wrapper">
+  <div class="frame-label">Empty State — Light Mode</div>
+
+  <div class="phone">
+    <div class="status-bar">
+      <span>14:18</span>
+      <div class="right">
+        <span style="font-size: 12px;">●●●●</span>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 0C5.5 0 3.2 0.9 1.4 2.4l1.4 1.7C4.2 3 6 2.3 8 2.3s3.8 0.7 5.2 1.8l1.4-1.7C12.8 0.9 10.5 0 8 0zm0 4.6c-1.5 0-2.9 0.5-4 1.5l1.4 1.7c0.7-0.6 1.6-1 2.6-1s1.9 0.4 2.6 1l1.4-1.7c-1.1-1-2.5-1.5-4-1.5zm0 4.6c-0.5 0-1 0.2-1.4 0.5L8 11l1.4-1.4c-0.4-0.3-0.9-0.4-1.4-0.4z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 24 11" fill="currentColor"><rect x="0" y="0" width="22" height="11" rx="3" ry="3" fill="none" stroke="currentColor" stroke-opacity="0.4"/><rect x="2" y="2" width="18" height="7" rx="1" ry="1"/></svg>
+      </div>
+    </div>
+
+    <div class="header">
+      <div class="header-row">
+        <button class="icon-btn"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg></button>
+        <div class="header-title">İşlemler</div>
+        <div class="header-actions">
+          <button class="icon-btn"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+          <button class="icon-btn"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg></button>
+        </div>
+      </div>
+
+      <div class="month-nav">
+        <button class="month-nav-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <span class="month-nav-label">Mayıs 2026</span>
+        <button class="month-nav-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab active">Liste</div>
+      <div class="tab">Takvim</div>
+      <div class="tab">Özet</div>
+    </div>
+
+    <div class="empty-state">
+      <div class="empty-illustration">
+        <div class="empty-illustration-icon">🧾</div>
+      </div>
+      <div class="empty-title">Henüz işlem yok</div>
+      <div class="empty-subtitle">Gelir, gider veya transferi ekleyerek başla</div>
+      <button class="empty-cta">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        İlk işlemi ekle
+      </button>
+      <div class="empty-secondary-hint">veya sağ alt köşedeki + butonuna dokun</div>
+    </div>
+
+    <button class="fab"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+
+    <div class="bottom-nav">
+      <div class="nav-item">
+        <div class="nav-item-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg></div>
+        <span class="nav-item-label">Home</span>
+      </div>
+      <div class="nav-item active">
+        <div class="nav-item-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 2v18M15 2v18M3 6h18M3 18h18"/></svg></div>
+        <span class="nav-item-label">Transactions</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-item-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <span class="nav-item-label">Budget</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-item-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+        <span class="nav-item-label">More</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

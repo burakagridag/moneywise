@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPIC8D-01 — Add Transaction Modal (Light)</title>
+<style>
+  :root {
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --border: #C8C4BC;
+    --shadow: 0 2px 8px rgba(0,0,0,0.04);
+    --text-primary: #1A1C24;
+    --text-secondary: #5C5E6B;
+    --text-tertiary: #8A90A8;
+    --brand: #3D5A99;
+    --brand-variant: #2E4A87;
+    --income: #047857;
+    --expense: #C0392B;
+    --highlight: #EAEEF7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: #E5E3DE;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  .phone {
+    width: 430px;
+    min-height: 932px;
+    background: var(--bg);
+    border-radius: 48px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Status bar over modal */
+  .status-bar {
+    height: 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 32px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--surface);
+  }
+
+  .status-bar .right { display: flex; gap: 6px; align-items: center; font-size: 14px; }
+
+  /* Modal header */
+  .modal-header {
+    background: var(--surface);
+    padding: 12px 20px 16px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .close-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%; border: none;
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .close-btn svg { width: 20px; height: 20px; stroke-width: 2; }
+
+  .modal-title {
+    flex: 1;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-right: 36px;
+  }
+
+  /* Body */
+  .modal-body {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  /* Type selector (segmented) */
+  .type-selector {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 32px;
+  }
+
+  .type-option {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.15s;
+  }
+
+  .type-option.active {
+    background: var(--brand);
+    color: white;
+    box-shadow: 0 2px 8px rgba(61, 90, 153, 0.25);
+  }
+
+  /* Amount input */
+  .amount-section {
+    text-align: center;
+    margin-bottom: 32px;
+    padding: 16px 0;
+  }
+
+  .amount-display {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -1.5px;
+    margin-bottom: 4px;
+  }
+
+  .amount-display .currency {
+    font-size: 32px;
+    color: var(--text-tertiary);
+    font-weight: 600;
+    margin-left: 4px;
+  }
+
+  .amount-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 36px;
+    background: var(--brand);
+    margin-left: 2px;
+    margin-bottom: -4px;
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  .amount-helper {
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+
+  /* Quick chips */
+  .quick-chips-section {
+    margin-bottom: 24px;
+  }
+
+  .quick-chips-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    padding: 0 4px;
+  }
+
+  .quick-chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 0 4px 4px;
+  }
+
+  .quick-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    flex-shrink: 0;
+    box-shadow: var(--shadow);
+  }
+
+  .quick-chip:hover {
+    border-color: var(--brand);
+  }
+
+  .quick-chip-emoji {
+    font-size: 16px;
+  }
+
+  /* Form rows */
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .form-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    gap: 12px;
+    cursor: pointer;
+  }
+
+  .form-row + .form-row {
+    border-top: 1px solid var(--border);
+  }
+
+  .form-row-icon {
+    width: 32px;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .form-row-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2;
+  }
+
+  .form-row-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .form-row-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .form-row-value {
+    font-size: 15px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .form-row-value.placeholder {
+    color: var(--text-tertiary);
+    font-weight: 400;
+  }
+
+  .form-row-chevron {
+    color: var(--text-tertiary);
+  }
+
+  .form-row-chevron svg { width: 16px; height: 16px; }
+
+  /* Note input */
+  .note-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    color: var(--text-primary);
+    font-family: inherit;
+    padding: 0;
+    outline: none;
+  }
+
+  .note-input::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  /* CTAs */
+  .cta-section {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cta-primary {
+    background: var(--brand);
+    color: white;
+    border: none;
+    padding: 16px 0;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(61, 90, 153, 0.25);
+  }
+
+  .cta-secondary {
+    background: transparent;
+    color: var(--brand);
+    border: 1px solid var(--brand);
+    padding: 16px 0;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .frame-label {
+    text-align: center; margin-bottom: 16px;
+    font-size: 14px; font-weight: 600; color: #5C5E6B;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  .frame-wrapper { display: flex; flex-direction: column; align-items: center; }
+
+  /* Note: in modal, no bottom nav, no FAB — fullscreen */
+</style>
+</head>
+<body>
+
+<div class="frame-wrapper">
+  <div class="frame-label">Yeni İşlem Modal — Light Mode</div>
+
+  <div class="phone">
+    <div class="status-bar">
+      <span>14:18</span>
+      <div class="right">
+        <span style="font-size: 12px;">●●●●</span>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 0C5.5 0 3.2 0.9 1.4 2.4l1.4 1.7C4.2 3 6 2.3 8 2.3s3.8 0.7 5.2 1.8l1.4-1.7C12.8 0.9 10.5 0 8 0zm0 4.6c-1.5 0-2.9 0.5-4 1.5l1.4 1.7c0.7-0.6 1.6-1 2.6-1s1.9 0.4 2.6 1l1.4-1.7c-1.1-1-2.5-1.5-4-1.5zm0 4.6c-0.5 0-1 0.2-1.4 0.5L8 11l1.4-1.4c-0.4-0.3-0.9-0.4-1.4-0.4z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 24 11" fill="currentColor"><rect x="0" y="0" width="22" height="11" rx="3" ry="3" fill="none" stroke="currentColor" stroke-opacity="0.4"/><rect x="2" y="2" width="18" height="7" rx="1" ry="1"/></svg>
+      </div>
+    </div>
+
+    <!-- Modal header -->
+    <div class="modal-header">
+      <button class="close-btn">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="modal-title">Yeni İşlem</div>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <!-- Type selector -->
+      <div class="type-selector">
+        <div class="type-option active">Gider</div>
+        <div class="type-option">Gelir</div>
+        <div class="type-option">Transfer</div>
+      </div>
+
+      <!-- Amount -->
+      <div class="amount-section">
+        <div class="amount-display">
+          0,00<span class="currency">€</span><span class="amount-cursor"></span>
+        </div>
+        <div class="amount-helper">Tutarı gir</div>
+      </div>
+
+      <!-- Quick chips -->
+      <div class="quick-chips-section">
+        <div class="quick-chips-label">Sık Kullanılan</div>
+        <div class="quick-chips">
+          <div class="quick-chip">
+            <span class="quick-chip-emoji">🍜</span>
+            <span>Yemek</span>
+          </div>
+          <div class="quick-chip">
+            <span class="quick-chip-emoji">🚌</span>
+            <span>Ulaşım</span>
+          </div>
+          <div class="quick-chip">
+            <span class="quick-chip-emoji">🛒</span>
+            <span>Market</span>
+          </div>
+          <div class="quick-chip">
+            <span class="quick-chip-emoji">☕</span>
+            <span>Kafe</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form card -->
+      <div class="form-card">
+        <div class="form-row">
+          <div class="form-row-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="form-row-content">
+            <div class="form-row-label">Kategori</div>
+            <div class="form-row-value placeholder">Seç</div>
+          </div>
+          <div class="form-row-chevron">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-row-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          </div>
+          <div class="form-row-content">
+            <div class="form-row-label">Hesap</div>
+            <div class="form-row-value">Dkb</div>
+          </div>
+          <div class="form-row-chevron">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-row-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="form-row-content">
+            <div class="form-row-label">Tarih</div>
+            <div class="form-row-value">Bugün, 8 Mayıs</div>
+          </div>
+          <div class="form-row-chevron">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-row-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="14" y2="18"/></svg>
+          </div>
+          <input type="text" class="note-input" placeholder="Not (opsiyonel)" />
+        </div>
+      </div>
+
+      <!-- CTAs -->
+      <div class="cta-section">
+        <button class="cta-primary">Kaydet</button>
+        <button class="cta-secondary">Kaydet & Devam</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

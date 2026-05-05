@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPIC8D-01 — Transactions Özet (Dark)</title>
+<style>
+  :root {
+    --bg: #0F1117;
+    --surface: #181C27;
+    --border: #2E3453;
+    --shadow: 0 2px 8px rgba(0,0,0,0.20);
+    --text-primary: #F0F2F8;
+    --text-secondary: #8A90A8;
+    --text-tertiary: #5C5E6B;
+    --brand: #4F46E5;
+    --brand-variant: #3D5A99;
+    --income: #34D399;
+    --expense: #E55A4E;
+    --highlight: #1F2540;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: #1A1C24;
+    display: flex; justify-content: center; align-items: flex-start;
+    padding: 40px 20px; min-height: 100vh;
+  }
+
+  .phone {
+    width: 430px; min-height: 932px;
+    background: var(--bg); border-radius: 48px;
+    overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    position: relative; display: flex; flex-direction: column;
+  }
+
+  .status-bar {
+    height: 44px; display: flex;
+    justify-content: space-between; align-items: center;
+    padding: 0 32px; font-size: 17px; font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .status-bar .right { display: flex; gap: 6px; align-items: center; font-size: 14px; }
+
+  .header { padding: 16px 20px 12px; }
+
+  .header-row {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 16px;
+  }
+
+  .header-actions { display: flex; gap: 4px; }
+
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: transparent; border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-primary);
+  }
+
+  .icon-btn svg { width: 22px; height: 22px; stroke-width: 2; }
+
+  .header-title {
+    font-size: 28px; font-weight: 700;
+    color: var(--text-primary); letter-spacing: -0.5px;
+  }
+
+  .month-nav {
+    display: flex; justify-content: center; align-items: center;
+    gap: 24px; padding: 4px 0 16px;
+  }
+
+  .month-nav-arrow {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: none; background: transparent;
+    color: var(--text-secondary); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .month-nav-arrow svg { width: 20px; height: 20px; }
+
+  .month-nav-label {
+    font-size: 18px; font-weight: 600; color: var(--text-primary);
+  }
+
+  .tab-bar {
+    display: flex; background: var(--bg);
+    border-bottom: 1px solid var(--border); padding: 0 20px;
+  }
+
+  .tab {
+    flex: 1; padding: 14px 0; text-align: center;
+    font-size: 15px; font-weight: 500;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    cursor: pointer; margin-bottom: -1px;
+  }
+
+  .tab.active {
+    color: var(--brand); border-bottom-color: var(--brand);
+    font-weight: 600;
+  }
+
+  .content { flex: 1; padding: 16px 20px 100px; overflow-y: auto; }
+
+  /* Hero card */
+  .hero-card {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-variant) 100%);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+    color: white;
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.30);
+  }
+
+  .hero-top {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; margin-bottom: 12px;
+  }
+
+  .hero-label {
+    font-size: 11px; font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.5px;
+  }
+
+  .hero-days-left {
+    font-size: 13px; color: rgba(255,255,255,0.75);
+  }
+
+  .hero-amount {
+    font-size: 36px; font-weight: 700;
+    margin-bottom: 16px; letter-spacing: -1px;
+  }
+
+  .hero-footer {
+    display: flex; gap: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    font-size: 13px;
+  }
+
+  .hero-footer-item {
+    display: flex; gap: 6px; align-items: center;
+  }
+
+  .hero-footer-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+
+  .hero-footer-dot.income { background: #34D399; }
+  .hero-footer-dot.expense { background: #FCA5A5; }
+
+  .hero-footer-label { color: rgba(255,255,255,0.7); }
+  .hero-footer-value { color: white; font-weight: 600; }
+
+  .section-header {
+    font-size: 12px; font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 8px; padding: 0 4px;
+  }
+
+  .categories-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .cat-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 0;
+  }
+
+  .cat-row + .cat-row {
+    border-top: 1px solid var(--border);
+    padding-top: 16px; margin-top: 8px;
+  }
+
+  .cat-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--highlight);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+
+  .cat-info { flex: 1; min-width: 0; }
+
+  .cat-top-row {
+    display: flex; justify-content: space-between;
+    align-items: baseline; margin-bottom: 6px;
+  }
+
+  .cat-name {
+    font-size: 15px; font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .cat-amount {
+    font-size: 14px; font-weight: 600;
+    color: var(--expense);
+  }
+
+  .cat-bar {
+    height: 6px; background: var(--bg);
+    border-radius: 3px; overflow: hidden;
+    position: relative;
+  }
+
+  .cat-bar-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: var(--brand); border-radius: 3px;
+  }
+
+  .cat-bar-fill.cat-1 { background: var(--brand); }
+  .cat-bar-fill.cat-2 { background: #6B82B6; }
+  .cat-bar-fill.cat-3 { background: #99AAD0; }
+
+  .cat-percent {
+    font-size: 11px; color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  .cat-hint {
+    margin-top: 12px; padding: 12px;
+    background: var(--bg); border-radius: 10px;
+    font-size: 13px; color: var(--text-secondary);
+    text-align: center;
+  }
+
+  .trend-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 20px 16px 16px;
+  }
+
+  .trend-bars {
+    display: flex; align-items: flex-end;
+    gap: 12px; height: 120px;
+    margin-bottom: 8px; padding: 0 8px;
+  }
+
+  .trend-bar-col {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 6px;
+    height: 100%;
+  }
+
+  .trend-bar-wrap {
+    flex: 1; width: 100%;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    gap: 2px; position: relative;
+  }
+
+  .trend-bar {
+    width: 100%; border-radius: 4px;
+    background: var(--brand); min-height: 2px;
+  }
+
+  .trend-bar.income { background: var(--income); }
+  .trend-bar.expense { background: var(--expense); }
+  .trend-bar.muted { background: var(--border); }
+
+  .trend-week-label {
+    font-size: 11px; font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .trend-bar-col.busiest .trend-week-label { color: var(--brand); }
+
+  .trend-footer {
+    margin-top: 16px; padding: 12px;
+    background: var(--bg); border-radius: 10px;
+    text-align: center;
+  }
+
+  .trend-footer-label {
+    font-size: 12px; color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .trend-footer-value {
+    font-size: 14px; font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .trend-footer-value .net { color: var(--income); margin-left: 6px; }
+
+  .fab {
+    position: absolute; right: 20px; bottom: 110px;
+    width: 56px; height: 56px; border-radius: 16px;
+    background: var(--brand); color: white;
+    border: none; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+  }
+
+  .fab svg { width: 24px; height: 24px; stroke-width: 2.5; }
+
+  .bottom-nav {
+    display: flex; background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 12px 20px 32px; gap: 4px;
+    position: absolute; bottom: 0; left: 0; right: 0;
+  }
+
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    padding: 6px 0; color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .nav-item.active { color: var(--brand); }
+
+  .nav-item-icon {
+    width: 56px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 14px;
+  }
+
+  .nav-item.active .nav-item-icon { background: var(--highlight); }
+  .nav-item-icon svg { width: 22px; height: 22px; stroke-width: 2; }
+  .nav-item-label { font-size: 11px; font-weight: 600; }
+
+  .frame-label {
+    text-align: center; margin-bottom: 16px;
+    font-size: 14px; font-weight: 600; color: #C8C4BC;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  .frame-wrapper { display: flex; flex-direction: column; align-items: center; }
+</style>
+</head>
+<body>
+
+<div class="frame-wrapper">
+  <div class="frame-label">Özet — Dark Mode</div>
+
+  <div class="phone">
+    <div class="status-bar">
+      <span>14:18</span>
+      <div class="right">
+        <span style="font-size: 12px;">●●●●</span>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 0C5.5 0 3.2 0.9 1.4 2.4l1.4 1.7C4.2 3 6 2.3 8 2.3s3.8 0.7 5.2 1.8l1.4-1.7C12.8 0.9 10.5 0 8 0zm0 4.6c-1.5 0-2.9 0.5-4 1.5l1.4 1.7c0.7-0.6 1.6-1 2.6-1s1.9 0.4 2.6 1l1.4-1.7c-1.1-1-2.5-1.5-4-1.5zm0 4.6c-0.5 0-1 0.2-1.4 0.5L8 11l1.4-1.4c-0.4-0.3-0.9-0.4-1.4-0.4z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 24 11" fill="currentColor"><rect x="0" y="0" width="22" height="11" rx="3" ry="3" fill="none" stroke="currentColor" stroke-opacity="0.4"/><rect x="2" y="2" width="18" height="7" rx="1" ry="1"/></svg>
+      </div>
+    </div>
+
+    <div class="header">
+      <div class="header-row">
+        <button class="icon-btn"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg></button>
+        <div class="header-title">İşlemler</div>
+        <div class="header-actions">
+          <button class="icon-btn"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+          <button class="icon-btn"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg></button>
+        </div>
+      </div>
+
+      <div class="month-nav">
+        <button class="month-nav-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <span class="month-nav-label">Mayıs 2026</span>
+        <button class="month-nav-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab">Liste</div>
+      <div class="tab">Takvim</div>
+      <div class="tab active">Özet</div>
+    </div>
+
+    <div class="content">
+      <div class="hero-card">
+        <div class="hero-top">
+          <div class="hero-label">NET BU AY</div>
+          <div class="hero-days-left">23 gün kaldı</div>
+        </div>
+        <div class="hero-amount">+990,00 €</div>
+        <div class="hero-footer">
+          <div class="hero-footer-item">
+            <div class="hero-footer-dot income"></div>
+            <span class="hero-footer-value">+1.000 €</span>
+            <span class="hero-footer-label">gelir</span>
+          </div>
+          <div class="hero-footer-item">
+            <div class="hero-footer-dot expense"></div>
+            <span class="hero-footer-value">−10 €</span>
+            <span class="hero-footer-label">gider</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-header">ÜST KATEGORİLER</div>
+      <div class="categories-card">
+        <div class="cat-row">
+          <div class="cat-icon">🍜</div>
+          <div class="cat-info">
+            <div class="cat-top-row">
+              <div class="cat-name">Yemek</div>
+              <div class="cat-amount">−10,00 €</div>
+            </div>
+            <div class="cat-bar">
+              <div class="cat-bar-fill cat-1" style="width: 100%;"></div>
+            </div>
+            <div class="cat-percent">%100 toplam giderin</div>
+          </div>
+        </div>
+
+        <div class="cat-hint">Sadece 1 kategoride harcama var</div>
+      </div>
+
+      <div class="section-header">HAFTA TRENDİ</div>
+      <div class="trend-card">
+        <div class="trend-bars">
+          <div class="trend-bar-col">
+            <div class="trend-bar-wrap">
+              <div class="trend-bar muted" style="height: 4%;"></div>
+            </div>
+            <div class="trend-week-label">1.5</div>
+          </div>
+          <div class="trend-bar-col busiest">
+            <div class="trend-bar-wrap">
+              <div class="trend-bar income" style="height: 100%;"></div>
+              <div class="trend-bar expense" style="height: 1%;"></div>
+            </div>
+            <div class="trend-week-label">4.5</div>
+          </div>
+          <div class="trend-bar-col">
+            <div class="trend-bar-wrap">
+              <div class="trend-bar muted" style="height: 4%;"></div>
+            </div>
+            <div class="trend-week-label">11.5</div>
+          </div>
+          <div class="trend-bar-col">
+            <div class="trend-bar-wrap">
+              <div class="trend-bar muted" style="height: 4%;"></div>
+            </div>
+            <div class="trend-week-label">18.5</div>
+          </div>
+          <div class="trend-bar-col">
+            <div class="trend-bar-wrap">
+              <div class="trend-bar muted" style="height: 4%;"></div>
+            </div>
+            <div class="trend-week-label">25.5</div>
+          </div>
+        </div>
+
+        <div class="trend-footer">
+          <div class="trend-footer-label">En yoğun hafta: 4-10 Mayıs</div>
+          <div class="trend-footer-value">+990,00 € <span class="net">net</span></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="fab"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+
+    <div class="bottom-nav">
+      <div class="nav-item">
+        <div class="nav-item-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg></div>
+        <span class="nav-item-label">Home</span>
+      </div>
+      <div class="nav-item active">
+        <div class="nav-item-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 2v18M15 2v18M3 6h18M3 18h18"/></svg></div>
+        <span class="nav-item-label">Transactions</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-item-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <span class="nav-item-label">Budget</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-item-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+        <span class="nav-item-label">More</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
