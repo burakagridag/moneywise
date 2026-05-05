@@ -27,7 +27,8 @@ class TransactionsSummaryStrip extends StatelessWidget {
     final net = income - expense;
     final isDark = context.isDark;
 
-    final netColor = net >= 0 ? context.incomeColor : context.expenseColor;
+    // SPEC-021 §4: net positive is text-primary (neutral black), not income green.
+    final netColor = net < 0 ? context.expenseColor : context.textPrimary;
 
     return Container(
       color: isDark ? AppColors.bgSecondary : AppColors.bgElevatedLight,

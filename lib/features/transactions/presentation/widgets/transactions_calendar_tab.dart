@@ -208,7 +208,9 @@ class _CalendarGrid extends StatelessWidget {
               isSelected: isSelected,
               income: totals?.income,
               expense: totals?.expense,
-              onTap: entry.isCurrentMonth ? () => onDaySelected(key) : null,
+              onTap: (entry.isCurrentMonth && dayTotals.containsKey(key))
+                  ? () => onDaySelected(key)
+                  : null,
             );
           },
         );
@@ -302,38 +304,57 @@ class _CalendarDayCell extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Day number — filled brand circle for today or selected day;
-              // today takes priority so its visual is always correct.
-              (isToday || (isSelected && isCurrentMonth))
-                  ? Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: AppColors.brandPrimary,
-                        shape: BoxShape.circle,
-                        border: isToday && !isSelected
-                            ? Border.all(
-                                color: AppColors.brandPrimary,
-                                width: 1.5,
-                              )
-                            : null,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${day.day}',
-                          style: AppTypography.caption2.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    )
-                  : Text(
+              // Day number rendering priority:
+              //   1. isSelected (solid filled circle, white text) — covers today+selected.
+              //   2. isToday && !isSelected (transparent-fill ring, brandPrimary text).
+              //   3. Plain text for all other days.
+              if (isSelected && isCurrentMonth)
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: const BoxDecoration(
+                    color: AppColors.brandPrimary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
                       '${day.day}',
-                      style: AppTypography.caption1.copyWith(
-                        color: dayNumColor,
+                      style: AppTypography.caption2.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
+                  ),
+                )
+              else if (isToday)
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.brandPrimary,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${day.day}',
+                      style: AppTypography.caption2.copyWith(
+                        color: AppColors.brandPrimary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                )
+              else
+                Text(
+                  '${day.day}',
+                  style: AppTypography.caption1.copyWith(
+                    color: dayNumColor,
+                  ),
+                ),
               const Spacer(),
               // Income / expense amounts (hidden for future dates).
               if (hasIncome && !isFuture)

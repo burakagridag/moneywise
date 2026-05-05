@@ -479,11 +479,17 @@ class _WeekTrendSection extends ConsumerWidget {
         final sortedWeeks = weekMap.entries.toList()
           ..sort((a, b) => a.key.compareTo(b.key));
 
-        // Find busiest week (max expense).
-        final busiestEntry = sortedWeeks.reduce(
-          (best, e) => e.value.expense > best.value.expense ? e : best,
-        );
-        final maxExpense = busiestEntry.value.expense;
+        // Find busiest week (max net magnitude: |income - expense|).
+        final busiestEntry = sortedWeeks.reduce((best, e) {
+          final eNet = (e.value.income - e.value.expense).abs();
+          final bestNet = (best.value.income - best.value.expense).abs();
+          return eNet > bestNet ? e : best;
+        });
+        // Compute max net magnitude across all weeks for bar scaling.
+        final maxNet = sortedWeeks.fold(0.0, (max, e) {
+          final net = (e.value.income - e.value.expense).abs();
+          return net > max ? net : max;
+        });
 
         // Format busiest week range.
         final weekStart = busiestEntry.key;
@@ -528,9 +534,9 @@ class _WeekTrendSection extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: sortedWeeks.map((e) {
                           final isBusiest = e.key == busiestEntry.key;
-                          final ratio = maxExpense > 0
-                              ? e.value.expense / maxExpense
-                              : 0.0;
+                          final weekNet =
+                              (e.value.income - e.value.expense).abs();
+                          final ratio = maxNet > 0 ? weekNet / maxNet : 0.0;
                           return Expanded(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
