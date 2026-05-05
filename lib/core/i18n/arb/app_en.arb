@@ -145,10 +145,6 @@
   "budgetSettingDiscardAction": "Discard",
   "budgetSettingKeepEditing": "Keep editing",
 
-  "budgetViewRemainingMonthly": "Remaining (Monthly)",
-  "budgetViewNoBudgetsTitle": "No budgets set",
-  "budgetViewNoBudgetsSubtitle": "Tap 'Budget Setting' to configure monthly limits per category.",
-  "budgetViewSetUpBudgets": "Set Up Budgets",
   "budgetViewCouldNotLoad": "Could not load budget data",
   "budgetViewNoBudgetSet": "No budget set",
   "budgetViewIncludesCarryOver": "Includes {amount} carry-over from last month",
@@ -284,5 +280,100 @@
       "pct": { "type": "int" }
     }
   },
-  "insightBigTransactionBodyExceeds": "Exceeds your monthly budget"
+  "insightBigTransactionBodyExceeds": "Exceeds your monthly budget",
+  "insightWeekendSpendingTitle": "Weekend spending high",
+  "insightWeekendSpendingBody": "Weekend {pct}% above weekday.",
+  "@insightWeekendSpendingBody": {
+    "placeholders": { "pct": { "type": "int" } }
+  },
+  "budgetScreenTitle": "Budget",
+  "budgetHeroLabelRemaining": "REMAINING THIS MONTH",
+  "budgetHeroLabelOverBudget": "OVER BUDGET",
+  "@budgetHeroLabelOverBudget": {
+    "description": "Hero card title when spending exceeds budget (replaces REMAINING THIS MONTH)"
+  },
+  "budgetHeroOverBudgetFooter": "{spent} spent · {over} over budget",
+  "@budgetHeroOverBudgetFooter": {
+    "description": "Hero card footer when spending exceeds budget — SPONSOR WORDING PENDING APPROVAL",
+    "placeholders": {
+      "spent": { "type": "String" },
+      "over": { "type": "String" }
+    }
+  },
+  "budgetHeroDaysLeft": "{n} days left",
+  "@budgetHeroDaysLeft": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "budgetHeroSpentOf": "{spent} of {budget}",
+  "@budgetHeroSpentOf": {
+    "placeholders": {
+      "spent": { "type": "String" },
+      "budget": { "type": "String" }
+    }
+  },
+  "budgetHeroIdealPace": "Ideal pace: {amount}",
+  "@budgetHeroIdealPace": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "budgetMetricDailyTitle": "DAILY",
+  "budgetMetricDailySafe": "{amount} can spend",
+  "@budgetMetricDailySafe": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "budgetMetricLastMonthTitle": "LAST MONTH",
+  "budgetMetricDeltaDecrease": "↓ {pct}% less",
+  "@budgetMetricDeltaDecrease": {
+    "placeholders": { "pct": { "type": "int" } }
+  },
+  "budgetMetricDeltaIncrease": "↑ {pct}% more",
+  "@budgetMetricDeltaIncrease": {
+    "placeholders": { "pct": { "type": "int" } }
+  },
+  "budgetMetricDeltaSame": "Same as last month",
+  "budgetMetricDeltaNoData": "No previous data",
+  "budgetCategoriesTitle": "CATEGORIES",
+  "budgetCategoriesEditLink": "Edit ›",
+  "budgetCategoriesCollapsedCount": "{n, plural, one{# more category} other{# more categories}}",
+  "@budgetCategoriesCollapsedCount": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "budgetCategoriesCollapsedSubtitle": "No budget set",
+  "budgetDistributionTitle": "DISTRIBUTION",
+  "budgetDistributionFooter": "This month {amount}",
+  "@budgetDistributionFooter": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "budgetEmptyTitle": "Set your monthly budget",
+  "budgetEmptySubtitle": "Track spending across categories",
+  "budgetEmptyCTA": "Start budget",
+  "budgetEmptySkip": "Set later",
+  "budgetHeroSemanticOverBudget": "over budget",
+  "@budgetHeroSemanticOverBudget": {
+    "description": "Accessibility label suffix when spending exceeds budget"
+  },
+  "budgetHeroSemanticRemaining": "remaining",
+  "@budgetHeroSemanticRemaining": {
+    "description": "Accessibility label suffix when budget is not yet exceeded"
+  },
+  "budgetCategorySemanticCategory": "category",
+  "@budgetCategorySemanticCategory": {
+    "description": "Accessibility: word appended after category name in budget row"
+  },
+  "budgetCategorySemanticSpent": "spent",
+  "@budgetCategorySemanticSpent": {
+    "description": "Accessibility: word appended after spent amount in budget row"
+  },
+  "budgetCategorySemanticBudget": "budget",
+  "@budgetCategorySemanticBudget": {
+    "description": "Accessibility: word appended after budget amount in budget row"
+  },
+  "budgetCategorySemanticOverBudget": "Over budget.",
+  "@budgetCategorySemanticOverBudget": {
+    "description": "Accessibility: suffix when category spending exceeds its budget"
+  },
+  "budgetCategoryPickerTitle": "Select categories",
+  "budgetCategoryPickerCTA": "Continue ({n})",
+  "@budgetCategoryPickerCTA": {
+    "placeholders": { "n": { "type": "int" } }
+  }
 }

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoneyWise Budget Tab — V1 Dark Mode Reference</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Text", "Segoe UI", sans-serif;
+  background: #1A1A1A;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+.page { max-width: 420px; margin: 0 auto; }
+.meta {
+  background: #181C27;
+  border: 1px solid #2E3453;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: #F0F2F8;
+  line-height: 1.5;
+}
+.meta strong { color: #818CF8; }
+.frame-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8A90A8;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 28px 0 10px;
+  padding-left: 4px;
+}
+.phone {
+  background: #0F1117;
+  border-radius: 32px;
+  padding: 20px 16px;
+  font-family: inherit;
+  border: 1px solid #2E3453;
+  margin-bottom: 8px;
+}
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #F0F2F8;
+}
+.status-bar-icons { display: flex; gap: 4px; align-items: center; }
+.tab-num { font-variant-numeric: tabular-nums; }
+
+.screen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px 14px;
+}
+.screen-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #F0F2F8;
+  letter-spacing: -0.3px;
+}
+.header-icons { display: flex; gap: 12px; }
+.header-icons svg { color: #8A90A8; }
+.header-icons svg.active { color: #818CF8; }
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 4px 0 14px;
+  font-size: 13px;
+  color: #8A90A8;
+}
+.month-nav .current {
+  color: #F0F2F8;
+  font-weight: 500;
+}
+
+.hero-card {
+  background: linear-gradient(135deg, #4F46E5 0%, #3D5A99 100%);
+  border-radius: 20px;
+  padding: 18px 18px 20px;
+  color: white;
+  margin-bottom: 14px;
+}
+.hero-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.hero-label {
+  font-size: 11px;
+  opacity: 0.75;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.hero-days {
+  font-size: 11px;
+  opacity: 0.75;
+}
+.hero-amount-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.hero-amount {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+}
+.hero-amount-suffix {
+  font-size: 18px;
+  opacity: 0.85;
+}
+.hero-of {
+  font-size: 12px;
+  opacity: 0.75;
+  margin-bottom: 16px;
+}
+.hero-pace-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 3px;
+  position: relative;
+  overflow: visible;
+  margin-bottom: 12px;
+}
+.hero-pace-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 12%;
+  background: white;
+  border-radius: 3px;
+}
+.hero-pace-marker {
+  position: absolute;
+  left: 23%;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: rgba(255,255,255,0.6);
+}
+.hero-pace-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.metric-card {
+  background: #181C27;
+  border: 1px solid #2E3453;
+  border-radius: 12px;
+  padding: 12px;
+}
+.metric-label {
+  font-size: 11px;
+  color: #8A90A8;
+  margin-bottom: 4px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+.metric-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #F0F2F8;
+  font-variant-numeric: tabular-nums;
+}
+.metric-detail {
+  font-size: 11px;
+  color: #34D399;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 4px 10px;
+}
+.section-header-label {
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  color: #8A90A8;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.section-header-link {
+  font-size: 12px;
+  color: #818CF8;
+  font-weight: 500;
+}
+.section-header-info {
+  font-size: 11px;
+  color: #4E5470;
+}
+
+.insight-card {
+  background: #181C27;
+  border: 1px solid #2E3453;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.insight-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #431407;
+}
+.insight-text { flex: 1; min-width: 0; }
+.insight-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #F0F2F8;
+  margin-bottom: 2px;
+}
+.insight-subtitle {
+  font-size: 12px;
+  color: #8A90A8;
+}
+.chevron {
+  color: #4E5470;
+  font-size: 16px;
+}
+
+.cat-list {
+  background: #181C27;
+  border: 1px solid #2E3453;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.cat-row {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #222637;
+}
+.cat-row:last-child { border-bottom: none; }
+.cat-icon {
+  width: 32px;
+  height: 32px;
+  background: #222637;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.cat-body { flex: 1; min-width: 0; }
+.cat-row-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.cat-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #F0F2F8;
+}
+.cat-amount {
+  font-size: 12px;
+  color: #8A90A8;
+  font-variant-numeric: tabular-nums;
+}
+.cat-bar {
+  height: 4px;
+  background: #222637;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.cat-bar-fill {
+  height: 100%;
+  background: #6366F1;
+  border-radius: 2px;
+}
+.cat-collapse {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.cat-collapse-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cat-collapse-icon {
+  width: 32px;
+  height: 32px;
+  border: 1px dashed #4E5470;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4E5470;
+}
+.cat-collapse-text-main {
+  font-size: 13px;
+  color: #8A90A8;
+}
+.cat-collapse-text-sub {
+  font-size: 11px;
+  color: #4E5470;
+}
+.cat-collapse-action {
+  font-size: 12px;
+  color: #818CF8;
+  font-weight: 500;
+}
+
+.donut-card {
+  background: #181C27;
+  border: 1px solid #2E3453;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.donut-legend {
+  flex: 1;
+  font-size: 12px;
+}
+.donut-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.donut-legend-row:last-child { margin-bottom: 0; }
+.donut-legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.donut-legend-name {
+  flex: 1;
+  color: #8A90A8;
+}
+.donut-legend-pct {
+  font-weight: 500;
+  color: #F0F2F8;
+  font-variant-numeric: tabular-nums;
+}
+
+.empty-hero {
+  background: linear-gradient(135deg, #4F46E5 0%, #3D5A99 100%);
+  border-radius: 20px;
+  padding: 28px 20px;
+  color: white;
+  text-align: center;
+  margin-bottom: 14px;
+}
+.empty-hero-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+.empty-hero-subtitle {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+.empty-hero-cta {
+  display: inline-block;
+  background: white;
+  color: #3D5A99;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 10px;
+  border: none;
+}
+.empty-skip {
+  text-align: center;
+  font-size: 13px;
+  color: #8A90A8;
+  margin-top: 16px;
+}
+
+.modal-backdrop {
+  background: rgba(0,0,0,0.65);
+  border-radius: 32px;
+  padding: 16px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.modal-sheet {
+  background: #0F1117;
+  border-top: 1px solid #2E3453;
+  border-radius: 20px 20px 0 0;
+  padding: 20px 16px 16px;
+  margin: 0 -16px -20px;
+}
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  background: #2E3453;
+  border-radius: 2px;
+  margin: 0 auto 14px;
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #F0F2F8;
+  margin-bottom: 4px;
+}
+.modal-sub {
+  font-size: 13px;
+  color: #8A90A8;
+  margin-bottom: 16px;
+}
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.cat-pick {
+  background: #181C27;
+  border: 1px solid #2E3453;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cat-pick.selected {
+  border: 2px solid #6366F1;
+  background: #1E2235;
+}
+.cat-pick-emoji {
+  font-size: 18px;
+}
+.cat-pick-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #F0F2F8;
+}
+.modal-cta {
+  background: #6366F1;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 10px;
+  text-align: center;
+  width: 100%;
+  border: none;
+}
+
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0 4px;
+  border-top: 1px solid #1E2235;
+  margin-top: 18px;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+.nav-icon { width: 24px; height: 24px; }
+.nav-label {
+  font-size: 10px;
+  color: #4E5470;
+  font-weight: 500;
+}
+.nav-item.active .nav-label { color: #818CF8; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<div class="meta">
+  <strong>EPIC8C-01: Budget Screen Redesign — Dark Mode Reference</strong><br>
+  Three frames below: <strong>main screen</strong>, <strong>empty state</strong>, <strong>category picker modal</strong>.<br>
+  Background: <strong>#0F1117</strong> · Surface: <strong>#181C27</strong> · Border: <strong>#2E3453</strong><br>
+  Brand (dark variant): <strong>#6366F1</strong> · Text primary: <strong>#F0F2F8</strong> · Same tokens as Home redesign.
+</div>
+
+<div class="frame-label">Frame 1 — Main screen (budget set, 2 categories with budget, 11 collapsed)</div>
+
+<div class="phone">
+
+<div class="status-bar">
+  <span>9:41</span>
+  <div class="status-bar-icons">
+    <span style="font-size: 11px;">●●●●</span>
+    <span>📶</span>
+    <span>🔋</span>
+  </div>
+</div>
+
+<div class="screen-header">
+  <span class="screen-title">Bütçe</span>
+  <div class="header-icons">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <svg class="active" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></svg>
+  </div>
+</div>
+
+<div class="month-nav">
+  <span>‹</span>
+  <span class="current">Mayıs 2026</span>
+  <span>›</span>
+</div>
+
+<div class="hero-card">
+  <div class="hero-top">
+    <span class="hero-label">Kalan bu ay</span>
+    <span class="hero-days">25 gün kaldı</span>
+  </div>
+  <div class="hero-amount-row">
+    <span class="hero-amount">880,00</span>
+    <span class="hero-amount-suffix">€</span>
+  </div>
+  <div class="hero-of">1.000,00 € bütçeden</div>
+  <div class="hero-pace-bar">
+    <div class="hero-pace-fill"></div>
+    <div class="hero-pace-marker"></div>
+  </div>
+  <div class="hero-pace-row">
+    <span>120,00 € harcandı</span>
+    <span>İdeal hız: 230,00 €</span>
+  </div>
+</div>
+
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="metric-label">Günlük</div>
+    <div class="metric-value">17,14 €</div>
+    <div class="metric-detail">35,20 € harcayabilirsin</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">Geçen ay</div>
+    <div class="metric-value">450,00 €</div>
+    <div class="metric-detail">↓ %73 daha az</div>
+  </div>
+</div>
+
+<div class="insight-card">
+  <div class="insight-icon">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+      <polyline points="16 7 22 7 22 13"/>
+    </svg>
+  </div>
+  <div class="insight-text">
+    <div class="insight-title">Food'da hızlı gidiyorsun</div>
+    <div class="insight-subtitle">Bütçenin %18'i, ay'ın %23'ünde</div>
+  </div>
+  <span class="chevron">›</span>
+</div>
+
+<div class="section-header">
+  <span class="section-header-label">Kategoriler</span>
+  <span class="section-header-link">Düzenle ›</span>
+</div>
+
+<div class="cat-list">
+  <div class="cat-row">
+    <div class="cat-icon">🍜</div>
+    <div class="cat-body">
+      <div class="cat-row-top">
+        <span class="cat-name">Food</span>
+        <span class="cat-amount">90 / 500 €</span>
+      </div>
+      <div class="cat-bar"><div class="cat-bar-fill" style="width: 18%"></div></div>
+    </div>
+  </div>
+  <div class="cat-row">
+    <div class="cat-icon">👫</div>
+    <div class="cat-body">
+      <div class="cat-row-top">
+        <span class="cat-name">Social Life</span>
+        <span class="cat-amount">30 / 500 €</span>
+      </div>
+      <div class="cat-bar"><div class="cat-bar-fill" style="width: 6%"></div></div>
+    </div>
+  </div>
+  <div class="cat-collapse">
+    <div class="cat-collapse-left">
+      <div class="cat-collapse-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      </div>
+      <div>
+        <div class="cat-collapse-text-main">11 kategori daha</div>
+        <div class="cat-collapse-text-sub">Bütçesi yok</div>
+      </div>
+    </div>
+    <span class="cat-collapse-action">Göster ›</span>
+  </div>
+</div>
+
+<div class="section-header">
+  <span class="section-header-label">Dağılım</span>
+  <span class="section-header-info">Bu ay 120,00 €</span>
+</div>
+
+<div class="donut-card">
+  <svg width="80" height="80" viewBox="0 0 80 80">
+    <circle cx="40" cy="40" r="32" fill="none" stroke="#222637" stroke-width="12"/>
+    <circle cx="40" cy="40" r="32" fill="none" stroke="#6366F1" stroke-width="12" stroke-dasharray="150.7" stroke-dashoffset="37.7" transform="rotate(-90 40 40)"/>
+    <circle cx="40" cy="40" r="32" fill="none" stroke="#A78BFA" stroke-width="12" stroke-dasharray="50.2 200" stroke-dashoffset="-113" transform="rotate(-90 40 40)"/>
+  </svg>
+  <div class="donut-legend">
+    <div class="donut-legend-row">
+      <span class="donut-legend-dot" style="background: #6366F1"></span>
+      <span class="donut-legend-name">Food</span>
+      <span class="donut-legend-pct">75%</span>
+    </div>
+    <div class="donut-legend-row">
+      <span class="donut-legend-dot" style="background: #A78BFA"></span>
+      <span class="donut-legend-name">Social Life</span>
+      <span class="donut-legend-pct">25%</span>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <div class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5470" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <span class="nav-label">Ana sayfa</span>
+  </div>
+  <div class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5470" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+    </svg>
+    <span class="nav-label">İşlemler</span>
+  </div>
+  <div class="nav-item active">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <polyline points="12 6 12 12 16 14"/>
+    </svg>
+    <span class="nav-label">Bütçe</span>
+  </div>
+  <div class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5470" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"/>
+      <rect x="14" y="3" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/>
+      <rect x="3" y="14" width="7" height="7"/>
+    </svg>
+    <span class="nav-label">Daha fazla</span>
+  </div>
+</div>
+
+</div>
+
+<div class="frame-label">Frame 2 — Empty state (new user, no budget set)</div>
+
+<div class="phone">
+
+<div class="status-bar">
+  <span>9:41</span>
+  <div class="status-bar-icons">
+    <span style="font-size: 11px;">●●●●</span>
+    <span>📶</span>
+    <span>🔋</span>
+  </div>
+</div>
+
+<div class="screen-header">
+  <span class="screen-title">Bütçe</span>
+  <div class="header-icons">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <svg class="active" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></svg>
+  </div>
+</div>
+
+<div class="month-nav">
+  <span>‹</span>
+  <span class="current">Mayıs 2026</span>
+  <span>›</span>
+</div>
+
+<div class="empty-hero">
+  <div class="empty-hero-title">Aylık bütçeni belirle</div>
+  <div class="empty-hero-subtitle">Kategorilere göre harcamalarını takip et,<br>her ay neye ne kadar gittiğini gör.</div>
+  <button class="empty-hero-cta">Bütçeyi başlat</button>
+</div>
+
+<div class="empty-skip">Sonra ayarla</div>
+
+<div class="bottom-nav">
+  <div class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5470" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <span class="nav-label">Ana sayfa</span>
+  </div>
+  <div class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5470" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+    </svg>
+    <span class="nav-label">İşlemler</span>
+  </div>
+  <div class="nav-item active">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <polyline points="12 6 12 12 16 14"/>
+    </svg>
+    <span class="nav-label">Bütçe</span>
+  </div>
+  <div class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#4E5470" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"/>
+      <rect x="14" y="3" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/>
+      <rect x="3" y="14" width="7" height="7"/>
+    </svg>
+    <span class="nav-label">Daha fazla</span>
+  </div>
+</div>
+
+</div>
+
+<div class="frame-label">Frame 3 — Category picker modal (bottom sheet, opened from "Bütçeyi başlat")</div>
+
+<div class="phone modal-backdrop">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Kategorileri seç</div>
+    <div class="modal-sub">Takip etmek istediğin kategorileri seç. Sonra her birine bütçe atayacaksın.</div>
+    <div class="cat-grid">
+      <div class="cat-pick selected"><span class="cat-pick-emoji">🍜</span><span class="cat-pick-name">Food</span></div>
+      <div class="cat-pick selected"><span class="cat-pick-emoji">👫</span><span class="cat-pick-name">Social Life</span></div>
+      <div class="cat-pick"><span class="cat-pick-emoji">🚕</span><span class="cat-pick-name">Transport</span></div>
+      <div class="cat-pick selected"><span class="cat-pick-emoji">🏠</span><span class="cat-pick-name">Household</span></div>
+      <div class="cat-pick"><span class="cat-pick-emoji">🐶</span><span class="cat-pick-name">Pets</span></div>
+      <div class="cat-pick"><span class="cat-pick-emoji">🖼️</span><span class="cat-pick-name">Culture</span></div>
+      <div class="cat-pick"><span class="cat-pick-emoji">🧥</span><span class="cat-pick-name">Apparel</span></div>
+      <div class="cat-pick"><span class="cat-pick-emoji">💄</span><span class="cat-pick-name">Beauty</span></div>
+      <div class="cat-pick"><span class="cat-pick-emoji">🧘</span><span class="cat-pick-name">Health</span></div>
+      <div class="cat-pick"><span class="cat-pick-emoji">📚</span><span class="cat-pick-name">Education</span></div>
+    </div>
+    <button class="modal-cta">Devam et (3)</button>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

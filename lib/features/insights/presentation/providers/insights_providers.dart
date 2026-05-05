@@ -18,8 +18,9 @@ import '../../domain/insight_provider.dart';
 import '../../domain/rules/big_transaction_rule.dart';
 import '../../domain/rules/concentration_rule.dart';
 import '../../domain/rules/daily_overpacing_rule.dart';
-import '../../domain/rules/fifth_rule_placeholder.dart';
+import '../../domain/insight_classifier.dart';
 import '../../domain/rules/savings_goal_rule.dart';
+import '../../domain/rules/weekend_spending_rule.dart';
 import '../mappers/insight_mapper.dart';
 import '../models/insight_view_model.dart';
 
@@ -31,10 +32,9 @@ part 'insights_providers.g.dart';
 
 /// Provides the active [InsightProvider] implementation.
 ///
-/// V1 (EPIC8B-05): [RuleBasedInsightProvider] with the four concrete V1 rules
-/// plus [FifthRulePlaceholder]. Rules are evaluated in registration order;
-/// the severity sort in [RuleBasedInsightProvider.generate] determines the
-/// final display order.
+/// V1 (EPIC8B-05/09): [RuleBasedInsightProvider] with the five concrete V1 rules.
+/// Rules are evaluated in registration order; the severity sort in
+/// [RuleBasedInsightProvider.generate] determines the final display order.
 ///
 /// V2: Override via `ProviderContainer.overrideWith(...)` at app startup to
 /// swap in an AI-driven provider without any UI or scaffold changes.
@@ -46,7 +46,7 @@ InsightProvider insightProviderInstance(InsightProviderInstanceRef ref) {
       SavingsGoalRule(),
       DailyOverpacingRule(),
       BigTransactionRule(),
-      FifthRulePlaceholder(), // stub — returns null until Sprint 8c
+      WeekendSpendingRule(),
     ],
   );
 }
@@ -130,4 +130,27 @@ Future<List<InsightViewModel>> insights(InsightsRef ref) async {
     debugPrint('[InsightsProvider] Error: $e\n$st');
     return const [];
   }
+}
+
+// ---------------------------------------------------------------------------
+// Surface-filtered insights list
+// ---------------------------------------------------------------------------
+
+/// Returns insights filtered to those visible on [surface].
+///
+/// Delegates to [insightsProvider] for the full list, then filters using
+/// [insightVisibleOn] from the insight classifier (ADR-013 addendum).
+///
+/// Usage:
+/// ```dart
+/// final homeInsights = ref.watch(insightsForSurfaceProvider(InsightSurface.home));
+/// final budgetInsights = ref.watch(insightsForSurfaceProvider(InsightSurface.budget));
+/// ```
+@riverpod
+Future<List<InsightViewModel>> insightsForSurface(
+  InsightsForSurfaceRef ref,
+  InsightSurface surface,
+) async {
+  final all = await ref.watch(insightsProvider.future);
+  return all.where((vm) => insightVisibleOn(vm.id, surface)).toList();
 }

@@ -49,7 +49,8 @@ void main() {
       expect(provider, isA<_EmptyInsightProvider>());
     });
 
-    test('insightsProvider is an AutoDisposeFutureProvider<List<InsightViewModel>>',
+    test(
+        'insightsProvider is an AutoDisposeFutureProvider<List<InsightViewModel>>',
         () {
       expect(
         insightsProvider,

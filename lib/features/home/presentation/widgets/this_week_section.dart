@@ -11,6 +11,7 @@ import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
+import '../../../../features/insights/domain/insight_classifier.dart';
 import '../../../../features/insights/presentation/providers/insights_providers.dart';
 import 'insight_card.dart';
 
@@ -28,7 +29,8 @@ class ThisWeekSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncInsights = ref.watch(insightsProvider);
+    final asyncInsights =
+        ref.watch(insightsForSurfaceProvider(InsightSurface.home));
 
     return asyncInsights.when(
       loading: () => const _ThisWeekShimmer(),

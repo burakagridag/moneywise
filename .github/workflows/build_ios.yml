@@ -1,0 +1,67 @@
+name: Build iOS
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+env:
+  FLUTTER_VERSION: '3.x'
+
+jobs:
+  build_ios_dev:
+    name: Build iOS IPA (dev flavor)
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            pub-${{ runner.os }}-
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: pods-${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            pods-${{ runner.os }}-
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Install CocoaPods dependencies
+        working-directory: ios
+        run: pod install --repo-update
+
+      - name: Build iOS (dev flavor, no-codesign)
+        run: |
+          flutter build ios \
+            --flavor dev \
+            -t lib/main_dev.dart \
+            --debug \
+            --no-codesign
+
+      - name: Upload iOS build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: moneywise-ios-dev-debug-${{ github.sha }}
+          path: build/ios/iphoneos/Runner.app
+          retention-days: 7

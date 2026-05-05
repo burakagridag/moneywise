@@ -12,6 +12,10 @@ class AppSpacing {
   static const double xxxl = 32.0;
   static const double xxxxl = 40.0;
   static const double huge = 56.0;
+
+  // Section header vertical rhythm — used by Budget + Home section headers.
+  static const double sectionHeaderTop = 18.0;
+  static const double sectionHeaderBottom = 10.0;
 }
 
 class AppRadius {

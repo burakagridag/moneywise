@@ -98,4 +98,59 @@ class InsightContext {
     }
     return result;
   }
+
+  /// Days that have at least one qualifying expense transaction, as day-of-month ints.
+  /// Used by WeekendSpendingRule to count distinct weekend/weekday days.
+  Set<int> get daysWithExpense => currentMonthTransactions
+      .where((t) => t.type == 'expense' && !t.isExcluded && !t.isDeleted)
+      .map((t) => t.date.day)
+      .toSet();
+
+  /// Total expense amount on weekend days (Saturday=6, Sunday=7) this month.
+  double get weekendTotalSpend {
+    return currentMonthTransactions
+        .where((t) =>
+            t.type == 'expense' &&
+            !t.isExcluded &&
+            !t.isDeleted &&
+            (t.date.weekday == DateTime.saturday ||
+                t.date.weekday == DateTime.sunday))
+        .fold(0.0, (sum, t) => sum + t.amount);
+  }
+
+  /// Number of distinct weekend days (Sat/Sun) that have at least one expense.
+  int get weekendDayCount => currentMonthTransactions
+      .where((t) =>
+          t.type == 'expense' &&
+          !t.isExcluded &&
+          !t.isDeleted &&
+          (t.date.weekday == DateTime.saturday ||
+              t.date.weekday == DateTime.sunday))
+      .map((t) => t.date.day)
+      .toSet()
+      .length;
+
+  /// Total expense amount on weekday days (Mon–Fri) this month.
+  double get weekdayTotalSpend {
+    return currentMonthTransactions
+        .where((t) =>
+            t.type == 'expense' &&
+            !t.isExcluded &&
+            !t.isDeleted &&
+            t.date.weekday >= DateTime.monday &&
+            t.date.weekday <= DateTime.friday)
+        .fold(0.0, (sum, t) => sum + t.amount);
+  }
+
+  /// Number of distinct weekday days (Mon–Fri) that have at least one expense.
+  int get weekdayDayCount => currentMonthTransactions
+      .where((t) =>
+          t.type == 'expense' &&
+          !t.isExcluded &&
+          !t.isDeleted &&
+          t.date.weekday >= DateTime.monday &&
+          t.date.weekday <= DateTime.friday)
+      .map((t) => t.date.day)
+      .toSet()
+      .length;
 }

@@ -91,7 +91,7 @@ determines final display order in the UI.
 | 2 | `SavingsGoalRule` | `'savings_goal'` | `context.referenceDate.day >= 5` AND `(income − expense) / income` < 10% (V1: fixed threshold; early-month suppression prevents false alarms on days 1–4 before meaningful income/expense data accumulates; user-configurable savings goal is V1.x scope) | `warning` | No |
 | 3 | `DailyOverpacingRule` | `'daily_overpacing'` | `context.referenceDate.day >= 5` AND **`remainingBudget > 0`** AND `dailyBurnRate * remainingDays > remainingBudget` | `critical` | Yes — suppress when `effectiveBudget` is null or `remainingBudget <= 0` |
 | 4 | `BigTransactionRule` | `'big_transaction'` | Any single expense transaction > 30% of effective budget, **only for categories that have an active budget** (unbudgeted categories: rule returns null). Body wording (≤100% case): `'Large transaction: {formattedAmount} ({pct}% of budget)'` where formattedAmount is a locale-aware currency string provided via `InsightContext.formatAmount` callback (e.g., '700,00 €' in DE locale). When ratio > 100%: `'Single transaction larger than your monthly budget'`. | `warning` | Yes — suppress when `effectiveBudget` is null |
-| 5 | `FifthRulePlaceholder` | `'fifth_rule_placeholder'` | Stub — returns null. The fifth rule will be named and implemented in Sprint 8c after the Product Sponsor confirms trigger semantics. `WeekendSpendingRule` is the leading candidate. | — | — |
+| 5 | `WeekendSpendingRule` | `'weekend_spending'` | `weekendDailyAvg > weekdayDailyAvg * 2.0` where weekendDailyAvg = total Sat/Sun expense ÷ distinct weekend days with expense, weekdayDailyAvg = total Mon–Fri expense ÷ distinct weekday days with expense. Guards: `totalMonthlyIncome > 0`, `weekendDayCount >= 2`, `weekdayDayCount >= 3`, `weekdayDailyAvg > 0`. Headline: `"Weekend spending high"` / `"Hafta sonu harcaması yüksek"`. Body: `"Weekend {pct}% above weekday."` / `"Hafta sonu hafta içinden %{pct} yüksek."` (revised 2026-05-07: shortened from original approved wording to fit InsightCard maxLines=1). | `warning` | No |
 
 ### Threshold constants
 Each rule exposes its threshold as a named `static const` so tests can reference
@@ -150,7 +150,7 @@ InsightProvider insightProviderInstance(InsightProviderInstanceRef ref) {
     SavingsGoalRule(),
     DailyOverpacingRule(),
     BigTransactionRule(),
-    FifthRulePlaceholder(), // stub — returns null until Sprint 8c
+    WeekendSpendingRule(), // implemented Sprint 8c (replaces FifthRulePlaceholder)
   ]);
 }
 ```
@@ -241,6 +241,47 @@ UI widget are needed.
 
 Trigger condition changes made during implementation must be reflected in this ADR before the sprint PR is merged. PM is responsible for flagging discrepancies during sprint review. Engineers may add guards/conditions for sound technical reasons, but the change is not authoritative until it appears here and the Sponsor has been notified.
 
+## Insight Surface Classification Addendum (EPIC8C-01, Sprint 8c)
+
+**Sponsor-approved 2026-05-07.** Added during Budget Screen Redesign.
+
+### Motivation
+The Budget screen (EPIC8C-01) introduces a dedicated insight slot that should show only
+budget-relevant insights (category concentration). Home tab insights that are already
+surfaced there should not appear on the Budget screen to avoid duplication.
+
+### Implementation
+A new file `lib/features/insights/domain/insight_classifier.dart` provides:
+
+```dart
+enum InsightSurface { home, budget }
+
+bool insightVisibleOn(String insightId, InsightSurface surface) =>
+  switch (surface) {
+    InsightSurface.budget => insightId == 'concentration',
+    InsightSurface.home   => insightId != 'concentration',
+  };
+```
+
+The five rule classes are **not modified** — classification is mapper-level only.
+A new `insightsForSurfaceProvider(InsightSurface surface)` Riverpod family provider
+wraps `insightsProvider` and applies the filter.
+
+### Classification Table
+| Rule ID          | Home | Budget | Notes                           |
+|------------------|------|--------|---------------------------------|
+| concentration    | ❌   | ✅     | Budget-only; hidden on Home     |
+| big_transaction  | ✅   | ❌     | Home-only                       |
+| savings_goal     | ✅   | ❌     | Home-only                       |
+| daily_overpacing | ✅   | ❌     | Home-only                       |
+| weekend_spending | ✅   | ❌     | Home-only                       |
+
+**Breaking change:** `concentration` insight no longer appears on the Home tab as of
+Sprint 8c. Home tab `ThisWeekSection` now uses `insightsForSurfaceProvider(InsightSurface.home)`.
+
+**Test coverage:** `test/features/insights/domain/insight_classifier_test.dart` — 17 cases.
+
 ## Reviewers
 - flutter-engineer (author)
 - Product Sponsor (trigger conditions reviewed 2026-05-03)
+- Product Sponsor (surface classification reviewed 2026-05-07)

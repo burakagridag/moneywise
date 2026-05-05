@@ -42,7 +42,7 @@
   "loading": "Yükleniyor...",
   "errorSavingAccount": "Hesap kaydedilemedi. Lütfen tekrar deneyin.",
   "errorSavingCategory": "Kategori kaydedilemedi. Lütfen tekrar deneyin.",
-  "includeInTotalDescription": "Bu hesabın bakiyesini toplam net değerinize dahil edin",
+  "includeInTotalDescription": "Bu hesabın bakiyesini toplam net değerine dahil et",
   "editCategory": "Kategori Düzenle",
   "deleteCategory": "Kategori Sil",
   "deleteCategoryConfirm": "Bu kategoriyi silmek istediğinizden emin misiniz?",
@@ -145,10 +145,6 @@
   "budgetSettingDiscardAction": "İptal Et",
   "budgetSettingKeepEditing": "Düzenlemeye Devam Et",
 
-  "budgetViewRemainingMonthly": "Kalan (Aylık)",
-  "budgetViewNoBudgetsTitle": "Bütçe ayarlanmadı",
-  "budgetViewNoBudgetsSubtitle": "'Bütçe Ayarı'na tıklayarak aylık kategori limitleri belirleyin.",
-  "budgetViewSetUpBudgets": "Bütçe Ayarla",
   "budgetViewCouldNotLoad": "Bütçe verileri yüklenemedi",
   "budgetViewNoBudgetSet": "Bütçe yok",
   "budgetViewIncludesCarryOver": "Geçen aydan {amount} devir dahil",
@@ -210,7 +206,7 @@
   "homeBudgetPulseTitle": "Bütçe nabzı",
   "homeBudgetPulseViewLink": "Görüntüle",
   "homeBudgetPulseSetCta": "Aylık bütçe belirle",
-  "homeBudgetPulseSetCtaSubtitle": "Harcamalarınızın üstünde kalın",
+  "homeBudgetPulseSetCtaSubtitle": "Harcamalarının üstünde kal",
   "homeBudgetPulseSetBudgetButton": "Bütçe belirle",
   "homeBudgetPulseOverBudget": "Bütçe aşıldı",
   "homeBudgetPulseLeftOf": "kaldı (toplam {budget})",
@@ -265,7 +261,7 @@
   "homeEmptyStateManageAccountsTitle": "Hesaplarınızı yönetin",
   "homeEmptyStateManageAccountsSubtitle": "Nakit, banka veya kart hesabı ekleyin",
   "homeEmptyStateSetBudgetTitle": "Aylık bütçe belirleyin",
-  "homeEmptyStateSetBudgetSubtitle": "Harcamalarınızın üstünde kalın",
+  "homeEmptyStateSetBudgetSubtitle": "Harcamalarının üstünde kal",
 
   "insightConcentrationTitle": "Harcama yoğunlaşması",
   "insightConcentrationBody": "Harcamanın %{pct}'i tek kategoride.",
@@ -275,7 +271,7 @@
   "insightSavingsGoalTitle": "Düşük tasarruf oranı",
   "insightSavingsGoalBody": "Bu ay %10'dan az birikim.",
   "insightDailyOverpacingTitle": "Aşırı harcama",
-  "insightDailyOverpacingBody": "Bu hızda bütçenizi aşacaksınız.",
+  "insightDailyOverpacingBody": "Bu hızda bütçeni aşacaksın.",
   "insightBigTransactionTitle": "Büyük işlem",
   "insightBigTransactionBodyNormal": "{amount} (bütçenin %{pct}'i)",
   "@insightBigTransactionBodyNormal": {
@@ -284,5 +280,100 @@
       "pct": { "type": "int" }
     }
   },
-  "insightBigTransactionBodyExceeds": "Aylık bütçenizi aşan işlem"
+  "insightBigTransactionBodyExceeds": "Aylık bütçeni aşan işlem",
+  "insightWeekendSpendingTitle": "Hafta sonu harcaması yüksek",
+  "insightWeekendSpendingBody": "Hafta sonu hafta içinden %{pct} yüksek.",
+  "@insightWeekendSpendingBody": {
+    "placeholders": { "pct": { "type": "int" } }
+  },
+  "budgetScreenTitle": "Bütçe",
+  "budgetHeroLabelRemaining": "KALAN BU AY",
+  "budgetHeroLabelOverBudget": "BÜTÇE AŞILDI",
+  "@budgetHeroLabelOverBudget": {
+    "description": "Hero card title when spending exceeds budget — SPONSOR WORDING PENDING APPROVAL"
+  },
+  "budgetHeroOverBudgetFooter": "{spent} harcandı · {over} aşıldı",
+  "@budgetHeroOverBudgetFooter": {
+    "description": "Hero card footer when spending exceeds budget — SPONSOR WORDING PENDING APPROVAL",
+    "placeholders": {
+      "spent": { "type": "String" },
+      "over": { "type": "String" }
+    }
+  },
+  "budgetHeroDaysLeft": "{n} gün kaldı",
+  "@budgetHeroDaysLeft": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "budgetHeroSpentOf": "{spent} / {budget}",
+  "@budgetHeroSpentOf": {
+    "placeholders": {
+      "spent": { "type": "String" },
+      "budget": { "type": "String" }
+    }
+  },
+  "budgetHeroIdealPace": "İdeal hız: {amount}",
+  "@budgetHeroIdealPace": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "budgetMetricDailyTitle": "GÜNLÜK",
+  "budgetMetricDailySafe": "{amount} harcayabilirsin",
+  "@budgetMetricDailySafe": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "budgetMetricLastMonthTitle": "GEÇEN AY",
+  "budgetMetricDeltaDecrease": "↓ %{pct} daha az",
+  "@budgetMetricDeltaDecrease": {
+    "placeholders": { "pct": { "type": "int" } }
+  },
+  "budgetMetricDeltaIncrease": "↑ %{pct} daha fazla",
+  "@budgetMetricDeltaIncrease": {
+    "placeholders": { "pct": { "type": "int" } }
+  },
+  "budgetMetricDeltaSame": "Geçen ayla aynı",
+  "budgetMetricDeltaNoData": "Geçen ay verisi yok",
+  "budgetCategoriesTitle": "KATEGORİLER",
+  "budgetCategoriesEditLink": "Düzenle ›",
+  "budgetCategoriesCollapsedCount": "{n} kategori daha",
+  "@budgetCategoriesCollapsedCount": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "budgetCategoriesCollapsedSubtitle": "Bütçesi yok",
+  "budgetDistributionTitle": "DAĞILIM",
+  "budgetDistributionFooter": "Bu ay {amount}",
+  "@budgetDistributionFooter": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "budgetEmptyTitle": "Aylık bütçeni belirle",
+  "budgetEmptySubtitle": "Kategorilere göre harcamalarını takip et",
+  "budgetEmptyCTA": "Bütçeyi başlat",
+  "budgetEmptySkip": "Sonra ayarla",
+  "budgetHeroSemanticOverBudget": "bütçe aşıldı",
+  "@budgetHeroSemanticOverBudget": {
+    "description": "Accessibility label suffix when spending exceeds budget"
+  },
+  "budgetHeroSemanticRemaining": "kalan",
+  "@budgetHeroSemanticRemaining": {
+    "description": "Accessibility label suffix when budget is not yet exceeded"
+  },
+  "budgetCategorySemanticCategory": "kategorisi",
+  "@budgetCategorySemanticCategory": {
+    "description": "Accessibility: word appended after category name in budget row"
+  },
+  "budgetCategorySemanticSpent": "harcandı",
+  "@budgetCategorySemanticSpent": {
+    "description": "Accessibility: word appended after spent amount in budget row"
+  },
+  "budgetCategorySemanticBudget": "bütçe",
+  "@budgetCategorySemanticBudget": {
+    "description": "Accessibility: word appended after budget amount in budget row"
+  },
+  "budgetCategorySemanticOverBudget": "Bütçe aşıldı.",
+  "@budgetCategorySemanticOverBudget": {
+    "description": "Accessibility: suffix when category spending exceeds its budget"
+  },
+  "budgetCategoryPickerTitle": "Kategorileri seç",
+  "budgetCategoryPickerCTA": "Devam et ({n})",
+  "@budgetCategoryPickerCTA": {
+    "placeholders": { "n": { "type": "int" } }
+  }
 }

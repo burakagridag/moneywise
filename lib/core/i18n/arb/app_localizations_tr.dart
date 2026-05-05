@@ -139,7 +139,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get includeInTotalDescription =>
-      'Bu hesabın bakiyesini toplam net değerinize dahil edin';
+      'Bu hesabın bakiyesini toplam net değerine dahil et';
 
   @override
   String get editCategory => 'Kategori Düzenle';
@@ -457,19 +457,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get budgetSettingKeepEditing => 'Düzenlemeye Devam Et';
 
   @override
-  String get budgetViewRemainingMonthly => 'Kalan (Aylık)';
-
-  @override
-  String get budgetViewNoBudgetsTitle => 'Bütçe ayarlanmadı';
-
-  @override
-  String get budgetViewNoBudgetsSubtitle =>
-      '\'Bütçe Ayarı\'na tıklayarak aylık kategori limitleri belirleyin.';
-
-  @override
-  String get budgetViewSetUpBudgets => 'Bütçe Ayarla';
-
-  @override
   String get budgetViewCouldNotLoad => 'Bütçe verileri yüklenemedi';
 
   @override
@@ -626,7 +613,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeBudgetPulseSetCta => 'Aylık bütçe belirle';
 
   @override
-  String get homeBudgetPulseSetCtaSubtitle => 'Harcamalarınızın üstünde kalın';
+  String get homeBudgetPulseSetCtaSubtitle => 'Harcamalarının üstünde kal';
 
   @override
   String get homeBudgetPulseSetBudgetButton => 'Bütçe belirle';
@@ -723,8 +710,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeEmptyStateSetBudgetTitle => 'Aylık bütçe belirleyin';
 
   @override
-  String get homeEmptyStateSetBudgetSubtitle =>
-      'Harcamalarınızın üstünde kalın';
+  String get homeEmptyStateSetBudgetSubtitle => 'Harcamalarının üstünde kal';
 
   @override
   String get insightConcentrationTitle => 'Harcama yoğunlaşması';
@@ -744,7 +730,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get insightDailyOverpacingTitle => 'Aşırı harcama';
 
   @override
-  String get insightDailyOverpacingBody => 'Bu hızda bütçenizi aşacaksınız.';
+  String get insightDailyOverpacingBody => 'Bu hızda bütçeni aşacaksın.';
 
   @override
   String get insightBigTransactionTitle => 'Büyük işlem';
@@ -755,5 +741,129 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get insightBigTransactionBodyExceeds => 'Aylık bütçenizi aşan işlem';
+  String get insightBigTransactionBodyExceeds => 'Aylık bütçeni aşan işlem';
+
+  @override
+  String get insightWeekendSpendingTitle => 'Hafta sonu harcaması yüksek';
+
+  @override
+  String insightWeekendSpendingBody(int pct) {
+    return 'Hafta sonu hafta içinden %$pct yüksek.';
+  }
+
+  @override
+  String get budgetScreenTitle => 'Bütçe';
+
+  @override
+  String get budgetHeroLabelRemaining => 'KALAN BU AY';
+
+  @override
+  String get budgetHeroLabelOverBudget => 'BÜTÇE AŞILDI';
+
+  @override
+  String budgetHeroOverBudgetFooter(String spent, String over) {
+    return '$spent harcandı · $over aşıldı';
+  }
+
+  @override
+  String budgetHeroDaysLeft(int n) {
+    return '$n gün kaldı';
+  }
+
+  @override
+  String budgetHeroSpentOf(String spent, String budget) {
+    return '$spent / $budget';
+  }
+
+  @override
+  String budgetHeroIdealPace(String amount) {
+    return 'İdeal hız: $amount';
+  }
+
+  @override
+  String get budgetMetricDailyTitle => 'GÜNLÜK';
+
+  @override
+  String budgetMetricDailySafe(String amount) {
+    return '$amount harcayabilirsin';
+  }
+
+  @override
+  String get budgetMetricLastMonthTitle => 'GEÇEN AY';
+
+  @override
+  String budgetMetricDeltaDecrease(int pct) {
+    return '↓ %$pct daha az';
+  }
+
+  @override
+  String budgetMetricDeltaIncrease(int pct) {
+    return '↑ %$pct daha fazla';
+  }
+
+  @override
+  String get budgetMetricDeltaSame => 'Geçen ayla aynı';
+
+  @override
+  String get budgetMetricDeltaNoData => 'Geçen ay verisi yok';
+
+  @override
+  String get budgetCategoriesTitle => 'KATEGORİLER';
+
+  @override
+  String get budgetCategoriesEditLink => 'Düzenle ›';
+
+  @override
+  String budgetCategoriesCollapsedCount(int n) {
+    return '$n kategori daha';
+  }
+
+  @override
+  String get budgetCategoriesCollapsedSubtitle => 'Bütçesi yok';
+
+  @override
+  String get budgetDistributionTitle => 'DAĞILIM';
+
+  @override
+  String budgetDistributionFooter(String amount) {
+    return 'Bu ay $amount';
+  }
+
+  @override
+  String get budgetEmptyTitle => 'Aylık bütçeni belirle';
+
+  @override
+  String get budgetEmptySubtitle => 'Kategorilere göre harcamalarını takip et';
+
+  @override
+  String get budgetEmptyCTA => 'Bütçeyi başlat';
+
+  @override
+  String get budgetEmptySkip => 'Sonra ayarla';
+
+  @override
+  String get budgetHeroSemanticOverBudget => 'bütçe aşıldı';
+
+  @override
+  String get budgetHeroSemanticRemaining => 'kalan';
+
+  @override
+  String get budgetCategorySemanticCategory => 'kategorisi';
+
+  @override
+  String get budgetCategorySemanticSpent => 'harcandı';
+
+  @override
+  String get budgetCategorySemanticBudget => 'bütçe';
+
+  @override
+  String get budgetCategorySemanticOverBudget => 'Bütçe aşıldı.';
+
+  @override
+  String get budgetCategoryPickerTitle => 'Kategorileri seç';
+
+  @override
+  String budgetCategoryPickerCTA(int n) {
+    return 'Devam et ($n)';
+  }
 }

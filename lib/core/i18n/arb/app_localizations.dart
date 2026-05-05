@@ -956,30 +956,6 @@ abstract class AppLocalizations {
   /// **'Keep editing'**
   String get budgetSettingKeepEditing;
 
-  /// No description provided for @budgetViewRemainingMonthly.
-  ///
-  /// In en, this message translates to:
-  /// **'Remaining (Monthly)'**
-  String get budgetViewRemainingMonthly;
-
-  /// No description provided for @budgetViewNoBudgetsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'No budgets set'**
-  String get budgetViewNoBudgetsTitle;
-
-  /// No description provided for @budgetViewNoBudgetsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Tap \'Budget Setting\' to configure monthly limits per category.'**
-  String get budgetViewNoBudgetsSubtitle;
-
-  /// No description provided for @budgetViewSetUpBudgets.
-  ///
-  /// In en, this message translates to:
-  /// **'Set Up Budgets'**
-  String get budgetViewSetUpBudgets;
-
   /// No description provided for @budgetViewCouldNotLoad.
   ///
   /// In en, this message translates to:
@@ -1513,6 +1489,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exceeds your monthly budget'**
   String get insightBigTransactionBodyExceeds;
+
+  /// No description provided for @insightWeekendSpendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekend spending high'**
+  String get insightWeekendSpendingTitle;
+
+  /// No description provided for @insightWeekendSpendingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekend {pct}% above weekday.'**
+  String insightWeekendSpendingBody(int pct);
+
+  /// No description provided for @budgetScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get budgetScreenTitle;
+
+  /// No description provided for @budgetHeroLabelRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'REMAINING THIS MONTH'**
+  String get budgetHeroLabelRemaining;
+
+  /// Hero card title when spending exceeds budget (replaces REMAINING THIS MONTH)
+  ///
+  /// In en, this message translates to:
+  /// **'OVER BUDGET'**
+  String get budgetHeroLabelOverBudget;
+
+  /// Hero card footer when spending exceeds budget — SPONSOR WORDING PENDING APPROVAL
+  ///
+  /// In en, this message translates to:
+  /// **'{spent} spent · {over} over budget'**
+  String budgetHeroOverBudgetFooter(String spent, String over);
+
+  /// No description provided for @budgetHeroDaysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} days left'**
+  String budgetHeroDaysLeft(int n);
+
+  /// No description provided for @budgetHeroSpentOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{spent} of {budget}'**
+  String budgetHeroSpentOf(String spent, String budget);
+
+  /// No description provided for @budgetHeroIdealPace.
+  ///
+  /// In en, this message translates to:
+  /// **'Ideal pace: {amount}'**
+  String budgetHeroIdealPace(String amount);
+
+  /// No description provided for @budgetMetricDailyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DAILY'**
+  String get budgetMetricDailyTitle;
+
+  /// No description provided for @budgetMetricDailySafe.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} can spend'**
+  String budgetMetricDailySafe(String amount);
+
+  /// No description provided for @budgetMetricLastMonthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LAST MONTH'**
+  String get budgetMetricLastMonthTitle;
+
+  /// No description provided for @budgetMetricDeltaDecrease.
+  ///
+  /// In en, this message translates to:
+  /// **'↓ {pct}% less'**
+  String budgetMetricDeltaDecrease(int pct);
+
+  /// No description provided for @budgetMetricDeltaIncrease.
+  ///
+  /// In en, this message translates to:
+  /// **'↑ {pct}% more'**
+  String budgetMetricDeltaIncrease(int pct);
+
+  /// No description provided for @budgetMetricDeltaSame.
+  ///
+  /// In en, this message translates to:
+  /// **'Same as last month'**
+  String get budgetMetricDeltaSame;
+
+  /// No description provided for @budgetMetricDeltaNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No previous data'**
+  String get budgetMetricDeltaNoData;
+
+  /// No description provided for @budgetCategoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'CATEGORIES'**
+  String get budgetCategoriesTitle;
+
+  /// No description provided for @budgetCategoriesEditLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit ›'**
+  String get budgetCategoriesEditLink;
+
+  /// No description provided for @budgetCategoriesCollapsedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, one{# more category} other{# more categories}}'**
+  String budgetCategoriesCollapsedCount(int n);
+
+  /// No description provided for @budgetCategoriesCollapsedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No budget set'**
+  String get budgetCategoriesCollapsedSubtitle;
+
+  /// No description provided for @budgetDistributionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DISTRIBUTION'**
+  String get budgetDistributionTitle;
+
+  /// No description provided for @budgetDistributionFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'This month {amount}'**
+  String budgetDistributionFooter(String amount);
+
+  /// No description provided for @budgetEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your monthly budget'**
+  String get budgetEmptyTitle;
+
+  /// No description provided for @budgetEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track spending across categories'**
+  String get budgetEmptySubtitle;
+
+  /// No description provided for @budgetEmptyCTA.
+  ///
+  /// In en, this message translates to:
+  /// **'Start budget'**
+  String get budgetEmptyCTA;
+
+  /// No description provided for @budgetEmptySkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Set later'**
+  String get budgetEmptySkip;
+
+  /// Accessibility label suffix when spending exceeds budget
+  ///
+  /// In en, this message translates to:
+  /// **'over budget'**
+  String get budgetHeroSemanticOverBudget;
+
+  /// Accessibility label suffix when budget is not yet exceeded
+  ///
+  /// In en, this message translates to:
+  /// **'remaining'**
+  String get budgetHeroSemanticRemaining;
+
+  /// Accessibility: word appended after category name in budget row
+  ///
+  /// In en, this message translates to:
+  /// **'category'**
+  String get budgetCategorySemanticCategory;
+
+  /// Accessibility: word appended after spent amount in budget row
+  ///
+  /// In en, this message translates to:
+  /// **'spent'**
+  String get budgetCategorySemanticSpent;
+
+  /// Accessibility: word appended after budget amount in budget row
+  ///
+  /// In en, this message translates to:
+  /// **'budget'**
+  String get budgetCategorySemanticBudget;
+
+  /// Accessibility: suffix when category spending exceeds its budget
+  ///
+  /// In en, this message translates to:
+  /// **'Over budget.'**
+  String get budgetCategorySemanticOverBudget;
+
+  /// No description provided for @budgetCategoryPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select categories'**
+  String get budgetCategoryPickerTitle;
+
+  /// No description provided for @budgetCategoryPickerCTA.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue ({n})'**
+  String budgetCategoryPickerCTA(int n);
 }
 
 class _AppLocalizationsDelegate
