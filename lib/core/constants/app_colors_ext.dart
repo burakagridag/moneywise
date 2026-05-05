@@ -69,4 +69,10 @@ extension AppColorsX on BuildContext {
   /// Dark: [AppColors.brandSurface] (dark navy). Light: [AppColors.brandPrimaryGlow] (soft tinted blue).
   Color get brandSurfaceAdaptive =>
       isDark ? AppColors.brandSurface : AppColors.brandPrimaryGlow;
+
+  /// Calendar today-cell highlight background — adapts to theme (EPIC8D-01 D7).
+  /// Light: [AppColors.calendarHighlightLight]. Dark: [AppColors.calendarHighlightDark].
+  Color get calendarHighlight => isDark
+      ? AppColors.calendarHighlightDark
+      : AppColors.calendarHighlightLight;
 }

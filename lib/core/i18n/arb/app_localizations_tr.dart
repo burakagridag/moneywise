@@ -953,6 +953,11 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String transactionsSummaryCategoryPercent(int pct) {
+    return 'gid. %$pct';
+  }
+
+  @override
   String get transactionsSummaryWeekTrendTitle => 'HAFTA TRENDİ';
 
   @override

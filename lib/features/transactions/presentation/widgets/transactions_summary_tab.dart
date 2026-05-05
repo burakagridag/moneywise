@@ -19,6 +19,19 @@ const Color _heroGradientEndLight = Color(0xFF2E4A87);
 const Color _heroGradientStartDark = Color(0xFF4F46E5);
 const Color _heroGradientEndDark = Color(0xFF3D5A99);
 
+// D2 — Brand-blue palette for top category bars (rank 0-based).
+const Color _catBar1 = AppColors
+    .brandPrimary; // rank 0 — full brand (theme-adaptive via brandPrimary)
+const Color _catBar2 = Color(0xFF6B82B6); // rank 1 — medium brand
+const Color _catBar3 = Color(0xFF99AAD0); // rank 2+ — light brand
+
+/// Returns the bar fill color for a category given its 0-based rank index.
+Color _categoryBarColor(int index) {
+  if (index == 0) return _catBar1;
+  if (index == 1) return _catBar2;
+  return _catBar3;
+}
+
 /// Özet tab — net hero card, top spending categories, week trend bar chart.
 class TransactionsSummaryTab extends ConsumerWidget {
   const TransactionsSummaryTab({super.key});
@@ -171,9 +184,19 @@ class _HeroNetCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Footer: income + expense labels
+              // D1 — Footer: income dot + label + expense dot + label
               Row(
                 children: [
+                  // Income: green dot + label
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: context.incomeColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       l10n.transactionsSummaryHeroIncomeFooter(
@@ -184,6 +207,16 @@ class _HeroNetCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // Expense: red dot + label
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: context.expenseColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
                   Text(
                     l10n.transactionsSummaryHeroExpenseFooter(
                       CurrencyFormatter.format(totals.expense),
@@ -287,6 +320,8 @@ class _TopCategoriesSection extends ConsumerWidget {
                               catCents.values.fold<int>(0, (s, v) => s + v),
                           categories: categories,
                           isDark: isDark,
+                          // D2 — pass 0-based rank for brand-blue palette
+                          rank: i,
                         ),
                         if (i < top5.length - 1)
                           Divider(
@@ -329,6 +364,7 @@ class _CategoryRow extends StatelessWidget {
     required this.totalExpenseCents,
     required this.categories,
     required this.isDark,
+    required this.rank,
   });
 
   final String categoryId;
@@ -336,13 +372,19 @@ class _CategoryRow extends StatelessWidget {
   final int totalExpenseCents;
   final List<dynamic> categories;
   final bool isDark;
+  // D2 — 0-based rank used to select brand-blue bar color.
+  final int rank;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final amount = amountCents / 100.0;
     final pct = totalExpenseCents > 0
         ? (amountCents / totalExpenseCents * 100).round()
         : 0;
+
+    // D2 — brand-blue bar color from helper
+    final barColor = _categoryBarColor(rank);
 
     // Resolve category name and emoji from list.
     String? name;
@@ -393,7 +435,7 @@ class _CategoryRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  // Progress bar
+                  // D2 — progress bar uses brand-blue palette
                   LayoutBuilder(
                     builder: (context, constraints) {
                       return Stack(
@@ -411,7 +453,7 @@ class _CategoryRow extends StatelessWidget {
                             child: Container(
                               height: 3,
                               decoration: BoxDecoration(
-                                color: context.expenseColor,
+                                color: barColor,
                                 borderRadius:
                                     BorderRadius.circular(AppRadius.pill),
                               ),
@@ -425,7 +467,7 @@ class _CategoryRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.md),
-            // Amount + pct
+            // Amount + D3 percent-of-total label
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -437,8 +479,9 @@ class _CategoryRow extends StatelessWidget {
                     fontSize: 13,
                   ),
                 ),
+                // D3 — contextual percent label
                 Text(
-                  '$pct%',
+                  l10n.transactionsSummaryCategoryPercent(pct),
                   style: AppTypography.caption1.copyWith(
                     color: context.textSecondary,
                   ),
@@ -483,26 +526,29 @@ class _WeekTrendSection extends ConsumerWidget {
         final sortedWeeks = weekMap.entries.toList()
           ..sort((a, b) => a.key.compareTo(b.key));
 
-        // Find busiest week (max net magnitude: |income - expense|).
-        // Weeks with zero net will never beat a non-zero week in reduce.
+        // D4 — busiest week = highest total activity (income + expense).
         final busiestEntry = sortedWeeks.reduce((best, e) {
-          final eNet = (e.value.income - e.value.expense).abs();
-          final bestNet = (best.value.income - best.value.expense).abs();
-          return eNet > bestNet ? e : best;
-        });
-        // Compute max net magnitude across all weeks for bar scaling.
-        final maxNet = sortedWeeks.fold(0.0, (max, e) {
-          final net = (e.value.income - e.value.expense).abs();
-          return net > max ? net : max;
+          final eActivity = e.value.income + e.value.expense;
+          final bestActivity = best.value.income + best.value.expense;
+          return eActivity > bestActivity ? e : best;
         });
 
-        // Format busiest week range with locale-aware month names.
+        // D4 — max total activity across all weeks for bar height scaling.
+        final maxActivity = sortedWeeks.fold(0.0, (maxVal, e) {
+          final activity = e.value.income + e.value.expense;
+          return activity > maxVal ? activity : maxVal;
+        });
+
+        // D11 — Format busiest week range with locale-aware month names.
         final locale = Localizations.localeOf(context).languageCode;
         final weekStart = busiestEntry.key;
         final weekEnd = weekStart.add(const Duration(days: 6));
         final rangeFmt = DateFormat('MMM d', locale);
         final range =
             '${rangeFmt.format(weekStart)} – ${rangeFmt.format(weekEnd)}';
+
+        const double maxBarHeight = 60.0;
+        const double minBarHeight = 4.0;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -533,37 +579,84 @@ class _WeekTrendSection extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Bar chart
+                    // D4 — Stacked bar chart: expense (red bottom) + income (green top)
                     SizedBox(
-                      height: 80,
+                      height: maxBarHeight + minBarHeight,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: sortedWeeks.map((e) {
                           final isBusiest = e.key == busiestEntry.key;
-                          final weekNet =
-                              (e.value.income - e.value.expense).abs();
-                          final ratio = maxNet > 0 ? weekNet / maxNet : 0.0;
+                          final weekIncome = e.value.income;
+                          final weekExpense = e.value.expense;
+                          final totalActivity = weekIncome + weekExpense;
+
+                          double incomeHeight = 0;
+                          double expenseHeight = 0;
+                          if (maxActivity > 0 && totalActivity > 0) {
+                            final ratio = totalActivity / maxActivity;
+                            final totalBarHeight = (ratio * maxBarHeight).clamp(
+                              minBarHeight,
+                              maxBarHeight,
+                            );
+                            // Split proportionally within the total bar height.
+                            incomeHeight = totalActivity > 0
+                                ? (weekIncome / totalActivity) * totalBarHeight
+                                : 0;
+                            expenseHeight = totalActivity > 0
+                                ? (weekExpense / totalActivity) * totalBarHeight
+                                : 0;
+                          } else if (maxActivity == 0) {
+                            // All-zero week → show minimum stub
+                            expenseHeight = minBarHeight;
+                          }
+
                           return Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 2,
-                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 2),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  AnimatedContainer(
-                                    duration: const Duration(milliseconds: 300),
-                                    height: (ratio.clamp(0.0, 1.0) * 60) + 4,
-                                    decoration: BoxDecoration(
-                                      color: isBusiest
-                                          ? AppColors.brandPrimary
-                                          : AppColors.brandPrimary
-                                              .withValues(alpha: 0.4),
-                                      borderRadius: BorderRadius.circular(
-                                        AppRadius.sm,
+                                  // Income segment (green, top)
+                                  if (incomeHeight > 0)
+                                    AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      height: incomeHeight,
+                                      decoration: BoxDecoration(
+                                        color: isBusiest
+                                            ? context.incomeColor
+                                            : context.incomeColor
+                                                .withValues(alpha: 0.55),
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft:
+                                              Radius.circular(AppRadius.sm),
+                                          topRight:
+                                              Radius.circular(AppRadius.sm),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  // Expense segment (red, bottom)
+                                  if (expenseHeight > 0)
+                                    AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      height: expenseHeight,
+                                      decoration: BoxDecoration(
+                                        color: isBusiest
+                                            ? context.expenseColor
+                                            : context.expenseColor
+                                                .withValues(alpha: 0.55),
+                                        borderRadius: incomeHeight > 0
+                                            ? BorderRadius.zero
+                                            : const BorderRadius.only(
+                                                topLeft: Radius.circular(
+                                                    AppRadius.sm),
+                                                topRight: Radius.circular(
+                                                    AppRadius.sm),
+                                              ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
@@ -572,19 +665,28 @@ class _WeekTrendSection extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    // Labels: W1, W2 ...
+                    // D5 — Labels: "d.M" format week-start date
+                    // D6 — Busiest week label in brand blue + bold
                     Row(
-                      children: List.generate(sortedWeeks.length, (i) {
+                      children: sortedWeeks.map((e) {
+                        final isBusiest = e.key == busiestEntry.key;
+                        // D5 — week-start date as "d.M" (e.g. "4.5")
+                        final label = DateFormat('d.M').format(e.key);
                         return Expanded(
                           child: Text(
-                            'W${i + 1}',
+                            label,
                             style: AppTypography.caption2.copyWith(
-                              color: context.textSecondary,
+                              // D6 — busiest = brand blue bold; others = secondary
+                              color: isBusiest
+                                  ? AppColors.brandPrimary
+                                  : context.textSecondary,
+                              fontWeight:
+                                  isBusiest ? FontWeight.w700 : FontWeight.w400,
                             ),
                             textAlign: TextAlign.center,
                           ),
                         );
-                      }),
+                      }).toList(),
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     // Footer: busiest week label

@@ -259,21 +259,38 @@ class _CalendarDayCell extends StatelessWidget {
     final hasIncome = (income ?? 0) > 0;
     final hasExpense = (expense ?? 0) > 0;
     final isFuture = isCurrentMonth && _isFuture();
-    // Background: only applied when neither today nor selected (those use
-    // filled circle on the day number widget itself).
-    Color? bgColor;
-    if (!isToday && !isSelected && isCurrentMonth) {
-      bgColor = null; // plain cell
+
+    // D7 — Cell state priority: selected wins over today-only.
+    //   selected (incl. today+selected): brand fill, white text + amounts
+    //   today-only: highlight bg, brand-colored bold day number
+    //   plain: no special bg
+    final bool effectiveSelected = isSelected && isCurrentMonth;
+
+    // Cell background — applied to the whole cell container.
+    Color? cellBg;
+    if (effectiveSelected) {
+      cellBg = AppColors.brandPrimary; // solid brand fill for selected
+    } else if (isToday && isCurrentMonth) {
+      cellBg = context.calendarHighlight; // subtle highlight for today
     }
 
+    // Day number color.
     Color dayNumColor;
-    if (!isCurrentMonth) {
-      dayNumColor = context.textSecondary;
-    } else if (isFuture) {
+    if (effectiveSelected) {
+      dayNumColor = Colors.white;
+    } else if (isToday && isCurrentMonth) {
+      dayNumColor = AppColors.brandPrimary; // brand-colored for today
+    } else if (!isCurrentMonth || isFuture) {
       dayNumColor = context.textSecondary;
     } else {
       dayNumColor = context.textPrimary;
     }
+
+    // Amount text color — white when selected, semantic colors otherwise.
+    Color incomeAmtColor =
+        effectiveSelected ? Colors.white : context.incomeColor;
+    Color expenseAmtColor =
+        effectiveSelected ? Colors.white : context.expenseColor;
 
     final l10n = AppLocalizations.of(context)!;
     final monthStr = DateFormat('MMMM').format(day);
@@ -294,7 +311,7 @@ class _CalendarDayCell extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: bgColor,
+            color: cellBg,
             border: Border(
               bottom: BorderSide(color: context.dividerColor, width: 1),
               right: BorderSide(color: context.dividerColor, width: 0.5),
@@ -304,48 +321,26 @@ class _CalendarDayCell extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Day number rendering priority:
-              //   1. isSelected (solid filled circle, white text) — covers today+selected.
-              //   2. isToday && !isSelected (transparent-fill ring, brandPrimary text).
+              // D7 — Day number rendering priority:
+              //   1. selected (covers today+selected): plain bold text in white
+              //      (cell bg already provides the solid brand fill)
+              //   2. today-only: plain bold text in brandPrimary
+              //      (cell bg provides the highlight fill)
               //   3. Plain text for all other days.
-              if (isSelected && isCurrentMonth)
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: const BoxDecoration(
-                    color: AppColors.brandPrimary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(
-                      '${day.day}',
-                      style: AppTypography.caption2.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+              if (effectiveSelected)
+                Text(
+                  '${day.day}',
+                  style: AppTypography.caption2.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
                   ),
                 )
-              else if (isToday)
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.brandPrimary,
-                      width: 1.5,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      '${day.day}',
-                      style: AppTypography.caption2.copyWith(
-                        color: AppColors.brandPrimary,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+              else if (isToday && isCurrentMonth)
+                Text(
+                  '${day.day}',
+                  style: AppTypography.caption2.copyWith(
+                    color: AppColors.brandPrimary,
+                    fontWeight: FontWeight.w700,
                   ),
                 )
               else
@@ -361,7 +356,7 @@ class _CalendarDayCell extends StatelessWidget {
                 Text(
                   CurrencyFormatter.formatCompact(income!),
                   style: AppTypography.caption2.copyWith(
-                    color: context.incomeColor,
+                    color: incomeAmtColor,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -370,7 +365,7 @@ class _CalendarDayCell extends StatelessWidget {
                 Text(
                   CurrencyFormatter.formatCompact(expense!),
                   style: AppTypography.caption2.copyWith(
-                    color: context.expenseColor,
+                    color: expenseAmtColor,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

@@ -1841,8 +1841,14 @@ abstract class AppLocalizations {
   /// No description provided for @transactionsSummarySingleCategoryHint.
   ///
   /// In en, this message translates to:
-  /// **'{n, plural, one{Only {n} category with spending} other{Only {n} categories with spending}}'**
+  /// **'{n, plural, one{Only {n} category has spending} other{Only {n} categories have spending}}'**
   String transactionsSummarySingleCategoryHint(int n);
+
+  /// No description provided for @transactionsSummaryCategoryPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% of exp.'**
+  String transactionsSummaryCategoryPercent(int pct);
 
   /// No description provided for @transactionsSummaryWeekTrendTitle.
   ///

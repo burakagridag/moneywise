@@ -417,6 +417,10 @@
   "@transactionsSummarySingleCategoryHint": {
     "placeholders": { "n": { "type": "int" } }
   },
+  "transactionsSummaryCategoryPercent": "gid. %{pct}",
+  "@transactionsSummaryCategoryPercent": {
+    "placeholders": { "pct": { "type": "int" } }
+  },
   "transactionsSummaryWeekTrendTitle": "HAFTA TRENDİ",
   "transactionsSummaryWeekTrendBusiest": "En yoğun hafta: {range}",
   "@transactionsSummaryWeekTrendBusiest": {

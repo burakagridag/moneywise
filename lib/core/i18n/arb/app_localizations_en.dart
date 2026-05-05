@@ -959,10 +959,15 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Only $n categories with spending',
-      one: 'Only $n category with spending',
+      other: 'Only $n categories have spending',
+      one: 'Only $n category has spending',
     );
     return '$_temp0';
+  }
+
+  @override
+  String transactionsSummaryCategoryPercent(int pct) {
+    return '$pct% of exp.';
   }
 
   @override

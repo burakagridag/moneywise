@@ -413,9 +413,13 @@
     "placeholders": { "amount": { "type": "String" } }
   },
   "transactionsSummaryTopCategoriesTitle": "TOP CATEGORIES",
-  "transactionsSummarySingleCategoryHint": "{n, plural, one{Only {n} category with spending} other{Only {n} categories with spending}}",
+  "transactionsSummarySingleCategoryHint": "{n, plural, one{Only {n} category has spending} other{Only {n} categories have spending}}",
   "@transactionsSummarySingleCategoryHint": {
     "placeholders": { "n": { "type": "int" } }
+  },
+  "transactionsSummaryCategoryPercent": "{pct}% of exp.",
+  "@transactionsSummaryCategoryPercent": {
+    "placeholders": { "pct": { "type": "int" } }
   },
   "transactionsSummaryWeekTrendTitle": "WEEK TREND",
   "transactionsSummaryWeekTrendBusiest": "Busiest week: {range}",
