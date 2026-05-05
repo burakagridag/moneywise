@@ -265,9 +265,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tabDescription => 'Açıklama';
 
   @override
-  String get transactionsTitle => 'İşlemler';
-
-  @override
   String get expenseLabel => 'Gider';
 
   @override
@@ -866,6 +863,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String budgetCategoryPickerCTA(int n) {
     return 'Devam et ($n)';
   }
+
+  @override
+  String get transactionsTitle => 'İşlemler';
 
   @override
   String get transactionsSearchHint => 'İşlem ara';

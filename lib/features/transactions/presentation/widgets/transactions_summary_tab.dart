@@ -232,7 +232,9 @@ class _TopCategoriesSection extends ConsumerWidget {
         // Accumulate expense by category id (cents to avoid float drift).
         final Map<String, int> catCents = {};
         for (final tx in txs) {
-          if (tx.type != 'expense' || tx.isExcluded) continue;
+          if (tx.transactionType != TransactionType.expense || tx.isExcluded) {
+            continue;
+          }
           final key = tx.categoryId ?? 'uncategorized';
           catCents[key] = (catCents[key] ?? 0) + (tx.amount * 100).round();
         }
@@ -580,16 +582,22 @@ class _WeekTrendSection extends ConsumerWidget {
                         color: context.textSecondary,
                       ),
                     ),
-                    // Net for busiest week
-                    Text(
-                      l10n.transactionsSummaryWeekTrendNet(
-                        CurrencyFormatter.format(
-                          busiestEntry.value.expense,
-                        ),
-                      ),
-                      style: AppTypography.caption1.copyWith(
-                        color: context.expenseColor,
-                      ),
+                    // Net for busiest week (income - expense).
+                    Builder(
+                      builder: (context) {
+                        final weekNet = busiestEntry.value.income -
+                            busiestEntry.value.expense;
+                        return Text(
+                          l10n.transactionsSummaryWeekTrendNet(
+                            CurrencyFormatter.format(weekNet.abs()),
+                          ),
+                          style: AppTypography.caption1.copyWith(
+                            color: weekNet >= 0
+                                ? context.incomeColor
+                                : context.expenseColor,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

@@ -49,7 +49,7 @@ class TransactionRow extends StatelessWidget {
     if (transaction.isExcluded) return context.textTertiary;
     switch (transaction.transactionType) {
       case TransactionType.income:
-        return AppColors.income;
+        return context.incomeColor; // adaptive: light=047857, dark=34D399
       case TransactionType.expense:
         return context.expenseColor;
       case TransactionType.transfer:
@@ -60,7 +60,7 @@ class TransactionRow extends StatelessWidget {
   Color _iconBgColor(BuildContext context) {
     switch (transaction.transactionType) {
       case TransactionType.income:
-        return AppColors.income.withAlpha(38);
+        return context.incomeColor.withAlpha(38); // adaptive
       case TransactionType.expense:
         return context.expenseColor.withAlpha(38);
       case TransactionType.transfer:

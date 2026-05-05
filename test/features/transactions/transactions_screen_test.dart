@@ -66,6 +66,23 @@ Future<String> _createAccount(AppDatabase db) async {
   return id;
 }
 
+/// Inserts one expense transaction in the current month so that
+/// [filteredTransactionsProvider] emits a non-empty list and
+/// [TransactionsView] renders the tab bar rather than the empty state.
+Future<void> _seedTransaction(AppDatabase db, String accountId) async {
+  final now = DateTime.now();
+  await db.transactionDao.insertTransaction(
+    TransactionsCompanion(
+      id: Value(_uuid.v4()),
+      type: const Value('expense'),
+      date: Value(DateTime(now.year, now.month, 1)),
+      amount: const Value(10.0),
+      currencyCode: const Value('EUR'),
+      accountId: Value(accountId),
+    ),
+  );
+}
+
 // ---------------------------------------------------------------------------
 // TransactionsScreen — structure tests
 // ---------------------------------------------------------------------------
@@ -98,11 +115,15 @@ void main() {
 
     // EPIC8D-01: redesigned from 5-tab (Daily/Calendar/Monthly/Summary/Description)
     // to 3-tab (Liste/Takvim/Özet).
+    // AC: tab bar is hidden when month is empty; seed one transaction first.
     testWidgets('shows TabBar with 3 tabs (List/Calendar/Summary)',
         (tester) async {
       final db = _testDb();
+      final accountId = await _createAccount(db);
+      await _seedTransaction(db, accountId);
       await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
       expect(find.byType(TabBar), findsOneWidget);
       expect(find.text('List'), findsOneWidget);
       expect(find.text('Calendar'), findsOneWidget);
@@ -138,14 +159,19 @@ void main() {
     });
 
     // EPIC8D-01: Description tab removed; summary strip now shows Net not Total.
+    // AC: strip is only visible when transactions exist; seed one first.
+    // Use findsAtLeastNWidgets since rows may also contain Income/Expense labels.
     testWidgets('shows income, expense, net labels in summary strip',
         (tester) async {
       final db = _testDb();
+      final accountId = await _createAccount(db);
+      await _seedTransaction(db, accountId);
       await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
-      expect(find.text('Income'), findsOneWidget);
-      expect(find.text('Expense'), findsOneWidget);
-      expect(find.text('Net'), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.text('Income'), findsAtLeastNWidgets(1));
+      expect(find.text('Expense'), findsAtLeastNWidgets(1));
+      expect(find.text('Net'), findsAtLeastNWidgets(1));
       await _dispose(tester, db);
     });
   });

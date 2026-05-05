@@ -81,7 +81,6 @@
   "tabMonthly": "Monthly",
   "tabSummary": "Summary",
   "tabDescription": "Description",
-  "transactionsTitle": "Transactions",
   "expenseLabel": "Expense",
   "totalLabel": "Total",
   "errorLoadTitle": "Could not load data",

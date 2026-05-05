@@ -584,12 +584,6 @@ abstract class AppLocalizations {
   /// **'Description'**
   String get tabDescription;
 
-  /// No description provided for @transactionsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Transactions'**
-  String get transactionsTitle;
-
   /// No description provided for @expenseLabel.
   ///
   /// In en, this message translates to:
@@ -1693,6 +1687,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue ({n})'**
   String budgetCategoryPickerCTA(int n);
+
+  /// No description provided for @transactionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get transactionsTitle;
 
   /// No description provided for @transactionsSearchHint.
   ///

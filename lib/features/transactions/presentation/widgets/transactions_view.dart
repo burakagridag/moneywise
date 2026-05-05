@@ -8,8 +8,10 @@ import '../../../../core/constants/app_colors_ext.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
+import '../providers/search_filter_provider.dart';
 import '../providers/transactions_provider.dart';
 import 'transactions_calendar_tab.dart';
+import 'transactions_empty_state.dart';
 import 'transactions_list_tab.dart';
 import 'transactions_summary_strip.dart';
 import 'transactions_summary_tab.dart';
@@ -32,6 +34,13 @@ class TransactionsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // AC: when the selected month has zero transactions, show empty state
+    // without the tab bar (US-EPIC8D-01).
+    final asyncTxs = ref.watch(filteredTransactionsProvider);
+    if (asyncTxs.asData?.value.isEmpty == true) {
+      return const TransactionsEmptyState();
+    }
+
     final totalsAsync = ref.watch(monthlyTotalsProvider);
     final (income, expense) = totalsAsync.when(
       data: (t) => (t.income, t.expense),

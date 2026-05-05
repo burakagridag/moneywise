@@ -264,9 +264,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabDescription => 'Description';
 
   @override
-  String get transactionsTitle => 'Transactions';
-
-  @override
   String get expenseLabel => 'Expense';
 
   @override
@@ -873,6 +870,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String budgetCategoryPickerCTA(int n) {
     return 'Continue ($n)';
   }
+
+  @override
+  String get transactionsTitle => 'Transactions';
 
   @override
   String get transactionsSearchHint => 'Search transactions';

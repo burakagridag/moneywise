@@ -16,7 +16,6 @@ import '../../../../core/utils/currency_formatter.dart';
 import '../providers/search_filter_provider.dart';
 import '../providers/transactions_provider.dart';
 import 'transaction_row.dart';
-import 'transactions_empty_state.dart';
 
 /// Liste tab — transaction list grouped by day, with ADR-015 card decoration.
 class TransactionsListTab extends ConsumerWidget {
@@ -37,7 +36,7 @@ class TransactionsListTab extends ConsumerWidget {
         ),
       ),
       data: (txs) {
-        if (txs.isEmpty) return const TransactionsEmptyState();
+        // Empty state is handled by TransactionsView — see US-EPIC8D-01 AC.
         return _TransactionListGrouped(transactions: txs);
       },
     );

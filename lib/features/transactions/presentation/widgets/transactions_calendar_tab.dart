@@ -257,22 +257,16 @@ class _CalendarDayCell extends StatelessWidget {
     final hasIncome = (income ?? 0) > 0;
     final hasExpense = (expense ?? 0) > 0;
     final isFuture = isCurrentMonth && _isFuture();
-    final isDark = context.isDark;
-
+    // Background: only applied when neither today nor selected (those use
+    // filled circle on the day number widget itself).
     Color? bgColor;
-    if (isSelected && isCurrentMonth) {
-      bgColor = isDark
-          ? AppColors.calendarHighlightDark
-          : AppColors.calendarHighlightLight;
-    } else if (isToday) {
-      bgColor = AppColors.brandPrimary.withValues(alpha: 0.12);
+    if (!isToday && !isSelected && isCurrentMonth) {
+      bgColor = null; // plain cell
     }
 
     Color dayNumColor;
     if (!isCurrentMonth) {
       dayNumColor = context.textSecondary;
-    } else if (isToday) {
-      dayNumColor = AppColors.textOnBrand;
     } else if (isFuture) {
       dayNumColor = context.textSecondary;
     } else {
@@ -308,20 +302,28 @@ class _CalendarDayCell extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Day number — brand circle for today, selected highlight via bgColor.
-              isToday
+              // Day number — filled brand circle for today or selected day;
+              // today takes priority so its visual is always correct.
+              (isToday || (isSelected && isCurrentMonth))
                   ? Container(
-                      width: 22,
-                      height: 22,
-                      decoration: const BoxDecoration(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
                         color: AppColors.brandPrimary,
                         shape: BoxShape.circle,
+                        border: isToday && !isSelected
+                            ? Border.all(
+                                color: AppColors.brandPrimary,
+                                width: 1.5,
+                              )
+                            : null,
                       ),
                       child: Center(
                         child: Text(
                           '${day.day}',
-                          style: AppTypography.caption1.copyWith(
-                            color: AppColors.textOnBrand,
+                          style: AppTypography.caption2.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
@@ -330,7 +332,6 @@ class _CalendarDayCell extends StatelessWidget {
                       '${day.day}',
                       style: AppTypography.caption1.copyWith(
                         color: dayNumColor,
-                        fontWeight: isSelected ? FontWeight.w700 : null,
                       ),
                     ),
               const Spacer(),
