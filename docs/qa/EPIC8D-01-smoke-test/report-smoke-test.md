@@ -103,3 +103,35 @@ All 13 screenshots saved to:
 **QA Verdict: READY FOR MERGE AND DEVOPS DEPLOY ✅**
 
 *QA Engineer: qa-agent | Date: 2026-05-05*
+
+---
+
+## Round 3 Update — 2026-05-05
+
+**Commit:** `5ee8e40` (Round 3 mockup parity fixes: D1–D8, D11–D12)
+
+Integration smoke test re-run after Round 3 fixes.
+
+**Result: 13/13 PASS** — all original scenarios pass without modification.
+
+| Suite | Round 2 | Round 3 |
+|-------|---------|---------|
+| F1–F10 (functional) | ✅ PASS | ✅ PASS |
+| E1–E3 (edge cases) | ✅ PASS | ✅ PASS |
+
+Round 3 screenshots saved to:
+`docs/qa/EPIC8D-01-smoke-test/screenshots/round3/`
+
+Visual changes reflected in Round 3 screenshots:
+- Özet tab: stacked income+expense bars (green/red) replacing single brand bar
+- Özet tab: brand-blue category bars replacing expense-red
+- Özet tab: "% of exp." percent label on categories
+- Özet tab: colored dots in hero footer
+- Özet tab: busiest week label in brand color + bold
+- Takvim tab: today cell = highlight background (not solid fill)
+
+See `report-acceptance-gate-round3.md` for complete divergence-by-divergence verification.
+
+**QA Verdict: READY FOR MERGE ✅**
+
+*QA Engineer: qa-agent | Date: 2026-05-05*
