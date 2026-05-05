@@ -201,12 +201,12 @@ Stream<Map<DateTime, MonthTotals>> weeklyTotalsForMonth(
       final weekStart = date.subtract(Duration(days: date.weekday - 1));
 
       final cur = acc[weekStart] ?? (incomeCents: 0, expenseCents: 0);
-      if (tx.type == 'income') {
+      if (tx.transactionType == domain.TransactionType.income) {
         acc[weekStart] = (
           incomeCents: cur.incomeCents + (tx.amount * 100).round(),
           expenseCents: cur.expenseCents,
         );
-      } else if (tx.type == 'expense') {
+      } else if (tx.transactionType == domain.TransactionType.expense) {
         acc[weekStart] = (
           incomeCents: cur.incomeCents,
           expenseCents: cur.expenseCents + (tx.amount * 100).round(),
