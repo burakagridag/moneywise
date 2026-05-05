@@ -96,25 +96,17 @@ void main() {
       await _dispose(tester, db);
     });
 
-    testWidgets('shows TabBar with 5 tabs including Description',
+    // EPIC8D-01: redesigned from 5-tab (Daily/Calendar/Monthly/Summary/Description)
+    // to 3-tab (Liste/Takvim/Özet).
+    testWidgets('shows TabBar with 3 tabs (List/Calendar/Summary)',
         (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
       expect(find.byType(TabBar), findsOneWidget);
-      expect(find.text('Daily'), findsOneWidget);
+      expect(find.text('List'), findsOneWidget);
       expect(find.text('Calendar'), findsOneWidget);
-      expect(find.text('Monthly'), findsOneWidget);
       expect(find.text('Summary'), findsOneWidget);
-      expect(find.text('Description'), findsOneWidget);
-      await _dispose(tester, db);
-    });
-
-    testWidgets('shows IncomeSummaryBar', (tester) async {
-      final db = _testDb();
-      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
-      await tester.pump();
-      expect(find.byType(IncomeSummaryBar), findsOneWidget);
       await _dispose(tester, db);
     });
 
@@ -145,28 +137,15 @@ void main() {
       await _dispose(tester, db);
     });
 
-    testWidgets('Description tab shows Coming soon placeholder (BUG-001 fix)',
-        (tester) async {
-      final db = _testDb();
-      await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
-      await tester.pump();
-      // The IndexedStack always renders all children — the placeholder text is
-      // present in the widget tree even before the tab is tapped.
-      // After tapping Description, the IndexedStack shows index 4.
-      await tester.tap(find.text('Description'));
-      await tester.pumpAndSettle();
-      expect(find.textContaining('soon'), findsAtLeastNWidgets(1));
-      await _dispose(tester, db);
-    });
-
-    testWidgets('shows income and expense labels in summary bar',
+    // EPIC8D-01: Description tab removed; summary strip now shows Net not Total.
+    testWidgets('shows income, expense, net labels in summary strip',
         (tester) async {
       final db = _testDb();
       await tester.pumpWidget(_buildWithDb(db, const TransactionsScreen()));
       await tester.pump();
       expect(find.text('Income'), findsOneWidget);
       expect(find.text('Expense'), findsOneWidget);
-      expect(find.text('Total'), findsOneWidget);
+      expect(find.text('Net'), findsOneWidget);
       await _dispose(tester, db);
     });
   });

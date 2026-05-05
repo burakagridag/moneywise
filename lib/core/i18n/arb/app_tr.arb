@@ -375,5 +375,95 @@
   "budgetCategoryPickerCTA": "Devam et ({n})",
   "@budgetCategoryPickerCTA": {
     "placeholders": { "n": { "type": "int" } }
+  },
+
+  "transactionsTitle": "İşlemler",
+  "transactionsSearchHint": "İşlem ara",
+  "transactionsFilterTitle": "Filtrele",
+  "transactionsBookmarksTitle": "Yer İmleri",
+  "transactionsTabList": "Liste",
+  "transactionsTabCalendar": "Takvim",
+  "transactionsTabSummary": "Özet",
+  "transactionsStripIncome": "Gelir",
+  "transactionsStripExpense": "Gider",
+  "transactionsStripNet": "Net",
+  "transactionsListEmptyDay": "Bu gün işlem yok",
+  "transactionsListDayTotal": "{net}",
+  "@transactionsListDayTotal": {
+    "placeholders": { "net": { "type": "String" } }
+  },
+  "transactionsCalendarWeekdayMon": "Pt",
+  "transactionsCalendarWeekdayTue": "Sa",
+  "transactionsCalendarWeekdayWed": "Ça",
+  "transactionsCalendarWeekdayThu": "Pe",
+  "transactionsCalendarWeekdayFri": "Cu",
+  "transactionsCalendarWeekdaySat": "Ct",
+  "transactionsCalendarWeekdaySun": "Pa",
+  "transactionsCalendarTodayLabel": "Bugün",
+  "transactionsSummaryHeroLabel": "NET BU AY",
+  "transactionsSummaryHeroDaysLeft": "{n} gün kaldı",
+  "@transactionsSummaryHeroDaysLeft": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "transactionsSummaryHeroIncomeFooter": "{amount} gelir",
+  "@transactionsSummaryHeroIncomeFooter": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "transactionsSummaryHeroExpenseFooter": "{amount} gider",
+  "@transactionsSummaryHeroExpenseFooter": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "transactionsSummaryTopCategoriesTitle": "ÜST KATEGORİLER",
+  "transactionsSummarySingleCategoryHint": "Sadece {n} kategoride harcama var",
+  "@transactionsSummarySingleCategoryHint": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "transactionsSummaryWeekTrendTitle": "HAFTA TRENDİ",
+  "transactionsSummaryWeekTrendBusiest": "En yoğun hafta: {range}",
+  "@transactionsSummaryWeekTrendBusiest": {
+    "placeholders": { "range": { "type": "String" } }
+  },
+  "transactionsSummaryWeekTrendNet": "{amount} net",
+  "@transactionsSummaryWeekTrendNet": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "transactionsEmptyTitle": "Henüz işlem yok",
+  "transactionsEmptySubtitle": "Gelir, gider ya da transfer ekleyerek başla",
+  "transactionsEmptyCTA": "İlk işlemi ekle",
+  "transactionsAddTitle": "Yeni İşlem",
+  "transactionsAddTypeExpense": "Gider",
+  "transactionsAddTypeIncome": "Gelir",
+  "transactionsAddTypeTransfer": "Transfer",
+  "transactionsAddCategoryLabel": "Kategori",
+  "transactionsAddAccountLabel": "Hesap",
+  "transactionsAddDateLabel": "Tarih",
+  "transactionsAddNoteLabel": "Not (opsiyonel)",
+  "transactionsAddQuickChipsLabel": "Sık Kullanılan",
+  "transactionsAddSaveCTA": "Kaydet",
+  "transactionsAddSaveContinueCTA": "Kaydet & Devam",
+  "transactionsRowSemanticIncome": "{amount} gelir, {category}, {account}",
+  "@transactionsRowSemanticIncome": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" },
+      "account": { "type": "String" }
+    }
+  },
+  "transactionsRowSemanticExpense": "{amount} gider, {category}, {account}",
+  "@transactionsRowSemanticExpense": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" },
+      "account": { "type": "String" }
+    }
+  },
+  "transactionsCalendarCellSemantic": "{day} {month}, {income} gelir, {expense} gider",
+  "@transactionsCalendarCellSemantic": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "income": { "type": "String" },
+      "expense": { "type": "String" }
+    }
   }
 }

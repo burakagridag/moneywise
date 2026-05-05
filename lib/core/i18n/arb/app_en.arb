@@ -375,5 +375,95 @@
   "budgetCategoryPickerCTA": "Continue ({n})",
   "@budgetCategoryPickerCTA": {
     "placeholders": { "n": { "type": "int" } }
+  },
+
+  "transactionsTitle": "Transactions",
+  "transactionsSearchHint": "Search transactions",
+  "transactionsFilterTitle": "Filter",
+  "transactionsBookmarksTitle": "Bookmarks",
+  "transactionsTabList": "List",
+  "transactionsTabCalendar": "Calendar",
+  "transactionsTabSummary": "Summary",
+  "transactionsStripIncome": "Income",
+  "transactionsStripExpense": "Expense",
+  "transactionsStripNet": "Net",
+  "transactionsListEmptyDay": "No transactions today",
+  "transactionsListDayTotal": "{net}",
+  "@transactionsListDayTotal": {
+    "placeholders": { "net": { "type": "String" } }
+  },
+  "transactionsCalendarWeekdayMon": "Mo",
+  "transactionsCalendarWeekdayTue": "Tu",
+  "transactionsCalendarWeekdayWed": "We",
+  "transactionsCalendarWeekdayThu": "Th",
+  "transactionsCalendarWeekdayFri": "Fr",
+  "transactionsCalendarWeekdaySat": "Sa",
+  "transactionsCalendarWeekdaySun": "Su",
+  "transactionsCalendarTodayLabel": "Today",
+  "transactionsSummaryHeroLabel": "NET THIS MONTH",
+  "transactionsSummaryHeroDaysLeft": "{n} days left",
+  "@transactionsSummaryHeroDaysLeft": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "transactionsSummaryHeroIncomeFooter": "{amount} income",
+  "@transactionsSummaryHeroIncomeFooter": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "transactionsSummaryHeroExpenseFooter": "{amount} expense",
+  "@transactionsSummaryHeroExpenseFooter": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "transactionsSummaryTopCategoriesTitle": "TOP CATEGORIES",
+  "transactionsSummarySingleCategoryHint": "{n, plural, one{Only # category with spending} other{Only # categories with spending}}",
+  "@transactionsSummarySingleCategoryHint": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "transactionsSummaryWeekTrendTitle": "WEEK TREND",
+  "transactionsSummaryWeekTrendBusiest": "Busiest week: {range}",
+  "@transactionsSummaryWeekTrendBusiest": {
+    "placeholders": { "range": { "type": "String" } }
+  },
+  "transactionsSummaryWeekTrendNet": "{amount} net",
+  "@transactionsSummaryWeekTrendNet": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "transactionsEmptyTitle": "No transactions yet",
+  "transactionsEmptySubtitle": "Start by adding income, expense, or a transfer",
+  "transactionsEmptyCTA": "Add first transaction",
+  "transactionsAddTitle": "New Transaction",
+  "transactionsAddTypeExpense": "Expense",
+  "transactionsAddTypeIncome": "Income",
+  "transactionsAddTypeTransfer": "Transfer",
+  "transactionsAddCategoryLabel": "Category",
+  "transactionsAddAccountLabel": "Account",
+  "transactionsAddDateLabel": "Date",
+  "transactionsAddNoteLabel": "Note (optional)",
+  "transactionsAddQuickChipsLabel": "Frequent",
+  "transactionsAddSaveCTA": "Save",
+  "transactionsAddSaveContinueCTA": "Save & Continue",
+  "transactionsRowSemanticIncome": "{amount} income, {category}, {account}",
+  "@transactionsRowSemanticIncome": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" },
+      "account": { "type": "String" }
+    }
+  },
+  "transactionsRowSemanticExpense": "{amount} expense, {category}, {account}",
+  "@transactionsRowSemanticExpense": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "category": { "type": "String" },
+      "account": { "type": "String" }
+    }
+  },
+  "transactionsCalendarCellSemantic": "{day} {month}, {income} income, {expense} expense",
+  "@transactionsCalendarCellSemantic": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "income": { "type": "String" },
+      "expense": { "type": "String" }
+    }
   }
 }

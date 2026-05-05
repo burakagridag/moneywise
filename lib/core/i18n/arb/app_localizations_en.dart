@@ -873,4 +873,169 @@ class AppLocalizationsEn extends AppLocalizations {
   String budgetCategoryPickerCTA(int n) {
     return 'Continue ($n)';
   }
+
+  @override
+  String get transactionsSearchHint => 'Search transactions';
+
+  @override
+  String get transactionsFilterTitle => 'Filter';
+
+  @override
+  String get transactionsBookmarksTitle => 'Bookmarks';
+
+  @override
+  String get transactionsTabList => 'List';
+
+  @override
+  String get transactionsTabCalendar => 'Calendar';
+
+  @override
+  String get transactionsTabSummary => 'Summary';
+
+  @override
+  String get transactionsStripIncome => 'Income';
+
+  @override
+  String get transactionsStripExpense => 'Expense';
+
+  @override
+  String get transactionsStripNet => 'Net';
+
+  @override
+  String get transactionsListEmptyDay => 'No transactions today';
+
+  @override
+  String transactionsListDayTotal(String net) {
+    return '$net';
+  }
+
+  @override
+  String get transactionsCalendarWeekdayMon => 'Mo';
+
+  @override
+  String get transactionsCalendarWeekdayTue => 'Tu';
+
+  @override
+  String get transactionsCalendarWeekdayWed => 'We';
+
+  @override
+  String get transactionsCalendarWeekdayThu => 'Th';
+
+  @override
+  String get transactionsCalendarWeekdayFri => 'Fr';
+
+  @override
+  String get transactionsCalendarWeekdaySat => 'Sa';
+
+  @override
+  String get transactionsCalendarWeekdaySun => 'Su';
+
+  @override
+  String get transactionsCalendarTodayLabel => 'Today';
+
+  @override
+  String get transactionsSummaryHeroLabel => 'NET THIS MONTH';
+
+  @override
+  String transactionsSummaryHeroDaysLeft(int n) {
+    return '$n days left';
+  }
+
+  @override
+  String transactionsSummaryHeroIncomeFooter(String amount) {
+    return '$amount income';
+  }
+
+  @override
+  String transactionsSummaryHeroExpenseFooter(String amount) {
+    return '$amount expense';
+  }
+
+  @override
+  String get transactionsSummaryTopCategoriesTitle => 'TOP CATEGORIES';
+
+  @override
+  String transactionsSummarySingleCategoryHint(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Only # categories with spending',
+      one: 'Only # category with spending',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get transactionsSummaryWeekTrendTitle => 'WEEK TREND';
+
+  @override
+  String transactionsSummaryWeekTrendBusiest(String range) {
+    return 'Busiest week: $range';
+  }
+
+  @override
+  String transactionsSummaryWeekTrendNet(String amount) {
+    return '$amount net';
+  }
+
+  @override
+  String get transactionsEmptyTitle => 'No transactions yet';
+
+  @override
+  String get transactionsEmptySubtitle =>
+      'Start by adding income, expense, or a transfer';
+
+  @override
+  String get transactionsEmptyCTA => 'Add first transaction';
+
+  @override
+  String get transactionsAddTitle => 'New Transaction';
+
+  @override
+  String get transactionsAddTypeExpense => 'Expense';
+
+  @override
+  String get transactionsAddTypeIncome => 'Income';
+
+  @override
+  String get transactionsAddTypeTransfer => 'Transfer';
+
+  @override
+  String get transactionsAddCategoryLabel => 'Category';
+
+  @override
+  String get transactionsAddAccountLabel => 'Account';
+
+  @override
+  String get transactionsAddDateLabel => 'Date';
+
+  @override
+  String get transactionsAddNoteLabel => 'Note (optional)';
+
+  @override
+  String get transactionsAddQuickChipsLabel => 'Frequent';
+
+  @override
+  String get transactionsAddSaveCTA => 'Save';
+
+  @override
+  String get transactionsAddSaveContinueCTA => 'Save & Continue';
+
+  @override
+  String transactionsRowSemanticIncome(
+      String amount, String category, String account) {
+    return '$amount income, $category, $account';
+  }
+
+  @override
+  String transactionsRowSemanticExpense(
+      String amount, String category, String account) {
+    return '$amount expense, $category, $account';
+  }
+
+  @override
+  String transactionsCalendarCellSemantic(
+      int day, String month, String income, String expense) {
+    return '$day $month, $income income, $expense expense';
+  }
 }

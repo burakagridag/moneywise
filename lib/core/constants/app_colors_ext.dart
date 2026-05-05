@@ -56,6 +56,8 @@ extension AppColorsX on BuildContext {
   Color get cardColor =>
       isDark ? AppColors.bgSecondary : AppColors.bgSecondaryLight;
 
+  Color get incomeColor => isDark ? AppColors.incomeDark : AppColors.income;
+
   Color get expenseColor => isDark ? AppColors.expenseDark : AppColors.expense;
 
   Color get borderColor => isDark ? AppColors.border : AppColors.borderLight;

@@ -281,8 +281,9 @@ void main() {
       expect(AppColors.bgPrimary, const Color(0xFF0F1117));
     });
 
-    test('income is teal blue', () {
-      expect(AppColors.income, const Color(0xFF2E86AB));
+    // EPIC8D-01 ADR-015: income changed from teal blue to success green.
+    test('income is success green (EPIC8D-01)', () {
+      expect(AppColors.income, const Color(0xFF047857));
     });
   });
 

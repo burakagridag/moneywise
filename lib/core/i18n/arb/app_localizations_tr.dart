@@ -265,7 +265,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tabDescription => 'Açıklama';
 
   @override
-  String get transactionsTitle => 'İşlem';
+  String get transactionsTitle => 'İşlemler';
 
   @override
   String get expenseLabel => 'Gider';
@@ -865,5 +865,164 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String budgetCategoryPickerCTA(int n) {
     return 'Devam et ($n)';
+  }
+
+  @override
+  String get transactionsSearchHint => 'İşlem ara';
+
+  @override
+  String get transactionsFilterTitle => 'Filtrele';
+
+  @override
+  String get transactionsBookmarksTitle => 'Yer İmleri';
+
+  @override
+  String get transactionsTabList => 'Liste';
+
+  @override
+  String get transactionsTabCalendar => 'Takvim';
+
+  @override
+  String get transactionsTabSummary => 'Özet';
+
+  @override
+  String get transactionsStripIncome => 'Gelir';
+
+  @override
+  String get transactionsStripExpense => 'Gider';
+
+  @override
+  String get transactionsStripNet => 'Net';
+
+  @override
+  String get transactionsListEmptyDay => 'Bu gün işlem yok';
+
+  @override
+  String transactionsListDayTotal(String net) {
+    return '$net';
+  }
+
+  @override
+  String get transactionsCalendarWeekdayMon => 'Pt';
+
+  @override
+  String get transactionsCalendarWeekdayTue => 'Sa';
+
+  @override
+  String get transactionsCalendarWeekdayWed => 'Ça';
+
+  @override
+  String get transactionsCalendarWeekdayThu => 'Pe';
+
+  @override
+  String get transactionsCalendarWeekdayFri => 'Cu';
+
+  @override
+  String get transactionsCalendarWeekdaySat => 'Ct';
+
+  @override
+  String get transactionsCalendarWeekdaySun => 'Pa';
+
+  @override
+  String get transactionsCalendarTodayLabel => 'Bugün';
+
+  @override
+  String get transactionsSummaryHeroLabel => 'NET BU AY';
+
+  @override
+  String transactionsSummaryHeroDaysLeft(int n) {
+    return '$n gün kaldı';
+  }
+
+  @override
+  String transactionsSummaryHeroIncomeFooter(String amount) {
+    return '$amount gelir';
+  }
+
+  @override
+  String transactionsSummaryHeroExpenseFooter(String amount) {
+    return '$amount gider';
+  }
+
+  @override
+  String get transactionsSummaryTopCategoriesTitle => 'ÜST KATEGORİLER';
+
+  @override
+  String transactionsSummarySingleCategoryHint(int n) {
+    return 'Sadece $n kategoride harcama var';
+  }
+
+  @override
+  String get transactionsSummaryWeekTrendTitle => 'HAFTA TRENDİ';
+
+  @override
+  String transactionsSummaryWeekTrendBusiest(String range) {
+    return 'En yoğun hafta: $range';
+  }
+
+  @override
+  String transactionsSummaryWeekTrendNet(String amount) {
+    return '$amount net';
+  }
+
+  @override
+  String get transactionsEmptyTitle => 'Henüz işlem yok';
+
+  @override
+  String get transactionsEmptySubtitle =>
+      'Gelir, gider ya da transfer ekleyerek başla';
+
+  @override
+  String get transactionsEmptyCTA => 'İlk işlemi ekle';
+
+  @override
+  String get transactionsAddTitle => 'Yeni İşlem';
+
+  @override
+  String get transactionsAddTypeExpense => 'Gider';
+
+  @override
+  String get transactionsAddTypeIncome => 'Gelir';
+
+  @override
+  String get transactionsAddTypeTransfer => 'Transfer';
+
+  @override
+  String get transactionsAddCategoryLabel => 'Kategori';
+
+  @override
+  String get transactionsAddAccountLabel => 'Hesap';
+
+  @override
+  String get transactionsAddDateLabel => 'Tarih';
+
+  @override
+  String get transactionsAddNoteLabel => 'Not (opsiyonel)';
+
+  @override
+  String get transactionsAddQuickChipsLabel => 'Sık Kullanılan';
+
+  @override
+  String get transactionsAddSaveCTA => 'Kaydet';
+
+  @override
+  String get transactionsAddSaveContinueCTA => 'Kaydet & Devam';
+
+  @override
+  String transactionsRowSemanticIncome(
+      String amount, String category, String account) {
+    return '$amount gelir, $category, $account';
+  }
+
+  @override
+  String transactionsRowSemanticExpense(
+      String amount, String category, String account) {
+    return '$amount gider, $category, $account';
+  }
+
+  @override
+  String transactionsCalendarCellSemantic(
+      int day, String month, String income, String expense) {
+    return '$day $month, $income gelir, $expense gider';
   }
 }

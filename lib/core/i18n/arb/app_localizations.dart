@@ -1693,6 +1693,279 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue ({n})'**
   String budgetCategoryPickerCTA(int n);
+
+  /// No description provided for @transactionsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search transactions'**
+  String get transactionsSearchHint;
+
+  /// No description provided for @transactionsFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get transactionsFilterTitle;
+
+  /// No description provided for @transactionsBookmarksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get transactionsBookmarksTitle;
+
+  /// No description provided for @transactionsTabList.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get transactionsTabList;
+
+  /// No description provided for @transactionsTabCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get transactionsTabCalendar;
+
+  /// No description provided for @transactionsTabSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get transactionsTabSummary;
+
+  /// No description provided for @transactionsStripIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get transactionsStripIncome;
+
+  /// No description provided for @transactionsStripExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get transactionsStripExpense;
+
+  /// No description provided for @transactionsStripNet.
+  ///
+  /// In en, this message translates to:
+  /// **'Net'**
+  String get transactionsStripNet;
+
+  /// No description provided for @transactionsListEmptyDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions today'**
+  String get transactionsListEmptyDay;
+
+  /// No description provided for @transactionsListDayTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{net}'**
+  String transactionsListDayTotal(String net);
+
+  /// No description provided for @transactionsCalendarWeekdayMon.
+  ///
+  /// In en, this message translates to:
+  /// **'Mo'**
+  String get transactionsCalendarWeekdayMon;
+
+  /// No description provided for @transactionsCalendarWeekdayTue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tu'**
+  String get transactionsCalendarWeekdayTue;
+
+  /// No description provided for @transactionsCalendarWeekdayWed.
+  ///
+  /// In en, this message translates to:
+  /// **'We'**
+  String get transactionsCalendarWeekdayWed;
+
+  /// No description provided for @transactionsCalendarWeekdayThu.
+  ///
+  /// In en, this message translates to:
+  /// **'Th'**
+  String get transactionsCalendarWeekdayThu;
+
+  /// No description provided for @transactionsCalendarWeekdayFri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fr'**
+  String get transactionsCalendarWeekdayFri;
+
+  /// No description provided for @transactionsCalendarWeekdaySat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sa'**
+  String get transactionsCalendarWeekdaySat;
+
+  /// No description provided for @transactionsCalendarWeekdaySun.
+  ///
+  /// In en, this message translates to:
+  /// **'Su'**
+  String get transactionsCalendarWeekdaySun;
+
+  /// No description provided for @transactionsCalendarTodayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get transactionsCalendarTodayLabel;
+
+  /// No description provided for @transactionsSummaryHeroLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'NET THIS MONTH'**
+  String get transactionsSummaryHeroLabel;
+
+  /// No description provided for @transactionsSummaryHeroDaysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} days left'**
+  String transactionsSummaryHeroDaysLeft(int n);
+
+  /// No description provided for @transactionsSummaryHeroIncomeFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} income'**
+  String transactionsSummaryHeroIncomeFooter(String amount);
+
+  /// No description provided for @transactionsSummaryHeroExpenseFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} expense'**
+  String transactionsSummaryHeroExpenseFooter(String amount);
+
+  /// No description provided for @transactionsSummaryTopCategoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'TOP CATEGORIES'**
+  String get transactionsSummaryTopCategoriesTitle;
+
+  /// No description provided for @transactionsSummarySingleCategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, one{Only # category with spending} other{Only # categories with spending}}'**
+  String transactionsSummarySingleCategoryHint(int n);
+
+  /// No description provided for @transactionsSummaryWeekTrendTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'WEEK TREND'**
+  String get transactionsSummaryWeekTrendTitle;
+
+  /// No description provided for @transactionsSummaryWeekTrendBusiest.
+  ///
+  /// In en, this message translates to:
+  /// **'Busiest week: {range}'**
+  String transactionsSummaryWeekTrendBusiest(String range);
+
+  /// No description provided for @transactionsSummaryWeekTrendNet.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} net'**
+  String transactionsSummaryWeekTrendNet(String amount);
+
+  /// No description provided for @transactionsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions yet'**
+  String get transactionsEmptyTitle;
+
+  /// No description provided for @transactionsEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start by adding income, expense, or a transfer'**
+  String get transactionsEmptySubtitle;
+
+  /// No description provided for @transactionsEmptyCTA.
+  ///
+  /// In en, this message translates to:
+  /// **'Add first transaction'**
+  String get transactionsEmptyCTA;
+
+  /// No description provided for @transactionsAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Transaction'**
+  String get transactionsAddTitle;
+
+  /// No description provided for @transactionsAddTypeExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get transactionsAddTypeExpense;
+
+  /// No description provided for @transactionsAddTypeIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get transactionsAddTypeIncome;
+
+  /// No description provided for @transactionsAddTypeTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer'**
+  String get transactionsAddTypeTransfer;
+
+  /// No description provided for @transactionsAddCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get transactionsAddCategoryLabel;
+
+  /// No description provided for @transactionsAddAccountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get transactionsAddAccountLabel;
+
+  /// No description provided for @transactionsAddDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get transactionsAddDateLabel;
+
+  /// No description provided for @transactionsAddNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get transactionsAddNoteLabel;
+
+  /// No description provided for @transactionsAddQuickChipsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequent'**
+  String get transactionsAddQuickChipsLabel;
+
+  /// No description provided for @transactionsAddSaveCTA.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get transactionsAddSaveCTA;
+
+  /// No description provided for @transactionsAddSaveContinueCTA.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & Continue'**
+  String get transactionsAddSaveContinueCTA;
+
+  /// No description provided for @transactionsRowSemanticIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} income, {category}, {account}'**
+  String transactionsRowSemanticIncome(
+      String amount, String category, String account);
+
+  /// No description provided for @transactionsRowSemanticExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} expense, {category}, {account}'**
+  String transactionsRowSemanticExpense(
+      String amount, String category, String account);
+
+  /// No description provided for @transactionsCalendarCellSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'{day} {month}, {income} income, {expense} expense'**
+  String transactionsCalendarCellSemantic(
+      int day, String month, String income, String expense);
 }
 
 class _AppLocalizationsDelegate

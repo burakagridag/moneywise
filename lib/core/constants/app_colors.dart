@@ -21,9 +21,15 @@ class AppColors {
   static const Color textOnBrand = Color(0xFFFFFFFF);
 
   // Semantic
-  static const Color income = Color(0xFF2E86AB);
+  // Income — success green (EPIC8D-01 sponsor decision; was teal 0xFF2E86AB).
+  static const Color income = Color(0xFF047857); // light mode success green
+  static const Color incomeDark = Color(0xFF34D399); // dark mode success green
   static const Color expense = Color(0xFFC0392B);
   static const Color neutral = Color(0xFFFFFFFF);
+
+  // Calendar — selected day highlight (EPIC8D-01).
+  static const Color calendarHighlightLight = Color(0xFFEAEEF7);
+  static const Color calendarHighlightDark = Color(0xFF1F2540);
 
   // System
   static const Color divider = Color(0xFF1E2235);
