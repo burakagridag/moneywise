@@ -232,21 +232,72 @@ EN + TR, sponsor approval **PR öncesi** zorunlu (Sprint 8b retro Madde 5).
 | Insight kartının yeri | Hero'nun altı, kategorilerden önce | ✅ Onaylandı |
 | Empty kategoriler | Collapse pattern ("X kategori daha") | ✅ Onaylandı |
 | Donut konumu | En altta (analitik bölüm) | ✅ Onaylandı |
-| Insight klasifikasyonu | Home-only / Budget-only (duplicate önlenir) | ✅ Onaylandı |
-| Hero kartı tappable | EPIC8B-07'de edit modal açacak | ✅ Onaylandı |
+| Insight klasifikasyonu | Mapper-level, `insight_classifier.dart` — kural tablosu aşağıda | ✅ Onaylandı |
+| Hero kartı tap davranışı (bu epic) | **no-op** — GestureDetector/InkWell/visual affordance YOK | ✅ Onaylandı |
+| Hero kartı tappable (EPIC8B-07) | InkWell + onTap → edit modal + visual affordance | ✅ Scope taşındı |
 | Empty state CTA | "Bütçeyi başlat" → kategori seçim modal | ✅ Onaylandı |
 | Design token reuse | Home redesign tokens'ı 1:1 reuse | ✅ Onaylandı |
 | Bu epic ilk, 8B-07 ve 8B-06 sonra | Sponsor explicit sıralama | ✅ Onaylandı |
+| Geçen ay delta formülü | `((current - last) / last) * 100`, half-up integer | ✅ Onaylandı |
+| Insight max count | **1** (spec sabit) | ✅ Onaylandı |
 
 **Approved by:** burakagridag@gmail.com
 **Date:** 2026-05-07
-**Reference session:** Sprint 8c Day 1 sponsor review
 
 ---
 
-## Open Items (Sponsor Review During Implementation)
+## Insight Klasifikasyon Tablosu (ADR-013 addendum)
 
-- TR wording final review smoke test sırasında — ARB key'ler implement edildikten sonra screenshot ile sponsor onayı (madde 5)
-- Empty state mikroyazım: "Aylık bütçeni belirle" yeterli mi, yoksa motivasyonel ek satır mı? Smoke test'te değerlendirilecek
-- Hero kartı tappable iken bu epic'te tap davranışı: toast mı placeholder mı no-op mu? — sponsor karar verecek
-- Insight max count: 1 mi 2 mi? — implementation sırasında "Bu hafta" bölümünün ekran ağırlığına bakılarak karar
+Yeni dosya: `lib/features/insights/domain/insight_classifier.dart`
+Approach: mapper-level filter, 5 rule dosyasına **dokunulmaz**.
+
+| Rule ID | Surface | Notlar |
+|---------|---------|--------|
+| `concentration` | **Budget only** | Home'da görünmez (V1) |
+| `big_transaction` | Home only | Budget'ta görünmez |
+| `savings_goal` | Home only | Budget'ta görünmez |
+| `daily_overpacing` | Home only | Budget'ta görünmez |
+| `weekend_spending` | Home only | Budget'ta görünmez |
+
+```dart
+// lib/features/insights/domain/insight_classifier.dart
+enum InsightSurface { home, budget }
+
+bool insightVisibleOn(String insightId, InsightSurface surface) =>
+  switch (surface) {
+    InsightSurface.budget => insightId == 'concentration',
+    InsightSurface.home   => insightId != 'concentration',
+  };
+```
+
+**Test:** surface=budget → sadece concentration; surface=home → concentration HARİÇ hepsi.
+**Breaking change:** Mevcut Home ekranı `concentration`'ı artık göstermeyecek.
+
+---
+
+## Geçen Ay Delta — 5 Case
+
+Formül: `delta = ((currentTotal - lastTotal) / lastTotal * 100).round()`
+
+| Case | Koşul | Gösterim | Renk |
+|------|-------|----------|------|
+| 1 | lastTotal = 0, currentTotal = 0 | `budgetMetricDeltaNoData` | secondary |
+| 2 | lastTotal = 0, currentTotal > 0 | `budgetMetricDeltaNoData` | secondary |
+| 3 | delta < 0 | `budgetMetricDeltaDecrease(pct: abs(delta))` | success-green |
+| 4 | delta > 0 | `budgetMetricDeltaIncrease(pct: delta)` | warning-orange |
+| 5 | delta = 0 | `budgetMetricDeltaSame` | secondary |
+
+Yeni ARB key'ler (EN + TR, sponsor PR-öncesi onayı zorunlu — retro madde 5):
+| Key | EN | TR |
+|-----|----|----|
+| `budgetMetricDeltaDecrease` | `↓ {pct}% less` | `↓ %{pct} daha az` |
+| `budgetMetricDeltaIncrease` | `↑ {pct}% more` | `↑ %{pct} daha fazla` |
+| `budgetMetricDeltaSame` | `= Same as last month` | `= Geçen ayla aynı` |
+| `budgetMetricDeltaNoData` | `No previous data` | `Geçen ay verisi yok` |
+
+---
+
+## Open Items (Smoke Test'te Sponsor Review)
+
+- TR wording final review: tüm ARB key'ler implement edildikten sonra screenshot onayı (retro madde 5)
+- Empty state mikroyazım: "Aylık bütçeni belirle" + "Kategorilere göre harcamalarını takip et" — smoke test'te değerlendirilecek
