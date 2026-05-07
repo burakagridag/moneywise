@@ -57,6 +57,23 @@ ThemeMode _themeModeFromIndex(int? value) {
   return ThemeMode.values[value];
 }
 
+/// Read ThemeMode from [prefs] safely, handling both the current int format and
+/// the legacy String format written by pre-Sprint 8b builds (e.g. "ThemeMode.light").
+/// Falls back to [ThemeMode.system] when the stored value is absent or unrecognised.
+ThemeMode _readThemeMode(SharedPreferences prefs, String key) {
+  // Try int first (current format).
+  final dynamic raw = prefs.get(key);
+  if (raw is int) {
+    return _themeModeFromIndex(raw);
+  }
+  // Fallback: legacy String format stored by the previous setString() call.
+  if (raw is String) {
+    if (raw.contains('dark')) return ThemeMode.dark;
+    if (raw.contains('light')) return ThemeMode.light;
+  }
+  return ThemeMode.system; // default
+}
+
 // ---------------------------------------------------------------------------
 // Notifier
 // ---------------------------------------------------------------------------
@@ -78,7 +95,7 @@ class AppPreferencesNotifier extends _$AppPreferencesNotifier {
   Future<AppPreferences> build() async {
     _prefs = await SharedPreferences.getInstance();
     return AppPreferences(
-      themeMode: _themeModeFromIndex(_safePrefs.getInt(_kThemeMode)),
+      themeMode: _readThemeMode(_safePrefs, _kThemeMode),
       currencyCode: _safePrefs.getString(_kCurrencyCode) ?? 'EUR',
       languageCode: _safePrefs.getString(_kLanguageCode) ?? 'en',
     );
