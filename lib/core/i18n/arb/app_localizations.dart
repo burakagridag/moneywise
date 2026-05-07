@@ -1513,6 +1513,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exceeds your monthly budget'**
   String get insightBigTransactionBodyExceeds;
+
+  /// No description provided for @insightWeekendSpendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekend spending'**
+  String get insightWeekendSpendingTitle;
+
+  /// No description provided for @insightWeekendSpendingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekend daily average {pct}% above weekday.'**
+  String insightWeekendSpendingBody(int pct);
 }
 
 class _AppLocalizationsDelegate

@@ -29,27 +29,44 @@ InsightViewModel insightToViewModel(
     'concentration' => (
         Icons.pie_chart_outline,
         AppColors.insightWarningIcon,
-        isDark ? AppColors.insightWarningIconBgDark : AppColors.insightWarningIconBg,
+        isDark
+            ? AppColors.insightWarningIconBgDark
+            : AppColors.insightWarningIconBg,
       ),
     'savings_goal' => (
         Icons.savings_outlined,
         AppColors.insightWarningIcon,
-        isDark ? AppColors.insightWarningIconBgDark : AppColors.insightWarningIconBg,
+        isDark
+            ? AppColors.insightWarningIconBgDark
+            : AppColors.insightWarningIconBg,
       ),
     'daily_overpacing' => (
         Icons.trending_up,
         AppColors.insightCriticalIcon,
-        isDark ? AppColors.insightCriticalIconBgDark : AppColors.insightCriticalIconBg,
+        isDark
+            ? AppColors.insightCriticalIconBgDark
+            : AppColors.insightCriticalIconBg,
       ),
     'big_transaction' => (
         Icons.warning_amber_outlined,
         AppColors.insightWarningIcon,
-        isDark ? AppColors.insightWarningIconBgDark : AppColors.insightWarningIconBg,
+        isDark
+            ? AppColors.insightWarningIconBgDark
+            : AppColors.insightWarningIconBg,
+      ),
+    'weekend_spending' => (
+        Icons.weekend,
+        AppColors.insightWarningIcon,
+        isDark
+            ? AppColors.insightWarningIconBgDark
+            : AppColors.insightWarningIconBg,
       ),
     _ => (
         Icons.info_outline,
         AppColors.insightNeutralIcon,
-        isDark ? AppColors.insightNeutralIconBgDark : AppColors.insightNeutralIconBg,
+        isDark
+            ? AppColors.insightNeutralIconBgDark
+            : AppColors.insightNeutralIconBg,
       ),
   };
 
@@ -69,7 +86,11 @@ InsightViewModel insightToViewModel(
         l10n.insightDailyOverpacingTitle,
         l10n.insightDailyOverpacingBody,
       ),
-    BigTransactionLocalizationData(:final pct, :final formattedAmount, :final exceedsBudget)
+    BigTransactionLocalizationData(
+      :final pct,
+      :final formattedAmount,
+      :final exceedsBudget
+    )
         when !exceedsBudget =>
       (
         l10n.insightBigTransactionTitle,
@@ -78,6 +99,10 @@ InsightViewModel insightToViewModel(
     BigTransactionLocalizationData() => (
         l10n.insightBigTransactionTitle,
         l10n.insightBigTransactionBodyExceeds,
+      ),
+    WeekendSpendingLocalizationData(:final pct) => (
+        l10n.insightWeekendSpendingTitle,
+        l10n.insightWeekendSpendingBody(pct),
       ),
     null => (insight.headline, insight.body),
   };

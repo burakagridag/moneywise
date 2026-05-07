@@ -244,6 +244,62 @@ void main() {
   });
 
   // -------------------------------------------------------------------------
+  // WeekendSpendingRule
+  // -------------------------------------------------------------------------
+
+  group('WeekendSpendingRule', () {
+    test('TR locale — headline and body contain pct', () {
+      final insight = _makeInsight(
+        id: 'weekend_spending',
+        localizationData: const WeekendSpendingLocalizationData(pct: 200),
+      );
+
+      final vm = insightToViewModel(insight, l10nTr);
+
+      expect(vm.headline, 'Hafta sonu harcaması');
+      expect(vm.body, contains('200'));
+    });
+
+    test('EN locale — headline and body contain pct', () {
+      final insight = _makeInsight(
+        id: 'weekend_spending',
+        localizationData: const WeekendSpendingLocalizationData(pct: 150),
+      );
+
+      final vm = insightToViewModel(insight, l10nEn);
+
+      expect(vm.headline, 'Weekend spending');
+      expect(vm.body, contains('150'));
+    });
+
+    test('TR locale — pct is reflected accurately in body for different values',
+        () {
+      final insight = _makeInsight(
+        id: 'weekend_spending',
+        localizationData: const WeekendSpendingLocalizationData(pct: 125),
+      );
+
+      final vm = insightToViewModel(insight, l10nTr);
+
+      expect(vm.body, contains('125'));
+      expect(vm.body, isNot(contains('200')));
+    });
+
+    test('EN locale — body does not contain wrong pct for different values',
+        () {
+      final insight = _makeInsight(
+        id: 'weekend_spending',
+        localizationData: const WeekendSpendingLocalizationData(pct: 300),
+      );
+
+      final vm = insightToViewModel(insight, l10nEn);
+
+      expect(vm.body, contains('300'));
+      expect(vm.body, isNot(contains('200')));
+    });
+  });
+
+  // -------------------------------------------------------------------------
   // null localizationData — fallback to domain English strings
   // -------------------------------------------------------------------------
 

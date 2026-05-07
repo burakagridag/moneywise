@@ -284,5 +284,10 @@
       "pct": { "type": "int" }
     }
   },
-  "insightBigTransactionBodyExceeds": "Aylık bütçenizi aşan işlem"
+  "insightBigTransactionBodyExceeds": "Aylık bütçenizi aşan işlem",
+  "insightWeekendSpendingTitle": "Hafta sonu harcaması",
+  "insightWeekendSpendingBody": "Hafta sonu ortalaması hafta içinden %{pct} yüksek.",
+  "@insightWeekendSpendingBody": {
+    "placeholders": { "pct": { "type": "int" } }
+  }
 }

@@ -756,4 +756,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get insightBigTransactionBodyExceeds => 'Exceeds your monthly budget';
+
+  @override
+  String get insightWeekendSpendingTitle => 'Weekend spending';
+
+  @override
+  String insightWeekendSpendingBody(int pct) {
+    return 'Weekend daily average $pct% above weekday.';
+  }
 }

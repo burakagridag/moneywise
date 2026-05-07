@@ -38,6 +38,16 @@ class DailyOverpacingLocalizationData extends InsightLocalizationData {
   const DailyOverpacingLocalizationData();
 }
 
+/// Payload for [WeekendSpendingRule]: percentage above weekday average.
+///
+/// [pct] is the integer percentage above weekday daily average.
+/// e.g. ratio=3.0 → pct=200, ratio=2.5 → pct=150.
+class WeekendSpendingLocalizationData extends InsightLocalizationData {
+  const WeekendSpendingLocalizationData({required this.pct});
+
+  final int pct;
+}
+
 /// Payload for [BigTransactionRule]: percentage of effective budget consumed
 /// and the locale-aware formatted amount string.
 ///

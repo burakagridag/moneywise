@@ -284,5 +284,10 @@
       "pct": { "type": "int" }
     }
   },
-  "insightBigTransactionBodyExceeds": "Exceeds your monthly budget"
+  "insightBigTransactionBodyExceeds": "Exceeds your monthly budget",
+  "insightWeekendSpendingTitle": "Weekend spending",
+  "insightWeekendSpendingBody": "Weekend daily average {pct}% above weekday.",
+  "@insightWeekendSpendingBody": {
+    "placeholders": { "pct": { "type": "int" } }
+  }
 }
