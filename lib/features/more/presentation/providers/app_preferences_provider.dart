@@ -50,26 +50,11 @@ class AppPreferences {
 // Helpers
 // ---------------------------------------------------------------------------
 
-ThemeMode _themeModeFromString(String? value) {
-  switch (value) {
-    case 'light':
-      return ThemeMode.light;
-    case 'dark':
-      return ThemeMode.dark;
-    default:
-      return ThemeMode.system;
+ThemeMode _themeModeFromIndex(int? value) {
+  if (value == null || value < 0 || value >= ThemeMode.values.length) {
+    return ThemeMode.system;
   }
-}
-
-String _themeModeToString(ThemeMode mode) {
-  switch (mode) {
-    case ThemeMode.light:
-      return 'light';
-    case ThemeMode.dark:
-      return 'dark';
-    case ThemeMode.system:
-      return 'system';
-  }
+  return ThemeMode.values[value];
 }
 
 // ---------------------------------------------------------------------------
@@ -93,7 +78,7 @@ class AppPreferencesNotifier extends _$AppPreferencesNotifier {
   Future<AppPreferences> build() async {
     _prefs = await SharedPreferences.getInstance();
     return AppPreferences(
-      themeMode: _themeModeFromString(_safePrefs.getString(_kThemeMode)),
+      themeMode: _themeModeFromIndex(_safePrefs.getInt(_kThemeMode)),
       currencyCode: _safePrefs.getString(_kCurrencyCode) ?? 'EUR',
       languageCode: _safePrefs.getString(_kLanguageCode) ?? 'en',
     );
@@ -101,7 +86,7 @@ class AppPreferencesNotifier extends _$AppPreferencesNotifier {
 
   /// Persists and applies a new [ThemeMode].
   Future<void> setThemeMode(ThemeMode mode) async {
-    await _safePrefs.setString(_kThemeMode, _themeModeToString(mode));
+    await _safePrefs.setInt(_kThemeMode, mode.index);
     state = AsyncData(
       state.requireValue.copyWith(themeMode: mode),
     );

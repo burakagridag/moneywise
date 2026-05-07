@@ -6,85 +6,88 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/i18n/arb/app_localizations.dart';
 import '../../domain/insight.dart';
+import '../../domain/insight_localization_data.dart';
 import '../models/insight_view_model.dart';
 
 /// Maps a pure-domain [Insight] to an [InsightViewModel] with icon, color,
 /// and localized headline/body for rendering in [InsightCard].
 ///
-/// The switch is keyed on [Insight.id], which is a stable constant defined in
-/// each rule class. An unknown id falls back to a neutral info style so that
-/// future rules are never invisible.
+/// Icon and color are keyed on [Insight.id] so that the correct visual style
+/// is applied even when [Insight.localizationData] is null (future rules).
 ///
-/// Localization: pass [l10n] to resolve locale-aware headline and body strings.
-/// Computed body values (pct, amount) are sourced from [Insight.bodyParams] so
-/// that the domain rule only needs to set the params map — the mapper builds the
-/// fully-localized string via ARB placeholders.
+/// Localization: headline and body are resolved by dispatching on the sealed
+/// [InsightLocalizationData] subtype. When [localizationData] is null, the
+/// mapper falls back to [Insight.headline] and [Insight.body] so that future
+/// rules with no registered subtype are never invisible.
 InsightViewModel insightToViewModel(
   Insight insight,
   AppLocalizations l10n, {
   bool isDark = false,
 }) {
-  return switch (insight.id) {
-    'concentration' => InsightViewModel(
-        insight: insight,
-        icon: Icons.pie_chart_outline,
-        iconColor: AppColors.insightWarningIcon,
-        iconBackgroundColor: isDark
-            ? AppColors.insightWarningIconBgDark
-            : AppColors.insightWarningIconBg,
-        headline: l10n.insightConcentrationTitle,
-        body: () {
-          final pct = insight.bodyParams['pct'] as int?;
-          return pct != null
-              ? l10n.insightConcentrationBody(pct)
-              : insight.body;
-        }(),
+  // Resolve icon / color from the stable id constant.
+  final (icon, iconColor, iconBg) = switch (insight.id) {
+    'concentration' => (
+        Icons.pie_chart_outline,
+        AppColors.insightWarningIcon,
+        isDark ? AppColors.insightWarningIconBgDark : AppColors.insightWarningIconBg,
       ),
-    'savings_goal' => InsightViewModel(
-        insight: insight,
-        icon: Icons.savings_outlined,
-        iconColor: AppColors.insightWarningIcon,
-        iconBackgroundColor: isDark
-            ? AppColors.insightWarningIconBgDark
-            : AppColors.insightWarningIconBg,
-        headline: l10n.insightSavingsGoalTitle,
-        body: l10n.insightSavingsGoalBody,
+    'savings_goal' => (
+        Icons.savings_outlined,
+        AppColors.insightWarningIcon,
+        isDark ? AppColors.insightWarningIconBgDark : AppColors.insightWarningIconBg,
       ),
-    'daily_overpacing' => InsightViewModel(
-        insight: insight,
-        icon: Icons.trending_up,
-        iconColor: AppColors.insightCriticalIcon,
-        iconBackgroundColor: isDark
-            ? AppColors.insightCriticalIconBgDark
-            : AppColors.insightCriticalIconBg,
-        headline: l10n.insightDailyOverpacingTitle,
-        body: l10n.insightDailyOverpacingBody,
+    'daily_overpacing' => (
+        Icons.trending_up,
+        AppColors.insightCriticalIcon,
+        isDark ? AppColors.insightCriticalIconBgDark : AppColors.insightCriticalIconBg,
       ),
-    'big_transaction' => InsightViewModel(
-        insight: insight,
-        icon: Icons.warning_amber_outlined,
-        iconColor: AppColors.insightWarningIcon,
-        iconBackgroundColor: isDark
-            ? AppColors.insightWarningIconBgDark
-            : AppColors.insightWarningIconBg,
-        headline: l10n.insightBigTransactionTitle,
-        body: () {
-          final amount = insight.bodyParams['amount'] as String?;
-          final pct = insight.bodyParams['pct'] as int?;
-          return (amount != null && pct != null)
-              ? l10n.insightBigTransactionBodyNormal(amount, pct)
-              : l10n.insightBigTransactionBodyExceeds;
-        }(),
+    'big_transaction' => (
+        Icons.warning_amber_outlined,
+        AppColors.insightWarningIcon,
+        isDark ? AppColors.insightWarningIconBgDark : AppColors.insightWarningIconBg,
       ),
-    _ => InsightViewModel(
-        insight: insight,
-        icon: Icons.info_outline,
-        iconColor: AppColors.insightNeutralIcon,
-        iconBackgroundColor: isDark
-            ? AppColors.insightNeutralIconBgDark
-            : AppColors.insightNeutralIconBg,
-        headline: insight.headline,
-        body: insight.body,
+    _ => (
+        Icons.info_outline,
+        AppColors.insightNeutralIcon,
+        isDark ? AppColors.insightNeutralIconBgDark : AppColors.insightNeutralIconBg,
       ),
   };
+
+  // Resolve headline / body by dispatching on the typed localization payload.
+  // When localizationData is null, fall back to domain strings so future rules
+  // (with no registered subtype yet) are never invisible.
+  final (headline, body) = switch (insight.localizationData) {
+    ConcentrationLocalizationData(:final pct) => (
+        l10n.insightConcentrationTitle,
+        l10n.insightConcentrationBody(pct),
+      ),
+    SavingsGoalLocalizationData() => (
+        l10n.insightSavingsGoalTitle,
+        l10n.insightSavingsGoalBody,
+      ),
+    DailyOverpacingLocalizationData() => (
+        l10n.insightDailyOverpacingTitle,
+        l10n.insightDailyOverpacingBody,
+      ),
+    BigTransactionLocalizationData(:final pct, :final formattedAmount, :final exceedsBudget)
+        when !exceedsBudget =>
+      (
+        l10n.insightBigTransactionTitle,
+        l10n.insightBigTransactionBodyNormal(formattedAmount, pct),
+      ),
+    BigTransactionLocalizationData() => (
+        l10n.insightBigTransactionTitle,
+        l10n.insightBigTransactionBodyExceeds,
+      ),
+    null => (insight.headline, insight.body),
+  };
+
+  return InsightViewModel(
+    insight: insight,
+    icon: icon,
+    iconColor: iconColor,
+    iconBackgroundColor: iconBg,
+    headline: headline,
+    body: body,
+  );
 }

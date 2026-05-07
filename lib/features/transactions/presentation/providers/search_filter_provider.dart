@@ -133,7 +133,7 @@ class SearchFilterNotifier extends _$SearchFilterNotifier {
       state = state.copyWith(query: query.isEmpty ? null : query);
 
   /// Clears the text search query.
-  void clearQuery() => state = state.copyWith(query: null);
+  void clearQuery() => state = state.copyWith(query: '');
 
   /// Replaces the entire filter state atomically.
   void apply(TransactionFilter filter) => state = filter;

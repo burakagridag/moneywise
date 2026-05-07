@@ -44,7 +44,7 @@ class Bookmark {
     String? id,
     String? name,
     String? type,
-    double? amount,
+    Object? amount = _sentinel,
     String? currencyCode,
     String? accountId,
     String? toAccountId,
@@ -58,7 +58,7 @@ class Bookmark {
       id: id ?? this.id,
       name: name ?? this.name,
       type: type ?? this.type,
-      amount: amount ?? this.amount,
+      amount: identical(amount, _sentinel) ? this.amount : amount as double?,
       currencyCode: currencyCode ?? this.currencyCode,
       accountId: accountId ?? this.accountId,
       toAccountId: toAccountId ?? this.toAccountId,
@@ -70,3 +70,5 @@ class Bookmark {
     );
   }
 }
+
+const _sentinel = Object();

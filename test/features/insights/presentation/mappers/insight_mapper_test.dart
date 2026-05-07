@@ -227,7 +227,7 @@ void main() {
 
       final vm = insightToViewModel(insight, l10nTr);
 
-      expect(vm.headline, 'Harcama hızı yüksek');
+      expect(vm.headline, 'Aşırı harcama');
       expect(vm.body, isNotEmpty);
     });
 

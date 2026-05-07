@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moneywise/features/insights/domain/insight.dart';
 import 'package:moneywise/features/insights/domain/insight_context.dart';
 import 'package:moneywise/features/insights/domain/insight_provider.dart';
+import 'package:moneywise/features/insights/presentation/models/insight_view_model.dart';
 import 'package:moneywise/features/insights/presentation/providers/insights_providers.dart';
 
 // ---------------------------------------------------------------------------
@@ -48,10 +49,11 @@ void main() {
       expect(provider, isA<_EmptyInsightProvider>());
     });
 
-    test('insightsProvider is an AutoDisposeFutureProvider<List<Insight>>', () {
+    test('insightsProvider is an AutoDisposeFutureProvider<List<InsightViewModel>>',
+        () {
       expect(
         insightsProvider,
-        isA<AutoDisposeFutureProvider<List<Insight>>>(),
+        isA<AutoDisposeFutureProvider<List<InsightViewModel>>>(),
       );
     });
   });
