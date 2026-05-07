@@ -289,5 +289,59 @@
   "insightWeekendSpendingBody": "Hafta sonu hafta içinden %{pct} yüksek.",
   "@insightWeekendSpendingBody": {
     "placeholders": { "pct": { "type": "int" } }
+  },
+  "budgetScreenTitle": "Bütçe",
+  "budgetHeroLabelRemaining": "KALAN BU AY",
+  "budgetHeroDaysLeft": "{n} gün kaldı",
+  "@budgetHeroDaysLeft": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "budgetHeroSpentOf": "{budget} bütçeden {spent}",
+  "@budgetHeroSpentOf": {
+    "placeholders": {
+      "spent": { "type": "String" },
+      "budget": { "type": "String" }
+    }
+  },
+  "budgetHeroIdealPace": "İdeal hız: {amount}",
+  "@budgetHeroIdealPace": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "budgetMetricDailyTitle": "GÜNLÜK",
+  "budgetMetricDailySafe": "{amount} harcayabilirsin",
+  "@budgetMetricDailySafe": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "budgetMetricLastMonthTitle": "GEÇEN AY",
+  "budgetMetricDeltaDecrease": "↓ %{pct} daha az",
+  "@budgetMetricDeltaDecrease": {
+    "placeholders": { "pct": { "type": "int" } }
+  },
+  "budgetMetricDeltaIncrease": "↑ %{pct} daha fazla",
+  "@budgetMetricDeltaIncrease": {
+    "placeholders": { "pct": { "type": "int" } }
+  },
+  "budgetMetricDeltaSame": "= Geçen ayla aynı",
+  "budgetMetricDeltaNoData": "Geçen ay verisi yok",
+  "budgetCategoriesTitle": "KATEGORİLER",
+  "budgetCategoriesEditLink": "Düzenle ›",
+  "budgetCategoriesCollapsedCount": "{n} kategori daha",
+  "@budgetCategoriesCollapsedCount": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "budgetCategoriesCollapsedSubtitle": "Bütçesi yok",
+  "budgetDistributionTitle": "DAĞILIM",
+  "budgetDistributionFooter": "Bu ay {amount}",
+  "@budgetDistributionFooter": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "budgetEmptyTitle": "Aylık bütçeni belirle",
+  "budgetEmptySubtitle": "Kategorilere göre harcamalarını takip et",
+  "budgetEmptyCTA": "Bütçeyi başlat",
+  "budgetEmptySkip": "Sonra ayarla",
+  "budgetCategoryPickerTitle": "Kategorileri seç",
+  "budgetCategoryPickerCTA": "Devam et ({n})",
+  "@budgetCategoryPickerCTA": {
+    "placeholders": { "n": { "type": "int" } }
   }
 }

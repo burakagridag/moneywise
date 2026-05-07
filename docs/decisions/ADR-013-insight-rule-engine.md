@@ -241,6 +241,47 @@ UI widget are needed.
 
 Trigger condition changes made during implementation must be reflected in this ADR before the sprint PR is merged. PM is responsible for flagging discrepancies during sprint review. Engineers may add guards/conditions for sound technical reasons, but the change is not authoritative until it appears here and the Sponsor has been notified.
 
+## Insight Surface Classification Addendum (EPIC8C-01, Sprint 8c)
+
+**Sponsor-approved 2026-05-07.** Added during Budget Screen Redesign.
+
+### Motivation
+The Budget screen (EPIC8C-01) introduces a dedicated insight slot that should show only
+budget-relevant insights (category concentration). Home tab insights that are already
+surfaced there should not appear on the Budget screen to avoid duplication.
+
+### Implementation
+A new file `lib/features/insights/domain/insight_classifier.dart` provides:
+
+```dart
+enum InsightSurface { home, budget }
+
+bool insightVisibleOn(String insightId, InsightSurface surface) =>
+  switch (surface) {
+    InsightSurface.budget => insightId == 'concentration',
+    InsightSurface.home   => insightId != 'concentration',
+  };
+```
+
+The five rule classes are **not modified** — classification is mapper-level only.
+A new `insightsForSurfaceProvider(InsightSurface surface)` Riverpod family provider
+wraps `insightsProvider` and applies the filter.
+
+### Classification Table
+| Rule ID          | Home | Budget | Notes                           |
+|------------------|------|--------|---------------------------------|
+| concentration    | ❌   | ✅     | Budget-only; hidden on Home     |
+| big_transaction  | ✅   | ❌     | Home-only                       |
+| savings_goal     | ✅   | ❌     | Home-only                       |
+| daily_overpacing | ✅   | ❌     | Home-only                       |
+| weekend_spending | ✅   | ❌     | Home-only                       |
+
+**Breaking change:** `concentration` insight no longer appears on the Home tab as of
+Sprint 8c. Home tab `ThisWeekSection` now uses `insightsForSurfaceProvider(InsightSurface.home)`.
+
+**Test coverage:** `test/features/insights/domain/insight_classifier_test.dart` — 17 cases.
+
 ## Reviewers
 - flutter-engineer (author)
 - Product Sponsor (trigger conditions reviewed 2026-05-03)
+- Product Sponsor (surface classification reviewed 2026-05-07)

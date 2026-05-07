@@ -1517,14 +1517,158 @@ abstract class AppLocalizations {
   /// No description provided for @insightWeekendSpendingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Weekend spending'**
+  /// **'Weekend spending high'**
   String get insightWeekendSpendingTitle;
 
   /// No description provided for @insightWeekendSpendingBody.
   ///
   /// In en, this message translates to:
-  /// **'Weekend daily average {pct}% above weekday.'**
+  /// **'Weekend {pct}% above weekday.'**
   String insightWeekendSpendingBody(int pct);
+
+  /// No description provided for @budgetScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get budgetScreenTitle;
+
+  /// No description provided for @budgetHeroLabelRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'REMAINING THIS MONTH'**
+  String get budgetHeroLabelRemaining;
+
+  /// No description provided for @budgetHeroDaysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} days left'**
+  String budgetHeroDaysLeft(int n);
+
+  /// No description provided for @budgetHeroSpentOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{spent} of {budget}'**
+  String budgetHeroSpentOf(String spent, String budget);
+
+  /// No description provided for @budgetHeroIdealPace.
+  ///
+  /// In en, this message translates to:
+  /// **'Ideal pace: {amount}'**
+  String budgetHeroIdealPace(String amount);
+
+  /// No description provided for @budgetMetricDailyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DAILY'**
+  String get budgetMetricDailyTitle;
+
+  /// No description provided for @budgetMetricDailySafe.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} can spend'**
+  String budgetMetricDailySafe(String amount);
+
+  /// No description provided for @budgetMetricLastMonthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LAST MONTH'**
+  String get budgetMetricLastMonthTitle;
+
+  /// No description provided for @budgetMetricDeltaDecrease.
+  ///
+  /// In en, this message translates to:
+  /// **'↓ {pct}% less'**
+  String budgetMetricDeltaDecrease(int pct);
+
+  /// No description provided for @budgetMetricDeltaIncrease.
+  ///
+  /// In en, this message translates to:
+  /// **'↑ {pct}% more'**
+  String budgetMetricDeltaIncrease(int pct);
+
+  /// No description provided for @budgetMetricDeltaSame.
+  ///
+  /// In en, this message translates to:
+  /// **'= Same as last month'**
+  String get budgetMetricDeltaSame;
+
+  /// No description provided for @budgetMetricDeltaNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No previous data'**
+  String get budgetMetricDeltaNoData;
+
+  /// No description provided for @budgetCategoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'CATEGORIES'**
+  String get budgetCategoriesTitle;
+
+  /// No description provided for @budgetCategoriesEditLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit ›'**
+  String get budgetCategoriesEditLink;
+
+  /// No description provided for @budgetCategoriesCollapsedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} more categories'**
+  String budgetCategoriesCollapsedCount(int n);
+
+  /// No description provided for @budgetCategoriesCollapsedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No budget set'**
+  String get budgetCategoriesCollapsedSubtitle;
+
+  /// No description provided for @budgetDistributionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DISTRIBUTION'**
+  String get budgetDistributionTitle;
+
+  /// No description provided for @budgetDistributionFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'This month {amount}'**
+  String budgetDistributionFooter(String amount);
+
+  /// No description provided for @budgetEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your monthly budget'**
+  String get budgetEmptyTitle;
+
+  /// No description provided for @budgetEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track spending across categories'**
+  String get budgetEmptySubtitle;
+
+  /// No description provided for @budgetEmptyCTA.
+  ///
+  /// In en, this message translates to:
+  /// **'Start budget'**
+  String get budgetEmptyCTA;
+
+  /// No description provided for @budgetEmptySkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Set later'**
+  String get budgetEmptySkip;
+
+  /// No description provided for @budgetCategoryPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select categories'**
+  String get budgetCategoryPickerTitle;
+
+  /// No description provided for @budgetCategoryPickerCTA.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue ({n})'**
+  String budgetCategoryPickerCTA(int n);
 }
 
 class _AppLocalizationsDelegate

@@ -36,12 +36,10 @@ void main() {
       await tester.pumpWidget(_buildBudgetView(db));
       await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text('No budgets set'), findsOneWidget);
-      expect(
-          find.text(
-              "Tap 'Budget Setting' to configure monthly limits per category."),
-          findsOneWidget);
-      expect(find.text('Set Up Budgets'), findsOneWidget);
+      // EPIC8C-01 redesigned empty state strings.
+      expect(find.text('Set your monthly budget'), findsOneWidget);
+      expect(find.text('Track spending across categories'), findsOneWidget);
+      expect(find.text('Start budget'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);
@@ -187,7 +185,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       // Budget summary card label should be visible.
-      expect(find.text('Remaining (Monthly)'), findsOneWidget);
+      expect(find.text('REMAINING THIS MONTH'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);
@@ -224,7 +222,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 200));
 
       // Empty state shown when no budgets exist.
-      expect(find.text('No budgets set'), findsOneWidget);
+      expect(find.text('Set your monthly budget'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump(Duration.zero);

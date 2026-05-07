@@ -764,4 +764,94 @@ class AppLocalizationsEn extends AppLocalizations {
   String insightWeekendSpendingBody(int pct) {
     return 'Weekend $pct% above weekday.';
   }
+
+  @override
+  String get budgetScreenTitle => 'Budget';
+
+  @override
+  String get budgetHeroLabelRemaining => 'REMAINING THIS MONTH';
+
+  @override
+  String budgetHeroDaysLeft(int n) {
+    return '$n days left';
+  }
+
+  @override
+  String budgetHeroSpentOf(String spent, String budget) {
+    return '$spent of $budget';
+  }
+
+  @override
+  String budgetHeroIdealPace(String amount) {
+    return 'Ideal pace: $amount';
+  }
+
+  @override
+  String get budgetMetricDailyTitle => 'DAILY';
+
+  @override
+  String budgetMetricDailySafe(String amount) {
+    return '$amount can spend';
+  }
+
+  @override
+  String get budgetMetricLastMonthTitle => 'LAST MONTH';
+
+  @override
+  String budgetMetricDeltaDecrease(int pct) {
+    return '↓ $pct% less';
+  }
+
+  @override
+  String budgetMetricDeltaIncrease(int pct) {
+    return '↑ $pct% more';
+  }
+
+  @override
+  String get budgetMetricDeltaSame => '= Same as last month';
+
+  @override
+  String get budgetMetricDeltaNoData => 'No previous data';
+
+  @override
+  String get budgetCategoriesTitle => 'CATEGORIES';
+
+  @override
+  String get budgetCategoriesEditLink => 'Edit ›';
+
+  @override
+  String budgetCategoriesCollapsedCount(int n) {
+    return '$n more categories';
+  }
+
+  @override
+  String get budgetCategoriesCollapsedSubtitle => 'No budget set';
+
+  @override
+  String get budgetDistributionTitle => 'DISTRIBUTION';
+
+  @override
+  String budgetDistributionFooter(String amount) {
+    return 'This month $amount';
+  }
+
+  @override
+  String get budgetEmptyTitle => 'Set your monthly budget';
+
+  @override
+  String get budgetEmptySubtitle => 'Track spending across categories';
+
+  @override
+  String get budgetEmptyCTA => 'Start budget';
+
+  @override
+  String get budgetEmptySkip => 'Set later';
+
+  @override
+  String get budgetCategoryPickerTitle => 'Select categories';
+
+  @override
+  String budgetCategoryPickerCTA(int n) {
+    return 'Continue ($n)';
+  }
 }

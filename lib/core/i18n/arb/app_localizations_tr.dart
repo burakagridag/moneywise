@@ -764,4 +764,94 @@ class AppLocalizationsTr extends AppLocalizations {
   String insightWeekendSpendingBody(int pct) {
     return 'Hafta sonu hafta içinden %$pct yüksek.';
   }
+
+  @override
+  String get budgetScreenTitle => 'Bütçe';
+
+  @override
+  String get budgetHeroLabelRemaining => 'KALAN BU AY';
+
+  @override
+  String budgetHeroDaysLeft(int n) {
+    return '$n gün kaldı';
+  }
+
+  @override
+  String budgetHeroSpentOf(String spent, String budget) {
+    return '$budget bütçeden $spent';
+  }
+
+  @override
+  String budgetHeroIdealPace(String amount) {
+    return 'İdeal hız: $amount';
+  }
+
+  @override
+  String get budgetMetricDailyTitle => 'GÜNLÜK';
+
+  @override
+  String budgetMetricDailySafe(String amount) {
+    return '$amount harcayabilirsin';
+  }
+
+  @override
+  String get budgetMetricLastMonthTitle => 'GEÇEN AY';
+
+  @override
+  String budgetMetricDeltaDecrease(int pct) {
+    return '↓ %$pct daha az';
+  }
+
+  @override
+  String budgetMetricDeltaIncrease(int pct) {
+    return '↑ %$pct daha fazla';
+  }
+
+  @override
+  String get budgetMetricDeltaSame => '= Geçen ayla aynı';
+
+  @override
+  String get budgetMetricDeltaNoData => 'Geçen ay verisi yok';
+
+  @override
+  String get budgetCategoriesTitle => 'KATEGORİLER';
+
+  @override
+  String get budgetCategoriesEditLink => 'Düzenle ›';
+
+  @override
+  String budgetCategoriesCollapsedCount(int n) {
+    return '$n kategori daha';
+  }
+
+  @override
+  String get budgetCategoriesCollapsedSubtitle => 'Bütçesi yok';
+
+  @override
+  String get budgetDistributionTitle => 'DAĞILIM';
+
+  @override
+  String budgetDistributionFooter(String amount) {
+    return 'Bu ay $amount';
+  }
+
+  @override
+  String get budgetEmptyTitle => 'Aylık bütçeni belirle';
+
+  @override
+  String get budgetEmptySubtitle => 'Kategorilere göre harcamalarını takip et';
+
+  @override
+  String get budgetEmptyCTA => 'Bütçeyi başlat';
+
+  @override
+  String get budgetEmptySkip => 'Sonra ayarla';
+
+  @override
+  String get budgetCategoryPickerTitle => 'Kategorileri seç';
+
+  @override
+  String budgetCategoryPickerCTA(int n) {
+    return 'Devam et ($n)';
+  }
 }
