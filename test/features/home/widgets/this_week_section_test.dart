@@ -11,6 +11,7 @@ import 'package:moneywise/features/home/presentation/widgets/this_week_section.d
 import 'package:moneywise/features/insights/domain/insight.dart';
 import 'package:moneywise/features/insights/domain/insight_context.dart';
 import 'package:moneywise/features/insights/domain/insight_provider.dart';
+import 'package:moneywise/features/insights/presentation/models/insight_view_model.dart';
 import 'package:moneywise/features/insights/presentation/providers/insights_providers.dart';
 
 // ---------------------------------------------------------------------------
@@ -40,18 +41,25 @@ class _FakeProvider implements InsightProvider {
 }
 
 // ---------------------------------------------------------------------------
-// Sample insights
+// Sample insight view models
 // ---------------------------------------------------------------------------
 
-Insight _makeInsight(String id, InsightSeverity severity) => Insight(
-      id: id,
-      severity: severity,
-      headline: 'Headline $id',
-      body: 'Body $id',
-      icon: Icons.info,
-      iconColor: AppColors.brandPrimary,
-      iconBackgroundColor: AppColors.brandSurface,
-    );
+InsightViewModel _makeViewModel(String id, InsightSeverity severity) {
+  final insight = Insight(
+    id: id,
+    severity: severity,
+    headline: 'Headline $id',
+    body: 'Body $id',
+  );
+  return InsightViewModel(
+    insight: insight,
+    icon: Icons.info,
+    iconColor: AppColors.brandPrimary,
+    iconBackgroundColor: AppColors.brandSurface,
+    headline: 'Headline $id',
+    body: 'Body $id',
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Widget builder
@@ -59,7 +67,7 @@ Insight _makeInsight(String id, InsightSeverity severity) => Insight(
 
 Widget _buildSection({
   ThemeData? theme,
-  required List<Insight> insights,
+  required List<InsightViewModel> viewModels,
 }) =>
     ProviderScope(
       overrides: [
@@ -67,9 +75,10 @@ Widget _buildSection({
         analyticsServiceProvider.overrideWith((_) => StubAnalyticsService()),
         // Override the FutureProvider directly to avoid DB calls in widget tests.
         // This also verifies that insightProviderInstanceProvider is injectable.
-        insightProviderInstanceProvider
-            .overrideWithValue(_FakeProvider(insights)),
-        insightsProvider.overrideWith((_) async => insights),
+        insightProviderInstanceProvider.overrideWithValue(
+          _FakeProvider(viewModels.map((vm) => vm.insight).toList()),
+        ),
+        insightsProvider.overrideWith((_) async => viewModels),
       ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -94,7 +103,7 @@ void main() {
 
     testWidgets('0 insights → section hidden (SizedBox.shrink)',
         (tester) async {
-      await tester.pumpWidget(_buildSection(insights: const []));
+      await tester.pumpWidget(_buildSection(viewModels: const []));
       await tester.pump(); // allow FutureProvider to resolve
 
       expect(find.byType(InsightCard), findsNothing);
@@ -109,7 +118,7 @@ void main() {
     testWidgets(
         '0 insights → zero vertical space occupied (SizedBox.shrink height 0)',
         (tester) async {
-      await tester.pumpWidget(_buildSection(insights: const []));
+      await tester.pumpWidget(_buildSection(viewModels: const []));
       await tester.pump();
 
       // When hidden, ThisWeekSection renders SizedBox.shrink() — find it
@@ -122,9 +131,9 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('1 insight → 1 InsightCard rendered', (tester) async {
-      final insight = _makeInsight('test_1', InsightSeverity.info);
+      final vm = _makeViewModel('test_1', InsightSeverity.info);
 
-      await tester.pumpWidget(_buildSection(insights: [insight]));
+      await tester.pumpWidget(_buildSection(viewModels: [vm]));
       await tester.pump();
 
       expect(find.byType(InsightCard), findsOneWidget);
@@ -133,9 +142,9 @@ void main() {
     });
 
     testWidgets('1 insight → section header is visible', (tester) async {
-      final insight = _makeInsight('test_1', InsightSeverity.info);
+      final vm = _makeViewModel('test_1', InsightSeverity.info);
 
-      await tester.pumpWidget(_buildSection(insights: [insight]));
+      await tester.pumpWidget(_buildSection(viewModels: [vm]));
       await tester.pump();
 
       expect(find.text('THIS WEEK'), findsOneWidget);
@@ -146,12 +155,12 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('2 insights → 2 InsightCards rendered', (tester) async {
-      final insights = [
-        _makeInsight('a', InsightSeverity.warning),
-        _makeInsight('b', InsightSeverity.info),
+      final viewModels = [
+        _makeViewModel('a', InsightSeverity.warning),
+        _makeViewModel('b', InsightSeverity.info),
       ];
 
-      await tester.pumpWidget(_buildSection(insights: insights));
+      await tester.pumpWidget(_buildSection(viewModels: viewModels));
       await tester.pump();
 
       expect(find.byType(InsightCard), findsNWidgets(2));
@@ -165,13 +174,13 @@ void main() {
 
     testWidgets('>2 insights → only first 2 InsightCards rendered',
         (tester) async {
-      final insights = [
-        _makeInsight('a', InsightSeverity.critical),
-        _makeInsight('b', InsightSeverity.warning),
-        _makeInsight('c', InsightSeverity.info),
+      final viewModels = [
+        _makeViewModel('a', InsightSeverity.critical),
+        _makeViewModel('b', InsightSeverity.warning),
+        _makeViewModel('c', InsightSeverity.info),
       ];
 
-      await tester.pumpWidget(_buildSection(insights: insights));
+      await tester.pumpWidget(_buildSection(viewModels: viewModels));
       await tester.pump();
 
       expect(find.byType(InsightCard), findsNWidgets(2));
@@ -187,9 +196,10 @@ void main() {
     testWidgets(
         'insightProviderInstanceProvider is injectable via overrideWithValue',
         (tester) async {
-      final fakeProvider = _FakeProvider([
-        _makeInsight('injected', InsightSeverity.info),
-      ]);
+      final injectedVm =
+          _makeViewModel('injected', InsightSeverity.info);
+      final fakeProvider =
+          _FakeProvider([injectedVm.insight]);
 
       final injectedInsights = fakeProvider.generate(
         InsightContext(
@@ -198,8 +208,13 @@ void main() {
           currentMonthBudgets: const [],
           effectiveBudget: null,
           referenceDate: DateTime(2026, 5, 1),
+          formatAmount: (amount) => amount.toStringAsFixed(2),
         ),
       );
+      // Map domain insights to view models for the provider override.
+      final injectedViewModels = injectedInsights
+          .map((i) => _makeViewModel(i.id, i.severity))
+          .toList();
 
       await tester.pumpWidget(
         ProviderScope(
@@ -209,7 +224,8 @@ void main() {
                 .overrideWith((_) => StubAnalyticsService()),
             insightProviderInstanceProvider.overrideWithValue(fakeProvider),
             // Override insightsProvider to bypass DB calls.
-            insightsProvider.overrideWith((_) async => injectedInsights),
+            insightsProvider
+                .overrideWith((_) async => injectedViewModels),
           ],
           child: const MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -231,10 +247,10 @@ void main() {
     // -----------------------------------------------------------------------
 
     testWidgets('renders without error in dark theme', (tester) async {
-      final insight = _makeInsight('dark_test', InsightSeverity.warning);
+      final vm = _makeViewModel('dark_test', InsightSeverity.warning);
 
       await tester.pumpWidget(
-        _buildSection(theme: AppTheme.dark, insights: [insight]),
+        _buildSection(theme: AppTheme.dark, viewModels: [vm]),
       );
       await tester.pump();
 
@@ -250,15 +266,15 @@ void main() {
         'tapping InsightCard fires insight_card_tapped with correct insight_type',
         (tester) async {
       final spy = _SpyAnalyticsService();
-      final insight = _makeInsight('budget_warning', InsightSeverity.warning);
+      final vm = _makeViewModel('budget_warning', InsightSeverity.warning);
 
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
             analyticsServiceProvider.overrideWith((_) => spy),
             insightProviderInstanceProvider
-                .overrideWithValue(_FakeProvider([insight])),
-            insightsProvider.overrideWith((_) async => [insight]),
+                .overrideWithValue(_FakeProvider([vm.insight])),
+            insightsProvider.overrideWith((_) async => [vm]),
           ],
           child: const MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
