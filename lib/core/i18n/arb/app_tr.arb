@@ -213,7 +213,7 @@
   "homeBudgetPulseSetCtaSubtitle": "Harcamalarınızın üstünde kalın",
   "homeBudgetPulseSetBudgetButton": "Bütçe belirle",
   "homeBudgetPulseOverBudget": "Bütçe aşıldı",
-  "homeBudgetPulseLeftOf": "{budget} bütçesinin kalan",
+  "homeBudgetPulseLeftOf": "kaldı (toplam {budget})",
   "@homeBudgetPulseLeftOf": {
     "placeholders": {
       "budget": {"type": "String"}
