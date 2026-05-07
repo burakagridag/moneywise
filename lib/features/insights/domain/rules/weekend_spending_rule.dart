@@ -68,8 +68,8 @@ class WeekendSpendingRule implements InsightRule {
     return Insight(
       id: id,
       severity: InsightSeverity.warning,
-      headline: 'Weekend spending',
-      body: 'Weekend daily average $pct% above weekday.',
+      headline: 'Weekend spending high',
+      body: 'Weekend $pct% above weekday.',
       bodyParams: {'pct': pct},
       localizationData: WeekendSpendingLocalizationData(pct: pct),
     );

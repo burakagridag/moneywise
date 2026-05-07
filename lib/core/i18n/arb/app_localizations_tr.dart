@@ -758,10 +758,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get insightBigTransactionBodyExceeds => 'Aylık bütçenizi aşan işlem';
 
   @override
-  String get insightWeekendSpendingTitle => 'Hafta sonu harcaması';
+  String get insightWeekendSpendingTitle => 'Hafta sonu harcaması yüksek';
 
   @override
   String insightWeekendSpendingBody(int pct) {
-    return 'Hafta sonu ortalaması hafta içinden %$pct yüksek.';
+    return 'Hafta sonu hafta içinden %$pct yüksek.';
   }
 }

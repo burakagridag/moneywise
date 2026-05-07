@@ -256,7 +256,7 @@ void main() {
 
       final vm = insightToViewModel(insight, l10nTr);
 
-      expect(vm.headline, 'Hafta sonu harcaması');
+      expect(vm.headline, 'Hafta sonu harcaması yüksek');
       expect(vm.body, contains('200'));
     });
 
@@ -268,7 +268,7 @@ void main() {
 
       final vm = insightToViewModel(insight, l10nEn);
 
-      expect(vm.headline, 'Weekend spending');
+      expect(vm.headline, 'Weekend spending high');
       expect(vm.body, contains('150'));
     });
 

@@ -285,8 +285,8 @@
     }
   },
   "insightBigTransactionBodyExceeds": "Aylık bütçenizi aşan işlem",
-  "insightWeekendSpendingTitle": "Hafta sonu harcaması",
-  "insightWeekendSpendingBody": "Hafta sonu ortalaması hafta içinden %{pct} yüksek.",
+  "insightWeekendSpendingTitle": "Hafta sonu harcaması yüksek",
+  "insightWeekendSpendingBody": "Hafta sonu hafta içinden %{pct} yüksek.",
   "@insightWeekendSpendingBody": {
     "placeholders": { "pct": { "type": "int" } }
   }
