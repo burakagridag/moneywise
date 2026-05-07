@@ -9,6 +9,10 @@ class Routes {
   static const String budget = '/budget';
   static const String more = '/more';
 
+  // Stats is now a shell tab (/stats); kept as a named constant for legacy
+  // references in tests and any deep-link that may still target the old path.
+  static const String stats = '/stats';
+
   // Sprint 2 routes
   static const String settings = '/more/settings';
   static const String categoryManagement = '/more/settings/categories';

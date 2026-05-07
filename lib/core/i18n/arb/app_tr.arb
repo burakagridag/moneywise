@@ -265,5 +265,24 @@
   "homeEmptyStateManageAccountsTitle": "Hesaplarınızı yönetin",
   "homeEmptyStateManageAccountsSubtitle": "Nakit, banka veya kart hesabı ekleyin",
   "homeEmptyStateSetBudgetTitle": "Aylık bütçe belirleyin",
-  "homeEmptyStateSetBudgetSubtitle": "Harcamalarınızın üstünde kalın"
+  "homeEmptyStateSetBudgetSubtitle": "Harcamalarınızın üstünde kalın",
+
+  "insightConcentrationTitle": "Harcama yoğunlaşması",
+  "insightConcentrationBody": "Harcamanın %{pct}'i tek kategoride.",
+  "@insightConcentrationBody": {
+    "placeholders": { "pct": { "type": "int" } }
+  },
+  "insightSavingsGoalTitle": "Düşük tasarruf oranı",
+  "insightSavingsGoalBody": "Bu ay %10'dan az birikim.",
+  "insightDailyOverpacingTitle": "Aşırı harcama",
+  "insightDailyOverpacingBody": "Bu hızda bütçenizi aşacaksınız.",
+  "insightBigTransactionTitle": "Büyük işlem",
+  "insightBigTransactionBodyNormal": "{amount} (bütçenin %{pct}'i)",
+  "@insightBigTransactionBodyNormal": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "pct": { "type": "int" }
+    }
+  },
+  "insightBigTransactionBodyExceeds": "Aylık bütçenizi aşan işlem"
 }

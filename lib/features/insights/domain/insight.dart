@@ -1,5 +1,6 @@
 // Insight domain entity and InsightSeverity enum — insights feature.
-import 'package:flutter/material.dart';
+// Pure Dart — zero Flutter SDK dependencies.
+import 'insight_localization_data.dart';
 
 /// Categorises the urgency of an [Insight] observation.
 ///
@@ -26,9 +27,8 @@ enum InsightSeverity {
 /// [id] must be a stable constant string per rule (e.g. `'concentration'`) so
 /// the UI can apply keyed animations and deduplicate across refreshes.
 ///
-/// [iconData], [iconColor], and [iconBackgroundColor] are set by the provider
-/// layer; the [InsightCard] widget is purely presentational and must not switch
-/// on [severity] to derive colors.
+/// Icon and color data live in the presentation layer ([InsightViewModel])
+/// so that this entity remains pure Dart with zero Flutter SDK dependencies.
 class Insight {
   const Insight({
     required this.id,
@@ -36,9 +36,8 @@ class Insight {
     required this.headline,
     required this.body,
     this.actionRoute,
-    required this.icon,
-    required this.iconColor,
-    required this.iconBackgroundColor,
+    this.bodyParams = const {},
+    this.localizationData,
   });
 
   /// Stable constant string per rule — e.g. `'concentration'`.
@@ -51,17 +50,30 @@ class Insight {
   final String headline;
 
   /// Supporting detail shown in [InsightCard] subtitle (1 line, ellipsis).
+  ///
+  /// English fallback string. Use [bodyParams] to supply computed values to the
+  /// presentation mapper so it can build a fully-localized body via ARB.
   final String body;
 
   /// Optional go_router path; null means the card is not tappable.
   final String? actionRoute;
 
-  /// Icon to render in the 36×36dp container.
-  final IconData icon;
+  /// Named parameters used by the presentation mapper to build a localized
+  /// [body] string via ARB placeholders.
+  ///
+  /// Keys and value types are rule-specific:
+  /// - `'concentration'` rule: `{'pct': int}`
+  /// - `'big_transaction'` rule: `{'amount': String, 'pct': int}` (pct<=100 branch)
+  ///   or `const {}` (pct>100 / "Exceeds" branch)
+  ///
+  /// Rules with static body strings (savings_goal, daily_overpacing) leave this
+  /// as the default empty map — the mapper uses the ARB key directly.
+  final Map<String, dynamic> bodyParams;
 
-  /// Icon stroke/fill color — set by the rule/provider layer.
-  final Color iconColor;
-
-  /// Tinted background of the icon container — set by the rule/provider layer.
-  final Color iconBackgroundColor;
+  /// Typed localization payload consumed by the presentation mapper.
+  ///
+  /// When non-null, the mapper uses sealed dispatch on the subtype to call the
+  /// appropriate [AppLocalizations] method. When null, the mapper falls back to
+  /// [headline] and [body] strings directly.
+  final InsightLocalizationData? localizationData;
 }

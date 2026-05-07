@@ -265,5 +265,24 @@
   "homeEmptyStateManageAccountsTitle": "Manage your accounts",
   "homeEmptyStateManageAccountsSubtitle": "Add cash, bank or card accounts",
   "homeEmptyStateSetBudgetTitle": "Set a monthly budget",
-  "homeEmptyStateSetBudgetSubtitle": "Stay on top of your spending"
+  "homeEmptyStateSetBudgetSubtitle": "Stay on top of your spending",
+
+  "insightConcentrationTitle": "Spending concentrated",
+  "insightConcentrationBody": "{pct}% of spending in one category.",
+  "@insightConcentrationBody": {
+    "placeholders": { "pct": { "type": "int" } }
+  },
+  "insightSavingsGoalTitle": "Low savings rate",
+  "insightSavingsGoalBody": "Saving less than 10% this month.",
+  "insightDailyOverpacingTitle": "Overspending pace",
+  "insightDailyOverpacingBody": "On track to exceed budget.",
+  "insightBigTransactionTitle": "Large transaction",
+  "insightBigTransactionBodyNormal": "{amount} ({pct}% of budget)",
+  "@insightBigTransactionBodyNormal": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "pct": { "type": "int" }
+    }
+  },
+  "insightBigTransactionBodyExceeds": "Exceeds your monthly budget"
 }

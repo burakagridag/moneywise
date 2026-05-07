@@ -1459,6 +1459,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stay on top of your spending'**
   String get homeEmptyStateSetBudgetSubtitle;
+
+  /// No description provided for @insightConcentrationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending concentrated'**
+  String get insightConcentrationTitle;
+
+  /// No description provided for @insightConcentrationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% of spending in one category.'**
+  String insightConcentrationBody(int pct);
+
+  /// No description provided for @insightSavingsGoalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Low savings rate'**
+  String get insightSavingsGoalTitle;
+
+  /// No description provided for @insightSavingsGoalBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving less than 10% this month.'**
+  String get insightSavingsGoalBody;
+
+  /// No description provided for @insightDailyOverpacingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Overspending pace'**
+  String get insightDailyOverpacingTitle;
+
+  /// No description provided for @insightDailyOverpacingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'On track to exceed budget.'**
+  String get insightDailyOverpacingBody;
+
+  /// No description provided for @insightBigTransactionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Large transaction'**
+  String get insightBigTransactionTitle;
+
+  /// No description provided for @insightBigTransactionBodyNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} ({pct}% of budget)'**
+  String insightBigTransactionBodyNormal(String amount, int pct);
+
+  /// No description provided for @insightBigTransactionBodyExceeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Exceeds your monthly budget'**
+  String get insightBigTransactionBodyExceeds;
 }
 
 class _AppLocalizationsDelegate

@@ -16,6 +16,7 @@ import '../../../../domain/entities/transaction_with_details.dart'
     as domain_details;
 import '../../../../domain/entities/transaction.dart' as domain_tx;
 import '../../../../features/insights/domain/insight.dart';
+import '../../../../features/insights/presentation/models/insight_view_model.dart';
 import '../../../../features/insights/presentation/providers/insights_providers.dart';
 import '../../../../features/more/presentation/providers/app_preferences_provider.dart';
 import '../../../../features/transactions/presentation/providers/transactions_provider.dart';
@@ -332,21 +333,25 @@ List<Override> _recentEmptyOverrides() {
 // Mock insights
 // ---------------------------------------------------------------------------
 
-const _concentrationInsight = Insight(
-  id: 'concentration',
-  severity: InsightSeverity.warning,
-  headline: 'Spending concentration alert',
-  body: 'Top category is 73% of your spending',
+const _concentrationInsight = InsightViewModel(
+  insight: Insight(
+    id: 'concentration',
+    severity: InsightSeverity.warning,
+    headline: 'Spending concentration alert',
+    body: 'Top category is 73% of your spending',
+  ),
   icon: Icons.warning_amber_rounded,
   iconColor: Color(0xFFC2410C),
   iconBackgroundColor: Color(0x26FFA726),
 );
 
-const _savingsGoalInsight = Insight(
-  id: 'savings_goal',
-  severity: InsightSeverity.info,
-  headline: 'On track for savings goal',
-  body: "You're on track to save €400 this month",
+const _savingsGoalInsight = InsightViewModel(
+  insight: Insight(
+    id: 'savings_goal',
+    severity: InsightSeverity.info,
+    headline: 'On track for savings goal',
+    body: "You're on track to save €400 this month",
+  ),
   icon: Icons.savings_outlined,
   iconColor: Color(0xFF3D5A99),
   iconBackgroundColor: Color(0xFFD6DCF0),
