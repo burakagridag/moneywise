@@ -3,6 +3,7 @@
 // Implements EPIC8B-03 (ADR-013 V1 Rule Registry, row 3).
 import '../insight.dart';
 import '../insight_context.dart';
+import '../insight_localization_data.dart';
 import '../insight_rule.dart';
 
 /// Rule: projected month-end spending exceeds the effective budget.
@@ -79,6 +80,7 @@ class DailyOverpacingRule implements InsightRule {
       severity: InsightSeverity.critical,
       headline: 'Overspending pace',
       body: 'On track to exceed budget.',
+      localizationData: DailyOverpacingLocalizationData(),
     );
   }
 }

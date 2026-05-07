@@ -4,6 +4,7 @@
 // Implements EPIC8B-04 (ADR-013 V1 Rule Registry, row 4).
 import '../insight.dart';
 import '../insight_context.dart';
+import '../insight_localization_data.dart';
 import '../insight_rule.dart';
 
 /// Rule: the single largest expense transaction this month exceeds 30% of
@@ -81,6 +82,11 @@ class BigTransactionRule implements InsightRule {
       body: body,
       bodyParams:
           pct <= 100 ? {'amount': formattedAmount, 'pct': pct} : const {},
+      localizationData: BigTransactionLocalizationData(
+        pct: pct,
+        formattedAmount: formattedAmount,
+        exceedsBudget: pct > 100,
+      ),
     );
   }
 }

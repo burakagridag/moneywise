@@ -3,6 +3,7 @@
 // Implemented in Epic 8b (EPIC8B-02).
 import '../insight.dart';
 import '../insight_context.dart';
+import '../insight_localization_data.dart';
 import '../insight_rule.dart';
 
 /// Rule: net savings rate < 10% of income.
@@ -52,6 +53,7 @@ class SavingsGoalRule implements InsightRule {
       severity: InsightSeverity.warning,
       headline: 'Low savings rate',
       body: 'Saving less than 10% this month.',
+      localizationData: SavingsGoalLocalizationData(),
     );
   }
 }

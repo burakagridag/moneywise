@@ -3,6 +3,7 @@
 // Implements EPIC8B-01 (ADR-013 V1 Rule Registry, row 1).
 import '../insight.dart';
 import '../insight_context.dart';
+import '../insight_localization_data.dart';
 import '../insight_rule.dart';
 
 /// Rule: top spending category > 70% of total monthly expense.
@@ -52,6 +53,7 @@ class ConcentrationRule implements InsightRule {
       headline: 'Spending concentrated',
       body: '$pct% of spending in one category.',
       bodyParams: {'pct': pct},
+      localizationData: ConcentrationLocalizationData(pct: pct),
     );
   }
 }
