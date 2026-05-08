@@ -1,4 +1,4 @@
-# CI/CD Setup — Sprint 1
+# CI/CD Setup — Updated EPIC8C-01 (2026-05-08)
 
 ## Workflows
 
@@ -33,7 +33,42 @@ Steps executed in order:
 6. `flutter build apk --flavor dev -t lib/main_dev.dart --debug` — produces the dev-flavor debug APK
 7. Uploads the APK as a GitHub Actions artifact (retained for 7 days) named `moneywise-dev-debug-<sha>`
 
-This workflow validates that the Android toolchain and flavor configuration are intact after every merge. Signed release builds are handled by a separate `release.yml` workflow (planned for Sprint 2+).
+This workflow validates that the Android toolchain and flavor configuration are intact after every merge. Signed release builds are handled by `release.yml` (see below).
+
+### `.github/workflows/build_ios.yml` — added EPIC8C-01
+
+Triggered on every push to `develop` or `main`. Runs on `macos-latest`.
+
+Steps executed in order:
+1. Checkout the repository
+2. Set up Flutter (stable) with pub cache enabled
+3. Restore `~/.pub-cache` and CocoaPods `ios/Pods` from cache (keyed on `Podfile.lock`)
+4. `flutter pub get`
+5. `dart run build_runner build --delete-conflicting-outputs`
+6. `pod install --repo-update` in the `ios/` directory
+7. `flutter build ios --flavor dev -t lib/main_dev.dart --debug --no-codesign` — validates the iOS toolchain without requiring signing credentials
+8. Uploads `Runner.app` as a GitHub Actions artifact (retained for 7 days)
+
+### `.github/workflows/release.yml` — added EPIC8C-01
+
+Triggered on any tag matching `v*` (e.g., `v0.8c.1`, `v1.0.0`). Contains three parallel jobs:
+
+**`release_ios`** (macOS):
+1. Installs Fastlane and runs `fastlane match appstore --readonly` to pull production certificates
+2. Builds signed IPA: `flutter build ipa --flavor prod -t lib/main_prod.dart --release`
+3. Uploads to TestFlight via `xcrun altool`
+4. Retains IPA artifact for 30 days
+
+**`release_android`** (Ubuntu):
+1. Decodes `ANDROID_KEYSTORE_BASE64` secret into `android/app/keystore.jks`
+2. Builds signed AAB: `flutter build appbundle --flavor prod -t lib/main_prod.dart --release`
+3. Uploads AAB to Play Internal Testing track via `r0adkll/upload-google-play@v1`
+4. Cleans up keystore file (always runs, even on failure)
+5. Retains AAB artifact for 30 days
+
+**`github_release`** (Ubuntu, runs after both store uploads succeed):
+1. Extracts the matching version block from `CHANGELOG.md`
+2. Creates a GitHub Release with the tag and changelog excerpt
 
 ## Running Checks Locally Before Pushing
 
@@ -70,19 +105,21 @@ awk "BEGIN { printf \"Coverage: %.2f%%\n\", ($LINES_HIT / $LINES_FOUND) * 100 }"
 
 ## Required GitHub Secrets
 
-No secrets are required for Sprint 1. The table below documents all secrets that must be configured before later workflows can succeed.
+The table below documents all secrets that must be configured in GitHub repository settings before each workflow can succeed.
 
 | Secret name | Used by | When needed | Notes |
 |---|---|---|---|
 | `CODECOV_TOKEN` | `pr_checks.yml` | Now (optional) | Codecov upload works without a token for public repos; required for private repos. Obtain from codecov.io project settings. |
-| `ANDROID_KEYSTORE_BASE64` | `release.yml` (Sprint 2+) | Before first signed release | Base64-encoded `.jks` keystore file. Generate with `keytool`; encode with `base64 -i keystore.jks`. |
-| `ANDROID_KEYSTORE_PASSWORD` | `release.yml` (Sprint 2+) | Before first signed release | Keystore password. |
-| `ANDROID_KEY_ALIAS` | `release.yml` (Sprint 2+) | Before first signed release | Key alias within the keystore. |
-| `ANDROID_KEY_PASSWORD` | `release.yml` (Sprint 2+) | Before first signed release | Key password. |
-| `PLAY_STORE_JSON_KEY` | `release.yml` (Sprint 2+) | Before Play Store deploy | Google Play service account JSON. |
-| `APP_STORE_CONNECT_API_KEY` | `release.yml` (Sprint 2+) | Before TestFlight/App Store deploy | App Store Connect API key (base64 or raw). |
-| `MATCH_PASSWORD` | `build_ios.yml` (Sprint 2+) | Before iOS build | Passphrase for the fastlane match certificates repo. |
-| `MATCH_GIT_BASIC_AUTHORIZATION` | `build_ios.yml` (Sprint 2+) | Before iOS build | Base64-encoded `username:token` for the match certificates private repo. |
+| `ANDROID_KEYSTORE_BASE64` | `release.yml` | Before first signed release | Base64-encoded `.jks` keystore file. Generate with `keytool`; encode with `base64 -i keystore.jks`. |
+| `ANDROID_KEYSTORE_PASSWORD` | `release.yml` | Before first signed release | Keystore password. |
+| `ANDROID_KEY_ALIAS` | `release.yml` | Before first signed release | Key alias within the keystore. |
+| `ANDROID_KEY_PASSWORD` | `release.yml` | Before first signed release | Key password. |
+| `PLAY_STORE_JSON_KEY` | `release.yml` | Before Play Store deploy | Google Play service account JSON (plaintext). |
+| `APP_STORE_CONNECT_API_KEY` | `release.yml` | Before TestFlight deploy | App Store Connect API key (.p8 file contents). |
+| `APP_STORE_CONNECT_API_KEY_ID` | `release.yml` | Before TestFlight deploy | Key ID from App Store Connect (10-char string). |
+| `APP_STORE_CONNECT_API_ISSUER_ID` | `release.yml` | Before TestFlight deploy | Issuer UUID from App Store Connect. |
+| `MATCH_PASSWORD` | `release.yml` | Before iOS signed build | Passphrase for the fastlane match certificates repo. |
+| `MATCH_GIT_BASIC_AUTHORIZATION` | `release.yml` | Before iOS signed build | Base64-encoded `username:token` for the match certificates private repo. |
 
 ## Flutter Version Pin Rationale
 
