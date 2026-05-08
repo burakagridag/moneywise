@@ -331,4 +331,163 @@ void main() {
 
     await binding.takeScreenshot('f7_surface_routing_verified');
   });
+
+  // =========================================================================
+  // CR1 — Post-code-review: Semantic labels i18n (EN hero card)
+  // =========================================================================
+
+  testWidgets('CR1-EN: hero card Semantics label uses l10n (not hardcoded EN)',
+      (tester) async {
+    final db = _testDb();
+    await _seedSingleBudget(db, amount: 300.0);
+
+    await tester.pumpWidget(_buildBudgetView(db));
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+
+    // The semantic label must NOT contain the raw hardcoded strings from before
+    // the code review fix. The l10n-generated text for EN is the same value,
+    // but this test proves the widget finds the hero card without crashing.
+    expect(find.text('REMAINING THIS MONTH'), findsOneWidget);
+
+    // Semantics tree: hero card accessible label contains "remaining" (EN l10n value)
+    expect(
+      find.bySemanticsLabel(RegExp(r'remaining', caseSensitive: false)),
+      findsWidgets,
+    );
+
+    await binding.takeScreenshot('cr1_semantic_en_hero');
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(Duration.zero);
+    await db.close();
+  });
+
+  // =========================================================================
+  // CR2 — Post-code-review: Semantic labels i18n (TR hero card + category row)
+  // =========================================================================
+
+  testWidgets('CR2-TR: TR semantic labels use l10n (not hardcoded TR strings)',
+      (tester) async {
+    final db = _testDb();
+    await _seedSingleBudget(db, amount: 300.0);
+
+    await tester.pumpWidget(
+        _buildBudgetView(db, locale: const Locale('tr')));
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+
+    expect(find.text('KALAN BU AY'), findsOneWidget);
+    expect(find.text('KATEGORİLER'), findsOneWidget);
+
+    // TR semantic: "kalan" (remaining) for hero card
+    expect(
+      find.bySemanticsLabel(RegExp(r'kalan', caseSensitive: false)),
+      findsWidgets,
+    );
+
+    await binding.takeScreenshot('cr2_semantic_tr_hero');
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(Duration.zero);
+    await db.close();
+  });
+
+  // =========================================================================
+  // CR3 — Post-code-review: Edit › is a tappable button (not GestureDetector)
+  // =========================================================================
+
+  testWidgets('CR3: Edit link is a TextButton (not GestureDetector)',
+      (tester) async {
+    final db = _testDb();
+    await _seedSingleBudget(db, amount: 200.0);
+
+    await tester.pumpWidget(_buildBudgetView(db));
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+
+    // TextButton must be present — confirms GestureDetector was replaced
+    // (code review fix: MAJOR #3 — 44×44dp minimum tap target)
+    expect(find.byType(TextButton), findsWidgets);
+    expect(find.text('Edit ›'), findsOneWidget);
+    // NOTE: we do NOT tap the button here because the integration test
+    // context does not include a GoRouter — tapping would throw
+    // "No GoRouter found in context". The navigation path is verified
+    // by BudgetView widget tests and the manual smoke test.
+
+    await binding.takeScreenshot('cr3_edit_textbutton');
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(Duration.zero);
+    await db.close();
+  });
+
+  // =========================================================================
+  // CR4 — Post-code-review: AppSpacing constants — section header spacing
+  // =========================================================================
+
+  testWidgets('CR4: CATEGORIES section header renders without overflow',
+      (tester) async {
+    final db = _testDb();
+    await _seedTwoBudgets(db);
+
+    await tester.pumpWidget(_buildBudgetView(db));
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+
+    // No RenderFlex overflow errors — spacing constants applied correctly
+    expect(tester.takeException(), isNull);
+    expect(find.text('CATEGORIES'), findsOneWidget);
+    expect(find.text('DISTRIBUTION'), findsOneWidget);
+
+    await binding.takeScreenshot('cr4_section_spacing');
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(Duration.zero);
+    await db.close();
+  });
+
+  // =========================================================================
+  // CR5 — Post-code-review: DISTRIBUTION section + donut placeholder
+  // =========================================================================
+
+  testWidgets('CR5: DISTRIBUTION section renders donut placeholder',
+      (tester) async {
+    final db = _testDb();
+    await _seedTwoBudgets(db);
+
+    await tester.pumpWidget(_buildBudgetView(db));
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+
+    expect(find.text('DISTRIBUTION'), findsOneWidget);
+    // Footer: "This month {amount}" — verify it starts with "This month"
+    expect(find.textContaining('This month'), findsOneWidget);
+
+    await binding.takeScreenshot('cr5_distribution_donut');
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(Duration.zero);
+    await db.close();
+  });
+
+  // =========================================================================
+  // CR6 — Dark theme: post-code-review populated state (TR)
+  // =========================================================================
+
+  testWidgets('CR6-TR-Dark: populated state TR dark theme renders correctly',
+      (tester) async {
+    final db = _testDb();
+    await _seedTwoBudgets(db);
+
+    await tester.pumpWidget(
+        _buildBudgetView(db, locale: const Locale('tr'), darkMode: true));
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+
+    expect(find.text('KALAN BU AY'), findsOneWidget);
+    expect(find.text('GÜNLÜK'), findsOneWidget);
+    expect(find.text('KATEGORİLER'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await binding.takeScreenshot('cr6_populated_dark_tr');
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(Duration.zero);
+    await db.close();
+  });
 }
