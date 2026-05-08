@@ -139,7 +139,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get includeInTotalDescription =>
-      'Bu hesabın bakiyesini toplam net değerinize dahil edin';
+      'Bu hesabın bakiyesini toplam net değerine dahil et';
 
   @override
   String get editCategory => 'Kategori Düzenle';
@@ -613,7 +613,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeBudgetPulseSetCta => 'Aylık bütçe belirle';
 
   @override
-  String get homeBudgetPulseSetCtaSubtitle => 'Harcamalarınızın üstünde kalın';
+  String get homeBudgetPulseSetCtaSubtitle => 'Harcamalarının üstünde kal';
 
   @override
   String get homeBudgetPulseSetBudgetButton => 'Bütçe belirle';
@@ -710,8 +710,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeEmptyStateSetBudgetTitle => 'Aylık bütçe belirleyin';
 
   @override
-  String get homeEmptyStateSetBudgetSubtitle =>
-      'Harcamalarınızın üstünde kalın';
+  String get homeEmptyStateSetBudgetSubtitle => 'Harcamalarının üstünde kal';
 
   @override
   String get insightConcentrationTitle => 'Harcama yoğunlaşması';
@@ -731,7 +730,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get insightDailyOverpacingTitle => 'Aşırı harcama';
 
   @override
-  String get insightDailyOverpacingBody => 'Bu hızda bütçenizi aşacaksınız.';
+  String get insightDailyOverpacingBody => 'Bu hızda bütçeni aşacaksın.';
 
   @override
   String get insightBigTransactionTitle => 'Büyük işlem';
@@ -742,7 +741,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get insightBigTransactionBodyExceeds => 'Aylık bütçenizi aşan işlem';
+  String get insightBigTransactionBodyExceeds => 'Aylık bütçeni aşan işlem';
 
   @override
   String get insightWeekendSpendingTitle => 'Hafta sonu harcaması yüksek';
@@ -759,13 +758,21 @@ class AppLocalizationsTr extends AppLocalizations {
   String get budgetHeroLabelRemaining => 'KALAN BU AY';
 
   @override
+  String get budgetHeroLabelOverBudget => 'BÜTÇE AŞILDI';
+
+  @override
+  String budgetHeroOverBudgetFooter(String spent, String over) {
+    return '$spent harcandı · $over aşıldı';
+  }
+
+  @override
   String budgetHeroDaysLeft(int n) {
     return '$n gün kaldı';
   }
 
   @override
   String budgetHeroSpentOf(String spent, String budget) {
-    return '$budget bütçeden $spent';
+    return '$spent / $budget';
   }
 
   @override
@@ -795,7 +802,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get budgetMetricDeltaSame => '= Geçen ayla aynı';
+  String get budgetMetricDeltaSame => 'Geçen ayla aynı';
 
   @override
   String get budgetMetricDeltaNoData => 'Geçen ay verisi yok';

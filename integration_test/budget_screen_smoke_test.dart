@@ -141,7 +141,7 @@ void main() {
     // Hero card must NOT appear in empty state
     expect(find.text('REMAINING THIS MONTH'), findsNothing);
 
-    await _screenshot(binding,'f2_empty_light_en');
+    await _screenshot(binding, 'f2_empty_light_en');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -150,18 +150,18 @@ void main() {
 
   testWidgets('F2-TR-Light: empty state shows Turkish strings', (tester) async {
     final db = _testDb();
-    await tester.pumpWidget(
-        _buildBudgetView(db, locale: const Locale('tr')));
+    await tester.pumpWidget(_buildBudgetView(db, locale: const Locale('tr')));
     await tester.pumpAndSettle(const Duration(seconds: 2));
 
     expect(find.text('Aylık bütçeni belirle'), findsOneWidget);
-    expect(find.text('Kategorilere göre harcamalarını takip et'), findsOneWidget);
+    expect(
+        find.text('Kategorilere göre harcamalarını takip et'), findsOneWidget);
     expect(find.text('Bütçeyi başlat'), findsOneWidget);
 
     // Hero card must NOT appear
     expect(find.text('KALAN BU AY'), findsNothing);
 
-    await _screenshot(binding,'f2_empty_light_tr');
+    await _screenshot(binding, 'f2_empty_light_tr');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -176,7 +176,7 @@ void main() {
     expect(find.text('Set your monthly budget'), findsOneWidget);
     expect(find.text('REMAINING THIS MONTH'), findsNothing);
 
-    await _screenshot(binding,'f2_empty_dark_en');
+    await _screenshot(binding, 'f2_empty_dark_en');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -207,7 +207,7 @@ void main() {
     expect(find.text('CATEGORIES'), findsOneWidget);
     expect(find.text('DISTRIBUTION'), findsOneWidget);
 
-    await _screenshot(binding,'f1_populated_light_en');
+    await _screenshot(binding, 'f1_populated_light_en');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -224,7 +224,7 @@ void main() {
 
     expect(find.text('REMAINING THIS MONTH'), findsOneWidget);
 
-    await _screenshot(binding,'f1_populated_dark_en');
+    await _screenshot(binding, 'f1_populated_dark_en');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -236,8 +236,7 @@ void main() {
     final db = _testDb();
     await _seedSingleBudget(db, amount: 500.0);
 
-    await tester.pumpWidget(
-        _buildBudgetView(db, locale: const Locale('tr')));
+    await tester.pumpWidget(_buildBudgetView(db, locale: const Locale('tr')));
     await tester.pumpAndSettle(const Duration(seconds: 3));
 
     expect(find.text('KALAN BU AY'), findsOneWidget);
@@ -245,7 +244,7 @@ void main() {
     expect(find.text('GEÇEN AY'), findsOneWidget);
     expect(find.text('KATEGORİLER'), findsOneWidget);
 
-    await _screenshot(binding,'f1_populated_light_tr');
+    await _screenshot(binding, 'f1_populated_light_tr');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -278,7 +277,7 @@ void main() {
     // budgetMetricDailySafe ARB key = "{amount} can spend"
     expect(find.textContaining('can spend'), findsOneWidget);
 
-    await _screenshot(binding,'f5_daily_metric_two_values');
+    await _screenshot(binding, 'f5_daily_metric_two_values');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -289,8 +288,7 @@ void main() {
   // F6 — Insight slot hidden when concentration rule does not fire
   // =========================================================================
 
-  testWidgets(
-      'F6: insight slot absent when no expense transactions exist',
+  testWidgets('F6: insight slot absent when no expense transactions exist',
       (tester) async {
     final db = _testDb();
     // Budget present but NO expense transactions → totalSpent=0 →
@@ -304,7 +302,7 @@ void main() {
     expect(find.text('Spending concentrated'), findsNothing);
     expect(find.text('Harcama yoğunlaşması'), findsNothing);
 
-    await _screenshot(binding,'f6_no_insight_slot');
+    await _screenshot(binding, 'f6_no_insight_slot');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -326,7 +324,7 @@ void main() {
     expect(find.text('CATEGORIES'), findsOneWidget);
     expect(find.text('Edit ›'), findsOneWidget);
 
-    await _screenshot(binding,'f3_categories_section');
+    await _screenshot(binding, 'f3_categories_section');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -343,12 +341,13 @@ void main() {
     expect(insightVisibleOn('concentration', InsightSurface.budget), isTrue);
     expect(insightVisibleOn('concentration', InsightSurface.home), isFalse);
     expect(insightVisibleOn('daily_overpacing', InsightSurface.home), isTrue);
-    expect(insightVisibleOn('daily_overpacing', InsightSurface.budget), isFalse);
+    expect(
+        insightVisibleOn('daily_overpacing', InsightSurface.budget), isFalse);
     expect(insightVisibleOn('savings_goal', InsightSurface.home), isTrue);
     expect(insightVisibleOn('weekend_spending', InsightSurface.home), isTrue);
     expect(insightVisibleOn('big_transaction', InsightSurface.home), isTrue);
 
-    await _screenshot(binding,'f7_surface_routing_verified');
+    await _screenshot(binding, 'f7_surface_routing_verified');
   });
 
   // =========================================================================
@@ -374,7 +373,7 @@ void main() {
       findsWidgets,
     );
 
-    await _screenshot(binding,'cr1_semantic_en_hero');
+    await _screenshot(binding, 'cr1_semantic_en_hero');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -390,8 +389,7 @@ void main() {
     final db = _testDb();
     await _seedSingleBudget(db, amount: 300.0);
 
-    await tester.pumpWidget(
-        _buildBudgetView(db, locale: const Locale('tr')));
+    await tester.pumpWidget(_buildBudgetView(db, locale: const Locale('tr')));
     await tester.pumpAndSettle(const Duration(seconds: 3));
 
     expect(find.text('KALAN BU AY'), findsOneWidget);
@@ -403,7 +401,7 @@ void main() {
       findsWidgets,
     );
 
-    await _screenshot(binding,'cr2_semantic_tr_hero');
+    await _screenshot(binding, 'cr2_semantic_tr_hero');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -431,7 +429,7 @@ void main() {
     // "No GoRouter found in context". The navigation path is verified
     // by BudgetView widget tests and the manual smoke test.
 
-    await _screenshot(binding,'cr3_edit_textbutton');
+    await _screenshot(binding, 'cr3_edit_textbutton');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -455,7 +453,7 @@ void main() {
     expect(find.text('CATEGORIES'), findsOneWidget);
     expect(find.text('DISTRIBUTION'), findsOneWidget);
 
-    await _screenshot(binding,'cr4_section_spacing');
+    await _screenshot(binding, 'cr4_section_spacing');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -478,7 +476,7 @@ void main() {
     // Footer: "This month {amount}" — verify it starts with "This month"
     expect(find.textContaining('This month'), findsOneWidget);
 
-    await _screenshot(binding,'cr5_distribution_donut');
+    await _screenshot(binding, 'cr5_distribution_donut');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -503,7 +501,7 @@ void main() {
     expect(find.text('KATEGORİLER'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    await _screenshot(binding,'cr6_populated_dark_tr');
+    await _screenshot(binding, 'cr6_populated_dark_tr');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);

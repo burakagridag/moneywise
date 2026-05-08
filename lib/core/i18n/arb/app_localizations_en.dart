@@ -759,6 +759,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get budgetHeroLabelRemaining => 'REMAINING THIS MONTH';
 
   @override
+  String get budgetHeroLabelOverBudget => 'OVER BUDGET';
+
+  @override
+  String budgetHeroOverBudgetFooter(String spent, String over) {
+    return '$spent spent · $over over budget';
+  }
+
+  @override
   String budgetHeroDaysLeft(int n) {
     return '$n days left';
   }
@@ -795,7 +803,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get budgetMetricDeltaSame => '= Same as last month';
+  String get budgetMetricDeltaSame => 'Same as last month';
 
   @override
   String get budgetMetricDeltaNoData => 'No previous data';
@@ -808,7 +816,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String budgetCategoriesCollapsedCount(int n) {
-    return '$n more categories';
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# more categories',
+      one: '# more category',
+    );
+    return '$_temp0';
   }
 
   @override

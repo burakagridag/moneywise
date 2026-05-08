@@ -152,7 +152,5 @@ Future<List<InsightViewModel>> insightsForSurface(
   InsightSurface surface,
 ) async {
   final all = await ref.watch(insightsProvider.future);
-  return all
-      .where((vm) => insightVisibleOn(vm.id, surface))
-      .toList();
+  return all.where((vm) => insightVisibleOn(vm.id, surface)).toList();
 }

@@ -1514,6 +1514,18 @@ abstract class AppLocalizations {
   /// **'REMAINING THIS MONTH'**
   String get budgetHeroLabelRemaining;
 
+  /// Hero card title when spending exceeds budget (replaces REMAINING THIS MONTH)
+  ///
+  /// In en, this message translates to:
+  /// **'OVER BUDGET'**
+  String get budgetHeroLabelOverBudget;
+
+  /// Hero card footer when spending exceeds budget — SPONSOR WORDING PENDING APPROVAL
+  ///
+  /// In en, this message translates to:
+  /// **'{spent} spent · {over} over budget'**
+  String budgetHeroOverBudgetFooter(String spent, String over);
+
   /// No description provided for @budgetHeroDaysLeft.
   ///
   /// In en, this message translates to:
@@ -1565,7 +1577,7 @@ abstract class AppLocalizations {
   /// No description provided for @budgetMetricDeltaSame.
   ///
   /// In en, this message translates to:
-  /// **'= Same as last month'**
+  /// **'Same as last month'**
   String get budgetMetricDeltaSame;
 
   /// No description provided for @budgetMetricDeltaNoData.
@@ -1589,7 +1601,7 @@ abstract class AppLocalizations {
   /// No description provided for @budgetCategoriesCollapsedCount.
   ///
   /// In en, this message translates to:
-  /// **'{n} more categories'**
+  /// **'{n, plural, one{# more category} other{# more categories}}'**
   String budgetCategoriesCollapsedCount(int n);
 
   /// No description provided for @budgetCategoriesCollapsedSubtitle.

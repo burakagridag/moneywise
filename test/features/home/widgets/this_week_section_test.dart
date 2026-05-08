@@ -196,10 +196,8 @@ void main() {
     testWidgets(
         'insightProviderInstanceProvider is injectable via overrideWithValue',
         (tester) async {
-      final injectedVm =
-          _makeViewModel('injected', InsightSeverity.info);
-      final fakeProvider =
-          _FakeProvider([injectedVm.insight]);
+      final injectedVm = _makeViewModel('injected', InsightSeverity.info);
+      final fakeProvider = _FakeProvider([injectedVm.insight]);
 
       final injectedInsights = fakeProvider.generate(
         InsightContext(
@@ -224,8 +222,7 @@ void main() {
                 .overrideWith((_) => StubAnalyticsService()),
             insightProviderInstanceProvider.overrideWithValue(fakeProvider),
             // Override insightsProvider to bypass DB calls.
-            insightsProvider
-                .overrideWith((_) async => injectedViewModels),
+            insightsProvider.overrideWith((_) async => injectedViewModels),
           ],
           child: const MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,

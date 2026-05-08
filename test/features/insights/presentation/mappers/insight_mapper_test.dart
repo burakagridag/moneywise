@@ -145,7 +145,7 @@ void main() {
       final vm = insightToViewModel(insight, l10nTr);
 
       expect(vm.headline, 'Büyük işlem');
-      expect(vm.body, 'Aylık bütçenizi aşan işlem');
+      expect(vm.body, 'Aylık bütçeni aşan işlem'); // TR formality fix: siz→sen
     });
 
     test(

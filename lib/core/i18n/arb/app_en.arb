@@ -288,6 +288,18 @@
   },
   "budgetScreenTitle": "Budget",
   "budgetHeroLabelRemaining": "REMAINING THIS MONTH",
+  "budgetHeroLabelOverBudget": "OVER BUDGET",
+  "@budgetHeroLabelOverBudget": {
+    "description": "Hero card title when spending exceeds budget (replaces REMAINING THIS MONTH)"
+  },
+  "budgetHeroOverBudgetFooter": "{spent} spent · {over} over budget",
+  "@budgetHeroOverBudgetFooter": {
+    "description": "Hero card footer when spending exceeds budget — SPONSOR WORDING PENDING APPROVAL",
+    "placeholders": {
+      "spent": { "type": "String" },
+      "over": { "type": "String" }
+    }
+  },
   "budgetHeroDaysLeft": "{n} days left",
   "@budgetHeroDaysLeft": {
     "placeholders": { "n": { "type": "int" } }
@@ -317,11 +329,11 @@
   "@budgetMetricDeltaIncrease": {
     "placeholders": { "pct": { "type": "int" } }
   },
-  "budgetMetricDeltaSame": "= Same as last month",
+  "budgetMetricDeltaSame": "Same as last month",
   "budgetMetricDeltaNoData": "No previous data",
   "budgetCategoriesTitle": "CATEGORIES",
   "budgetCategoriesEditLink": "Edit ›",
-  "budgetCategoriesCollapsedCount": "{n} more categories",
+  "budgetCategoriesCollapsedCount": "{n, plural, one{# more category} other{# more categories}}",
   "@budgetCategoriesCollapsedCount": {
     "placeholders": { "n": { "type": "int" } }
   },

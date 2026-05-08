@@ -75,7 +75,10 @@ class AppColors {
   static const Color insightNeutralIconBg = Color(0xFFF3F4F6); // gray-100
 
   // Insight palette — dark-mode companions (lower opacity on dark surfaces).
-  static const Color insightWarningIconBgDark = Color(0x33FFA726); // amber, 20% opacity
-  static const Color insightCriticalIconBgDark = Color(0x33EF4444); // red, 20% opacity
-  static const Color insightNeutralIconBgDark = Color(0x1F6B7280); // gray, 12% opacity
+  static const Color insightWarningIconBgDark =
+      Color(0x33FFA726); // amber, 20% opacity
+  static const Color insightCriticalIconBgDark =
+      Color(0x33EF4444); // red, 20% opacity
+  static const Color insightNeutralIconBgDark =
+      Color(0x1F6B7280); // gray, 12% opacity
 }

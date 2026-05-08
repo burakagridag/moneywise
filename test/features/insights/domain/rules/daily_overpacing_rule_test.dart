@@ -146,9 +146,9 @@ void main() {
 
   group(
       'DailyOverpacingRule — suppressed when remainingBudget <= 0 '
-      '(budget exhausted or exceeded)',
-      () {
-    test('returns null when totalSpend exactly equals effectiveBudget (remaining == 0)',
+      '(budget exhausted or exceeded)', () {
+    test(
+        'returns null when totalSpend exactly equals effectiveBudget (remaining == 0)',
         () {
       // EDGE CASE: every euro of the budget is spent; remaining == 0.
       // "Pacing" projection is meaningless — nothing left to pace against.

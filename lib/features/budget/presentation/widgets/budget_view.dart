@@ -96,11 +96,10 @@ class _BudgetContent extends ConsumerWidget {
     // Days remaining / elapsed in month
     final daysInMonth =
         DateTime(selectedMonth.year, selectedMonth.month + 1, 0).day;
-    final isCurrentMonth = selectedMonth.year == now.year &&
-        selectedMonth.month == now.month;
-    final daysLeft = isCurrentMonth
-        ? (daysInMonth - now.day + 1).clamp(0, daysInMonth)
-        : 0;
+    final isCurrentMonth =
+        selectedMonth.year == now.year && selectedMonth.month == now.month;
+    final daysLeft =
+        isCurrentMonth ? (daysInMonth - now.day + 1).clamp(0, daysInMonth) : 0;
 
     // Actual daily burn rate = total spent ÷ days elapsed this month.
     // For past months, daysElapsed = full month length.
@@ -115,11 +114,9 @@ class _BudgetContent extends ConsumerWidget {
     final idealDailyPace = safeDailyPace;
 
     // Budgeted vs unbudgeted split
-    final budgetedCats =
-        budgets.where((b) => b.effective > 0).toList()
-          ..sort((a, b) => b.spent.compareTo(a.spent));
-    final unbudgetedBudgets =
-        budgets.where((b) => b.effective == 0).toList();
+    final budgetedCats = budgets.where((b) => b.effective > 0).toList()
+      ..sort((a, b) => b.spent.compareTo(a.spent));
+    final unbudgetedBudgets = budgets.where((b) => b.effective == 0).toList();
 
     return RefreshIndicator(
       color: AppColors.brandPrimary,
@@ -239,11 +236,15 @@ class _BudgetHeroCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Header row: label + days left
+              // EPIC8C-01 Bulgu 5 fix: show "OVER BUDGET" label when spending
+              // exceeds total budget; "REMAINING THIS MONTH" otherwise.
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    l10n.budgetHeroLabelRemaining,
+                    isOverBudget
+                        ? l10n.budgetHeroLabelOverBudget
+                        : l10n.budgetHeroLabelRemaining,
                     style: AppTypography.caption2.copyWith(
                       color: Colors.white70,
                       letterSpacing: 0.5,
@@ -259,13 +260,11 @@ class _BudgetHeroCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.sm),
 
-              // Large remaining amount
+              // Large remaining/over-budget amount
               Text(
                 CurrencyFormatter.format(remaining.abs()),
                 style: AppTypography.moneyLarge.copyWith(
-                  color: isOverBudget
-                      ? const Color(0xFFFFCDD2)
-                      : Colors.white,
+                  color: isOverBudget ? const Color(0xFFFFCDD2) : Colors.white,
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -274,20 +273,28 @@ class _BudgetHeroCard extends StatelessWidget {
               _HeroPaceBar(ratio: ratio, selectedMonth: selectedMonth),
               const SizedBox(height: AppSpacing.sm),
 
-              // Footer: spent / total + ideal pace
+              // Footer: EPIC8C-01 Bulgu 5 fix — distinct over-budget footer wording.
+              // Over budget: "{spent} spent · {overAmount} over budget"
+              //   → avoids confusing "{spent} of {budget}" when spent > budget
+              // Within budget: "{spent} of {budget}"  +  ideal daily pace
               Row(
                 children: [
                   Expanded(
                     child: Text(
-                      l10n.budgetHeroSpentOf(
-                        CurrencyFormatter.format(spent),
-                        CurrencyFormatter.format(totalBudget),
-                      ),
+                      isOverBudget
+                          ? l10n.budgetHeroOverBudgetFooter(
+                              CurrencyFormatter.format(spent),
+                              CurrencyFormatter.format(remaining.abs()),
+                            )
+                          : l10n.budgetHeroSpentOf(
+                              CurrencyFormatter.format(spent),
+                              CurrencyFormatter.format(totalBudget),
+                            ),
                       style: AppTypography.caption1
                           .copyWith(color: Colors.white70),
                     ),
                   ),
-                  if (idealDailyPace > 0)
+                  if (!isOverBudget && idealDailyPace > 0)
                     Text(
                       l10n.budgetHeroIdealPace(
                         CurrencyFormatter.format(idealDailyPace),
@@ -322,16 +329,15 @@ class _HeroPaceBar extends StatelessWidget {
         final now = DateTime.now();
         final daysInMonth =
             DateTime(selectedMonth.year, selectedMonth.month + 1, 0).day;
-        final isCurrentMonth = selectedMonth.year == now.year &&
-            selectedMonth.month == now.month;
+        final isCurrentMonth =
+            selectedMonth.year == now.year && selectedMonth.month == now.month;
         final dayFraction =
             isCurrentMonth ? (now.day - 1) / (daysInMonth - 1) : 1.0;
         final markerX = (dayFraction * constraints.maxWidth).clamp(
           0.0,
           constraints.maxWidth,
         );
-        final fillWidth =
-            (ratio.clamp(0.0, 1.0) * constraints.maxWidth);
+        final fillWidth = (ratio.clamp(0.0, 1.0) * constraints.maxWidth);
 
         return SizedBox(
           height: 8,
@@ -353,9 +359,7 @@ class _HeroPaceBar extends StatelessWidget {
                   duration: const Duration(milliseconds: 300),
                   width: fillWidth,
                   decoration: BoxDecoration(
-                    color: ratio > 1.0
-                        ? const Color(0xFFFFCDD2)
-                        : Colors.white,
+                    color: ratio > 1.0 ? const Color(0xFFFFCDD2) : Colors.white,
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                   ),
                 ),
@@ -407,8 +411,7 @@ class _MetricCardsRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final prevMonth =
-        DateTime(selectedMonth.year, selectedMonth.month - 1);
+    final prevMonth = DateTime(selectedMonth.year, selectedMonth.month - 1);
     final prevTotalAsync = ref.watch(totalBudgetProvider(prevMonth));
     final prevSpent = prevTotalAsync.valueOrNull?.totalSpent ?? 0.0;
 
@@ -429,9 +432,8 @@ class _MetricCardsRow extends ConsumerWidget {
                       CurrencyFormatter.format(safeDailyPace),
                     )
                   : l10n.budgetMetricDeltaNoData,
-              subtitleColor: safeDailyPace > 0
-                  ? AppColors.success
-                  : context.textSecondary,
+              subtitleColor:
+                  safeDailyPace > 0 ? AppColors.success : context.textSecondary,
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -463,12 +465,24 @@ class _MetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDark;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: context.bgSecondary,
+        color: isDark ? AppColors.bgSecondary : AppColors.bgElevatedLight,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: context.dividerColor),
+        border: Border.all(
+          color: isDark ? AppColors.border : AppColors.borderLight,
+        ),
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -483,8 +497,8 @@ class _MetricCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             primaryValue,
-            style: AppTypography.moneySmall
-                .copyWith(color: context.textPrimary),
+            style:
+                AppTypography.moneySmall.copyWith(color: context.textPrimary),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -548,13 +562,25 @@ class _LastMonthMetricCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final d = _delta(context);
+    final isDark = context.isDark;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: context.bgSecondary,
+        color: isDark ? AppColors.bgSecondary : AppColors.bgElevatedLight,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: context.dividerColor),
+        border: Border.all(
+          color: isDark ? AppColors.border : AppColors.borderLight,
+        ),
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -569,8 +595,8 @@ class _LastMonthMetricCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             CurrencyFormatter.format(lastMonthSpent),
-            style: AppTypography.moneySmall
-                .copyWith(color: context.textPrimary),
+            style:
+                AppTypography.moneySmall.copyWith(color: context.textPrimary),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -724,12 +750,28 @@ class _CategoryListState extends State<_CategoryList> {
       if (_unbudgetedExpanded) ...widget.unbudgetedBudgets,
     ];
 
+    final isDark = context.isDark;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        child: Container(
-          color: context.bgSecondary,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.bgSecondary : AppColors.bgElevatedLight,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          border: Border.all(
+            color: isDark ? AppColors.border : AppColors.borderLight,
+          ),
+          boxShadow: isDark
+              ? []
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           child: Column(
             children: [
               for (var i = 0; i < allRows.length; i++) ...[
@@ -813,11 +855,10 @@ class _CategoryBudgetRow extends StatelessWidget {
                     children: [
                       Text(
                         category?.name ?? bws.budget.categoryId,
-                        style: AppTypography.bodyMedium
-                            .copyWith(
-                              fontSize: 14,
-                              color: context.textPrimary,
-                            ),
+                        style: AppTypography.bodyMedium.copyWith(
+                          fontSize: 14,
+                          color: context.textPrimary,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -936,6 +977,7 @@ class _DonutPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = context.isDark;
 
     // Top 2 categories for legend
     final top2 = budgets.take(2).toList();
@@ -948,9 +990,20 @@ class _DonutPlaceholder extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: context.bgSecondary,
+          color: isDark ? AppColors.bgSecondary : AppColors.bgElevatedLight,
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: context.dividerColor),
+          border: Border.all(
+            color: isDark ? AppColors.border : AppColors.borderLight,
+          ),
+          boxShadow: isDark
+              ? []
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: Column(
           children: [
@@ -987,9 +1040,7 @@ class _DonutPlaceholder extends StatelessWidget {
                         _LegendItem(
                           label: '...',
                           pct: totalSpent > 0
-                              ? (budgets
-                                          .skip(2)
-                                          .fold<double>(
+                              ? (budgets.skip(2).fold<double>(
                                             0,
                                             (s, b) => s + b.spent,
                                           ) /
@@ -1011,8 +1062,8 @@ class _DonutPlaceholder extends StatelessWidget {
               l10n.budgetDistributionFooter(
                 CurrencyFormatter.format(totalSpent),
               ),
-              style: AppTypography.caption1
-                  .copyWith(color: context.textSecondary),
+              style:
+                  AppTypography.caption1.copyWith(color: context.textSecondary),
             ),
           ],
         ),
@@ -1021,15 +1072,14 @@ class _DonutPlaceholder extends StatelessWidget {
   }
 
   static const _palette = [
-    AppColors.brandPrimary,              // 0xFF3D5A99
-    Color(0xFF2E86AB),                   // TODO(EPIC8B-06): add to AppColors as chartBlue
-    AppColors.success,                   // 0xFF4CAF50
-    AppColors.warning,                   // 0xFFFFA726
-    AppColors.error,                     // 0xFFE53935
+    AppColors.brandPrimary, // 0xFF3D5A99
+    Color(0xFF2E86AB), // TODO(EPIC8B-06): add to AppColors as chartBlue
+    AppColors.success, // 0xFF4CAF50
+    AppColors.warning, // 0xFFFFA726
+    AppColors.error, // 0xFFE53935
   ];
 
-  static Color _donutColor(int index) =>
-      _palette[index % _palette.length];
+  static Color _donutColor(int index) => _palette[index % _palette.length];
 }
 
 class _LegendItem extends StatelessWidget {
@@ -1061,8 +1111,8 @@ class _LegendItem extends StatelessWidget {
           Expanded(
             child: Text(
               '$label $pct%',
-              style: AppTypography.caption1
-                  .copyWith(color: context.textSecondary),
+              style:
+                  AppTypography.caption1.copyWith(color: context.textSecondary),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -1113,9 +1163,8 @@ class _DonutPainter extends CustomPainter {
 
     double startAngle = -1.5708; // -π/2 → 12 o'clock
     for (var i = 0; i < budgets.length && i < palette.length; i++) {
-      final sweep = totalSpent > 0
-          ? budgets[i].spent / totalSpent * 6.2832
-          : 0.0;
+      final sweep =
+          totalSpent > 0 ? budgets[i].spent / totalSpent * 6.2832 : 0.0;
       if (sweep <= 0) continue;
       final paint = Paint()
         ..style = PaintingStyle.stroke
@@ -1160,15 +1209,14 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: AppSpacing.lg),
             Text(
               l10n.budgetEmptyTitle,
-              style: AppTypography.title3
-                  .copyWith(color: context.textPrimary),
+              style: AppTypography.title3.copyWith(color: context.textPrimary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               l10n.budgetEmptySubtitle,
-              style: AppTypography.subhead
-                  .copyWith(color: context.textSecondary),
+              style:
+                  AppTypography.subhead.copyWith(color: context.textSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),
@@ -1206,9 +1254,7 @@ class _EmptyState extends StatelessWidget {
       ),
       builder: (_) => _CategoryPickerModal(allCategories: allCategories),
     ).then((selectedIds) {
-      if (selectedIds != null &&
-          selectedIds.isNotEmpty &&
-          context.mounted) {
+      if (selectedIds != null && selectedIds.isNotEmpty && context.mounted) {
         context.push(Routes.budgetSetting);
       }
     });
@@ -1267,8 +1313,8 @@ class _CategoryPickerModalState extends State<_CategoryPickerModal> {
                 ),
                 child: Text(
                   l10n.budgetCategoryPickerTitle,
-                  style: AppTypography.title3
-                      .copyWith(color: context.textPrimary),
+                  style:
+                      AppTypography.title3.copyWith(color: context.textPrimary),
                 ),
               ),
               // Grid
@@ -1279,8 +1325,7 @@ class _CategoryPickerModalState extends State<_CategoryPickerModal> {
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.sm,
                   ),
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
                     mainAxisSpacing: AppSpacing.md,
                     crossAxisSpacing: AppSpacing.md,
@@ -1310,8 +1355,7 @@ class _CategoryPickerModalState extends State<_CategoryPickerModal> {
                                       alpha: 0.15,
                                     )
                                   : context.bgSecondary,
-                              borderRadius:
-                                  BorderRadius.circular(AppRadius.md),
+                              borderRadius: BorderRadius.circular(AppRadius.md),
                               border: Border.all(
                                 color: isSelected
                                     ? AppColors.brandPrimary
@@ -1347,8 +1391,7 @@ class _CategoryPickerModalState extends State<_CategoryPickerModal> {
                   AppSpacing.lg,
                   AppSpacing.sm,
                   AppSpacing.lg,
-                  AppSpacing.lg +
-                      MediaQuery.of(context).viewInsets.bottom,
+                  AppSpacing.lg + MediaQuery.of(context).viewInsets.bottom,
                 ),
                 child: SizedBox(
                   width: double.infinity,

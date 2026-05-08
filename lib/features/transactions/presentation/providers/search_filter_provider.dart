@@ -94,8 +94,9 @@ class TransactionFilter {
       dateRange: clearDateRange ? null : (dateRange ?? this.dateRange),
       query: identical(query, _sentinel) ? this.query : query as String?,
       type: identical(type, _sentinel) ? this.type : type as String?,
-      amountMin:
-          identical(amountMin, _sentinel) ? this.amountMin : amountMin as double?,
+      amountMin: identical(amountMin, _sentinel)
+          ? this.amountMin
+          : amountMin as double?,
     );
   }
 
