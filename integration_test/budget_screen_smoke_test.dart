@@ -12,6 +12,8 @@
 //   F6 — Insight slot hidden when concentration rule does not fire
 //   F7 — Surface routing: classifier contract verification
 
+import 'dart:io';
+
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,23 @@ import 'package:moneywise/features/insights/domain/insight_classifier.dart';
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+const _screenshotDir =
+    '/Users/burakagridag/Documents/projects/mobileapps/moneywise'
+    '/docs/qa/EPIC8C-01-smoke-test/screenshots';
+
+/// Captures a screenshot from the integration test binding (widget is live on
+/// screen) and writes the PNG bytes directly to [_screenshotDir].
+/// Unlike `xcrun simctl io screenshot` (which captures whatever is on screen
+/// AFTER tests finish), this runs while the widget is still rendered.
+Future<void> _screenshot(
+  IntegrationTestWidgetsFlutterBinding binding,
+  String name,
+) async {
+  final bytes = await binding.takeScreenshot(name);
+  final file = File('$_screenshotDir/$name.png');
+  await file.writeAsBytes(bytes);
+}
 
 AppDatabase _testDb() => AppDatabase.forTesting(NativeDatabase.memory());
 
@@ -122,7 +141,7 @@ void main() {
     // Hero card must NOT appear in empty state
     expect(find.text('REMAINING THIS MONTH'), findsNothing);
 
-    await binding.takeScreenshot('f2_empty_light_en');
+    await _screenshot(binding,'f2_empty_light_en');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -142,7 +161,7 @@ void main() {
     // Hero card must NOT appear
     expect(find.text('KALAN BU AY'), findsNothing);
 
-    await binding.takeScreenshot('f2_empty_light_tr');
+    await _screenshot(binding,'f2_empty_light_tr');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -157,7 +176,7 @@ void main() {
     expect(find.text('Set your monthly budget'), findsOneWidget);
     expect(find.text('REMAINING THIS MONTH'), findsNothing);
 
-    await binding.takeScreenshot('f2_empty_dark_en');
+    await _screenshot(binding,'f2_empty_dark_en');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -188,7 +207,7 @@ void main() {
     expect(find.text('CATEGORIES'), findsOneWidget);
     expect(find.text('DISTRIBUTION'), findsOneWidget);
 
-    await binding.takeScreenshot('f1_populated_light_en');
+    await _screenshot(binding,'f1_populated_light_en');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -205,7 +224,7 @@ void main() {
 
     expect(find.text('REMAINING THIS MONTH'), findsOneWidget);
 
-    await binding.takeScreenshot('f1_populated_dark_en');
+    await _screenshot(binding,'f1_populated_dark_en');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -226,7 +245,7 @@ void main() {
     expect(find.text('GEÇEN AY'), findsOneWidget);
     expect(find.text('KATEGORİLER'), findsOneWidget);
 
-    await binding.takeScreenshot('f1_populated_light_tr');
+    await _screenshot(binding,'f1_populated_light_tr');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -259,7 +278,7 @@ void main() {
     // budgetMetricDailySafe ARB key = "{amount} can spend"
     expect(find.textContaining('can spend'), findsOneWidget);
 
-    await binding.takeScreenshot('f5_daily_metric_two_values');
+    await _screenshot(binding,'f5_daily_metric_two_values');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -285,7 +304,7 @@ void main() {
     expect(find.text('Spending concentrated'), findsNothing);
     expect(find.text('Harcama yoğunlaşması'), findsNothing);
 
-    await binding.takeScreenshot('f6_no_insight_slot');
+    await _screenshot(binding,'f6_no_insight_slot');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -307,7 +326,7 @@ void main() {
     expect(find.text('CATEGORIES'), findsOneWidget);
     expect(find.text('Edit ›'), findsOneWidget);
 
-    await binding.takeScreenshot('f3_categories_section');
+    await _screenshot(binding,'f3_categories_section');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -329,7 +348,7 @@ void main() {
     expect(insightVisibleOn('weekend_spending', InsightSurface.home), isTrue);
     expect(insightVisibleOn('big_transaction', InsightSurface.home), isTrue);
 
-    await binding.takeScreenshot('f7_surface_routing_verified');
+    await _screenshot(binding,'f7_surface_routing_verified');
   });
 
   // =========================================================================
@@ -355,7 +374,7 @@ void main() {
       findsWidgets,
     );
 
-    await binding.takeScreenshot('cr1_semantic_en_hero');
+    await _screenshot(binding,'cr1_semantic_en_hero');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -384,7 +403,7 @@ void main() {
       findsWidgets,
     );
 
-    await binding.takeScreenshot('cr2_semantic_tr_hero');
+    await _screenshot(binding,'cr2_semantic_tr_hero');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -412,7 +431,7 @@ void main() {
     // "No GoRouter found in context". The navigation path is verified
     // by BudgetView widget tests and the manual smoke test.
 
-    await binding.takeScreenshot('cr3_edit_textbutton');
+    await _screenshot(binding,'cr3_edit_textbutton');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -436,7 +455,7 @@ void main() {
     expect(find.text('CATEGORIES'), findsOneWidget);
     expect(find.text('DISTRIBUTION'), findsOneWidget);
 
-    await binding.takeScreenshot('cr4_section_spacing');
+    await _screenshot(binding,'cr4_section_spacing');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -459,7 +478,7 @@ void main() {
     // Footer: "This month {amount}" — verify it starts with "This month"
     expect(find.textContaining('This month'), findsOneWidget);
 
-    await binding.takeScreenshot('cr5_distribution_donut');
+    await _screenshot(binding,'cr5_distribution_donut');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
@@ -484,7 +503,7 @@ void main() {
     expect(find.text('KATEGORİLER'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    await binding.takeScreenshot('cr6_populated_dark_tr');
+    await _screenshot(binding,'cr6_populated_dark_tr');
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(Duration.zero);
