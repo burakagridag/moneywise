@@ -457,19 +457,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get budgetSettingKeepEditing => 'Keep editing';
 
   @override
-  String get budgetViewRemainingMonthly => 'Remaining (Monthly)';
-
-  @override
-  String get budgetViewNoBudgetsTitle => 'No budgets set';
-
-  @override
-  String get budgetViewNoBudgetsSubtitle =>
-      'Tap \'Budget Setting\' to configure monthly limits per category.';
-
-  @override
-  String get budgetViewSetUpBudgets => 'Set Up Budgets';
-
-  @override
   String get budgetViewCouldNotLoad => 'Could not load budget data';
 
   @override
@@ -846,6 +833,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get budgetEmptySkip => 'Set later';
+
+  @override
+  String get budgetHeroSemanticOverBudget => 'over budget';
+
+  @override
+  String get budgetHeroSemanticRemaining => 'remaining';
+
+  @override
+  String get budgetCategorySemanticCategory => 'category';
+
+  @override
+  String get budgetCategorySemanticSpent => 'spent';
+
+  @override
+  String get budgetCategorySemanticBudget => 'budget';
+
+  @override
+  String get budgetCategorySemanticOverBudget => 'Over budget.';
 
   @override
   String get budgetCategoryPickerTitle => 'Select categories';

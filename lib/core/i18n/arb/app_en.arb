@@ -145,10 +145,6 @@
   "budgetSettingDiscardAction": "Discard",
   "budgetSettingKeepEditing": "Keep editing",
 
-  "budgetViewRemainingMonthly": "Remaining (Monthly)",
-  "budgetViewNoBudgetsTitle": "No budgets set",
-  "budgetViewNoBudgetsSubtitle": "Tap 'Budget Setting' to configure monthly limits per category.",
-  "budgetViewSetUpBudgets": "Set Up Budgets",
   "budgetViewCouldNotLoad": "Could not load budget data",
   "budgetViewNoBudgetSet": "No budget set",
   "budgetViewIncludesCarryOver": "Includes {amount} carry-over from last month",
@@ -339,6 +335,30 @@
   "budgetEmptySubtitle": "Track spending across categories",
   "budgetEmptyCTA": "Start budget",
   "budgetEmptySkip": "Set later",
+  "budgetHeroSemanticOverBudget": "over budget",
+  "@budgetHeroSemanticOverBudget": {
+    "description": "Accessibility label suffix when spending exceeds budget"
+  },
+  "budgetHeroSemanticRemaining": "remaining",
+  "@budgetHeroSemanticRemaining": {
+    "description": "Accessibility label suffix when budget is not yet exceeded"
+  },
+  "budgetCategorySemanticCategory": "category",
+  "@budgetCategorySemanticCategory": {
+    "description": "Accessibility: word appended after category name in budget row"
+  },
+  "budgetCategorySemanticSpent": "spent",
+  "@budgetCategorySemanticSpent": {
+    "description": "Accessibility: word appended after spent amount in budget row"
+  },
+  "budgetCategorySemanticBudget": "budget",
+  "@budgetCategorySemanticBudget": {
+    "description": "Accessibility: word appended after budget amount in budget row"
+  },
+  "budgetCategorySemanticOverBudget": "Over budget.",
+  "@budgetCategorySemanticOverBudget": {
+    "description": "Accessibility: suffix when category spending exceeds its budget"
+  },
   "budgetCategoryPickerTitle": "Select categories",
   "budgetCategoryPickerCTA": "Continue ({n})",
   "@budgetCategoryPickerCTA": {

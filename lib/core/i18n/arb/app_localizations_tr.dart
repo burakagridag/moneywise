@@ -457,19 +457,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get budgetSettingKeepEditing => 'Düzenlemeye Devam Et';
 
   @override
-  String get budgetViewRemainingMonthly => 'Kalan (Aylık)';
-
-  @override
-  String get budgetViewNoBudgetsTitle => 'Bütçe ayarlanmadı';
-
-  @override
-  String get budgetViewNoBudgetsSubtitle =>
-      '\'Bütçe Ayarı\'na tıklayarak aylık kategori limitleri belirleyin.';
-
-  @override
-  String get budgetViewSetUpBudgets => 'Bütçe Ayarla';
-
-  @override
   String get budgetViewCouldNotLoad => 'Bütçe verileri yüklenemedi';
 
   @override
@@ -846,6 +833,24 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get budgetEmptySkip => 'Sonra ayarla';
+
+  @override
+  String get budgetHeroSemanticOverBudget => 'bütçe aşıldı';
+
+  @override
+  String get budgetHeroSemanticRemaining => 'kalan';
+
+  @override
+  String get budgetCategorySemanticCategory => 'kategorisi';
+
+  @override
+  String get budgetCategorySemanticSpent => 'harcandı';
+
+  @override
+  String get budgetCategorySemanticBudget => 'bütçe';
+
+  @override
+  String get budgetCategorySemanticOverBudget => 'Bütçe aşıldı.';
 
   @override
   String get budgetCategoryPickerTitle => 'Kategorileri seç';

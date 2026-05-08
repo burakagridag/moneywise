@@ -145,10 +145,6 @@
   "budgetSettingDiscardAction": "İptal Et",
   "budgetSettingKeepEditing": "Düzenlemeye Devam Et",
 
-  "budgetViewRemainingMonthly": "Kalan (Aylık)",
-  "budgetViewNoBudgetsTitle": "Bütçe ayarlanmadı",
-  "budgetViewNoBudgetsSubtitle": "'Bütçe Ayarı'na tıklayarak aylık kategori limitleri belirleyin.",
-  "budgetViewSetUpBudgets": "Bütçe Ayarla",
   "budgetViewCouldNotLoad": "Bütçe verileri yüklenemedi",
   "budgetViewNoBudgetSet": "Bütçe yok",
   "budgetViewIncludesCarryOver": "Geçen aydan {amount} devir dahil",
@@ -339,6 +335,30 @@
   "budgetEmptySubtitle": "Kategorilere göre harcamalarını takip et",
   "budgetEmptyCTA": "Bütçeyi başlat",
   "budgetEmptySkip": "Sonra ayarla",
+  "budgetHeroSemanticOverBudget": "bütçe aşıldı",
+  "@budgetHeroSemanticOverBudget": {
+    "description": "Accessibility label suffix when spending exceeds budget"
+  },
+  "budgetHeroSemanticRemaining": "kalan",
+  "@budgetHeroSemanticRemaining": {
+    "description": "Accessibility label suffix when budget is not yet exceeded"
+  },
+  "budgetCategorySemanticCategory": "kategorisi",
+  "@budgetCategorySemanticCategory": {
+    "description": "Accessibility: word appended after category name in budget row"
+  },
+  "budgetCategorySemanticSpent": "harcandı",
+  "@budgetCategorySemanticSpent": {
+    "description": "Accessibility: word appended after spent amount in budget row"
+  },
+  "budgetCategorySemanticBudget": "bütçe",
+  "@budgetCategorySemanticBudget": {
+    "description": "Accessibility: word appended after budget amount in budget row"
+  },
+  "budgetCategorySemanticOverBudget": "Bütçe aşıldı.",
+  "@budgetCategorySemanticOverBudget": {
+    "description": "Accessibility: suffix when category spending exceeds its budget"
+  },
   "budgetCategoryPickerTitle": "Kategorileri seç",
   "budgetCategoryPickerCTA": "Devam et ({n})",
   "@budgetCategoryPickerCTA": {

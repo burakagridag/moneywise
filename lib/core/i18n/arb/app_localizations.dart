@@ -956,30 +956,6 @@ abstract class AppLocalizations {
   /// **'Keep editing'**
   String get budgetSettingKeepEditing;
 
-  /// No description provided for @budgetViewRemainingMonthly.
-  ///
-  /// In en, this message translates to:
-  /// **'Remaining (Monthly)'**
-  String get budgetViewRemainingMonthly;
-
-  /// No description provided for @budgetViewNoBudgetsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'No budgets set'**
-  String get budgetViewNoBudgetsTitle;
-
-  /// No description provided for @budgetViewNoBudgetsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Tap \'Budget Setting\' to configure monthly limits per category.'**
-  String get budgetViewNoBudgetsSubtitle;
-
-  /// No description provided for @budgetViewSetUpBudgets.
-  ///
-  /// In en, this message translates to:
-  /// **'Set Up Budgets'**
-  String get budgetViewSetUpBudgets;
-
   /// No description provided for @budgetViewCouldNotLoad.
   ///
   /// In en, this message translates to:
@@ -1657,6 +1633,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set later'**
   String get budgetEmptySkip;
+
+  /// Accessibility label suffix when spending exceeds budget
+  ///
+  /// In en, this message translates to:
+  /// **'over budget'**
+  String get budgetHeroSemanticOverBudget;
+
+  /// Accessibility label suffix when budget is not yet exceeded
+  ///
+  /// In en, this message translates to:
+  /// **'remaining'**
+  String get budgetHeroSemanticRemaining;
+
+  /// Accessibility: word appended after category name in budget row
+  ///
+  /// In en, this message translates to:
+  /// **'category'**
+  String get budgetCategorySemanticCategory;
+
+  /// Accessibility: word appended after spent amount in budget row
+  ///
+  /// In en, this message translates to:
+  /// **'spent'**
+  String get budgetCategorySemanticSpent;
+
+  /// Accessibility: word appended after budget amount in budget row
+  ///
+  /// In en, this message translates to:
+  /// **'budget'**
+  String get budgetCategorySemanticBudget;
+
+  /// Accessibility: suffix when category spending exceeds its budget
+  ///
+  /// In en, this message translates to:
+  /// **'Over budget.'**
+  String get budgetCategorySemanticOverBudget;
 
   /// No description provided for @budgetCategoryPickerTitle.
   ///

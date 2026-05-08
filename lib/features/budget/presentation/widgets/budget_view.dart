@@ -218,7 +218,7 @@ class _BudgetHeroCard extends StatelessWidget {
     return Semantics(
       label: '${l10n.budgetHeroLabelRemaining}. '
           '${CurrencyFormatter.format(remaining.abs())} '
-          '${isOverBudget ? "over budget" : "remaining"}. '
+          '${isOverBudget ? l10n.budgetHeroSemanticOverBudget : l10n.budgetHeroSemanticRemaining}. '
           '${daysLeft > 0 ? l10n.budgetHeroDaysLeft(daysLeft) : ""}.',
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -434,7 +434,7 @@ class _MetricCardsRow extends ConsumerWidget {
                   : context.textSecondary,
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.sm),
           // Last month metric
           Expanded(
             child: _LastMonthMetricCard(
@@ -647,8 +647,8 @@ class _SectionHeader extends StatelessWidget {
     final isDark = context.isDark;
     return Padding(
       padding: const EdgeInsets.only(
-        top: 18,
-        bottom: 10,
+        top: AppSpacing.sectionHeaderTop,
+        bottom: AppSpacing.sectionHeaderBottom,
         left: AppSpacing.lg,
         right: AppSpacing.lg,
       ),
@@ -665,8 +665,13 @@ class _SectionHeader extends StatelessWidget {
             ),
           ),
           if (actionLabel != null && onAction != null)
-            GestureDetector(
-              onTap: onAction,
+            TextButton(
+              onPressed: onAction,
+              style: TextButton.styleFrom(
+                minimumSize: const Size(44, 44),
+                padding: EdgeInsets.zero,
+                tapTargetSize: MaterialTapTargetSize.padded,
+              ),
               child: Semantics(
                 label: '$actionLabel, link',
                 child: Text(
@@ -772,10 +777,10 @@ class _CategoryBudgetRow extends StatelessWidget {
     final isOverBudget = bws.isOverBudget;
 
     return Semantics(
-      label: '${category?.name ?? ''} kategorisi. '
-          '${CurrencyFormatter.format(bws.spent)} harcandı'
-          '${hasBudget ? " / ${CurrencyFormatter.format(bws.effective)} bütçe" : ""}. '
-          '${isOverBudget ? "Bütçe aşıldı." : ""}',
+      label: '${category?.name ?? ''} ${l10n.budgetCategorySemanticCategory}. '
+          '${CurrencyFormatter.format(bws.spent)} ${l10n.budgetCategorySemanticSpent}'
+          '${hasBudget ? " / ${CurrencyFormatter.format(bws.effective)} ${l10n.budgetCategorySemanticBudget}" : ""}. '
+          '${isOverBudget ? l10n.budgetCategorySemanticOverBudget : ""}',
       child: InkWell(
         onTap: () => context.push(Routes.budgetSetting),
         child: SizedBox(
@@ -1016,11 +1021,11 @@ class _DonutPlaceholder extends StatelessWidget {
   }
 
   static const _palette = [
-    Color(0xFF3D5A99),
-    Color(0xFF2E86AB),
-    Color(0xFF4CAF50),
-    Color(0xFFFFA726),
-    Color(0xFFE53935),
+    AppColors.brandPrimary,              // 0xFF3D5A99
+    Color(0xFF2E86AB),                   // TODO(EPIC8B-06): add to AppColors as chartBlue
+    AppColors.success,                   // 0xFF4CAF50
+    AppColors.warning,                   // 0xFFFFA726
+    AppColors.error,                     // 0xFFE53935
   ];
 
   static Color _donutColor(int index) =>
@@ -1125,7 +1130,8 @@ class _DonutPainter extends CustomPainter {
   @override
   bool shouldRepaint(_DonutPainter oldDelegate) =>
       oldDelegate.totalSpent != totalSpent ||
-      oldDelegate.isDark != isDark;
+      oldDelegate.isDark != isDark ||
+      oldDelegate.budgets != budgets;
 }
 
 // ---------------------------------------------------------------------------

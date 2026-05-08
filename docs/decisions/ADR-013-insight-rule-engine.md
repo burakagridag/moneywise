@@ -150,7 +150,7 @@ InsightProvider insightProviderInstance(InsightProviderInstanceRef ref) {
     SavingsGoalRule(),
     DailyOverpacingRule(),
     BigTransactionRule(),
-    FifthRulePlaceholder(), // stub — returns null until Sprint 8c
+    WeekendSpendingRule(), // implemented Sprint 8c (replaces FifthRulePlaceholder)
   ]);
 }
 ```
