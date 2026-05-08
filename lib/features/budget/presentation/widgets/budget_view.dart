@@ -93,17 +93,26 @@ class _BudgetContent extends ConsumerWidget {
     final totalRemaining = totalBudget - totalSpent;
     final totalRatio = totalBudget > 0 ? totalSpent / totalBudget : 0.0;
 
-    // Days remaining in month
-    final daysInMonth = DateTime(selectedMonth.year, selectedMonth.month + 1, 0).day;
+    // Days remaining / elapsed in month
+    final daysInMonth =
+        DateTime(selectedMonth.year, selectedMonth.month + 1, 0).day;
     final isCurrentMonth = selectedMonth.year == now.year &&
         selectedMonth.month == now.month;
     final daysLeft = isCurrentMonth
         ? (daysInMonth - now.day + 1).clamp(0, daysInMonth)
         : 0;
 
-    // Ideal daily pace = remaining / daysLeft
-    final idealDailyPace =
+    // Actual daily burn rate = total spent ÷ days elapsed this month.
+    // For past months, daysElapsed = full month length.
+    final daysElapsed = isCurrentMonth ? now.day : daysInMonth;
+    final actualDailyBurnRate = totalSpent / daysElapsed;
+
+    // Safe daily pace = remaining budget ÷ days left (what you CAN spend/day).
+    final safeDailyPace =
         (daysLeft > 0 && totalRemaining > 0) ? totalRemaining / daysLeft : 0.0;
+
+    // idealDailyPace alias kept for hero card footer label.
+    final idealDailyPace = safeDailyPace;
 
     // Budgeted vs unbudgeted split
     final budgetedCats =
@@ -138,7 +147,8 @@ class _BudgetContent extends ConsumerWidget {
             // 2. Metric cards row
             _MetricCardsRow(
               totalSpent: totalSpent,
-              idealDailyPace: idealDailyPace,
+              actualDailyBurnRate: actualDailyBurnRate,
+              safeDailyPace: safeDailyPace,
               selectedMonth: selectedMonth,
             ),
 
@@ -379,12 +389,19 @@ class _HeroPaceBar extends StatelessWidget {
 class _MetricCardsRow extends ConsumerWidget {
   const _MetricCardsRow({
     required this.totalSpent,
-    required this.idealDailyPace,
+    required this.actualDailyBurnRate,
+    required this.safeDailyPace,
     required this.selectedMonth,
   });
 
   final double totalSpent;
-  final double idealDailyPace;
+
+  /// Actual daily burn rate = total spent ÷ days elapsed this month.
+  final double actualDailyBurnRate;
+
+  /// Safe daily pace = remaining budget ÷ days left (what you CAN spend/day).
+  final double safeDailyPace;
+
   final DateTime selectedMonth;
 
   @override
@@ -402,17 +419,17 @@ class _MetricCardsRow extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          // Daily metric
+          // Daily metric — primary: actual burn rate; subtitle: safe to spend.
           Expanded(
             child: _MetricCard(
               title: l10n.budgetMetricDailyTitle,
-              primaryValue: CurrencyFormatter.format(idealDailyPace),
-              subtitle: idealDailyPace > 0
+              primaryValue: CurrencyFormatter.format(actualDailyBurnRate),
+              subtitle: safeDailyPace > 0
                   ? l10n.budgetMetricDailySafe(
-                      CurrencyFormatter.format(idealDailyPace),
+                      CurrencyFormatter.format(safeDailyPace),
                     )
                   : l10n.budgetMetricDeltaNoData,
-              subtitleColor: idealDailyPace > 0
+              subtitleColor: safeDailyPace > 0
                   ? AppColors.success
                   : context.textSecondary,
             ),
@@ -1172,17 +1189,23 @@ class _EmptyState extends StatelessWidget {
   }
 
   void _openCategoryPicker(BuildContext context) {
-    showModalBottomSheet<void>(
+    // Pattern: return selected IDs from sheet via pop(); navigate in .then()
+    // so that navigation uses the outer context AFTER the modal is fully dismissed.
+    // This avoids Navigator/GoRouter conflicts from calling push() inside pop().
+    showModalBottomSheet<Set<String>>(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
-      builder: (_) => _CategoryPickerModal(
-        allCategories: allCategories,
-        onConfirm: (_) => context.push(Routes.budgetSetting),
-      ),
-    );
+      builder: (_) => _CategoryPickerModal(allCategories: allCategories),
+    ).then((selectedIds) {
+      if (selectedIds != null &&
+          selectedIds.isNotEmpty &&
+          context.mounted) {
+        context.push(Routes.budgetSetting);
+      }
+    });
   }
 }
 
@@ -1191,13 +1214,9 @@ class _EmptyState extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _CategoryPickerModal extends StatefulWidget {
-  const _CategoryPickerModal({
-    required this.allCategories,
-    required this.onConfirm,
-  });
+  const _CategoryPickerModal({required this.allCategories});
 
   final List<Category> allCategories;
-  final void Function(Set<String> selectedIds) onConfirm;
 
   @override
   State<_CategoryPickerModal> createState() => _CategoryPickerModalState();
@@ -1331,8 +1350,10 @@ class _CategoryPickerModalState extends State<_CategoryPickerModal> {
                     onPressed: _selected.isEmpty
                         ? null
                         : () {
-                            Navigator.of(context).pop();
-                            widget.onConfirm(_selected);
+                            // Return selected IDs to _openCategoryPicker().then()
+                            // so that GoRouter navigation happens AFTER the modal
+                            // is fully dismissed — avoids Navigator/GoRouter conflicts.
+                            Navigator.of(context).pop<Set<String>>(_selected);
                           },
                     style: FilledButton.styleFrom(
                       backgroundColor: AppColors.brandPrimary,
